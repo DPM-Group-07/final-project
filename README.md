@@ -1,4 +1,4 @@
-# final-project
+ cd# final-project
 This is the main repository for the final project.
 
 ## Branches
@@ -11,7 +11,7 @@ This is the main repository for the final project.
 
 1. Go to your Eclipse workspace and run the following command: git clone https://github.com/DPM-Group-07/final-project.git
 
-2. (Optional) If you want to get code from the "dev" branch, switch branches: git checkout dev
+2. (Optional) If you want to get code from the "dev" branch, switch branches: cd final-project; git checkout dev
 
 3. Open Eclipse. If final-project appears in the Package Explorer on the right, delete it. Don't delete it from the disk though.
 
