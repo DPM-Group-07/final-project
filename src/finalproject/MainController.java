@@ -15,6 +15,16 @@ public class MainController {
 	
 	public static void main(String[] args) {
 		
+		final TextLCD t = LocalEV3.get().getTextLCD();
+
+		t.clear();
+		
+		t.drawString("                ", 0, 0);
+		t.drawString("      TEAM      ", 0, 1);
+		t.drawString("       7        ", 0, 2);
+		t.drawString("                ", 0, 3);
+		t.drawString("                ", 0, 4);
+		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);	
 		
