@@ -10,6 +10,11 @@ import lejos.hardware.lcd.TextLCD;
 import lejos.utility.Delay;
 
 @SuppressWarnings("rawtypes")
+/**
+ * This is the main class that will execute all function of the robot.
+ * @author maxsn
+ *
+ */
 public class MainController {
 	private static final String SERVER_IP = "192.168.2.19";
 	private static final int TEAM_NUMBER = 7;
