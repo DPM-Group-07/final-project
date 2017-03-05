@@ -21,9 +21,9 @@ This is the main repository for the final project. Documentation can be found [h
 
 5. Right-click on the newly created project and convert it to a LeJOS EV3 project.
 
-6. Because we are using an external library for JSON objects (json-simple-1.1.1.jar), you need to add it to the build path. Expand the "lib" folder under the project in the package explorer. Right-click on "json-simple-1.1.1.jar" and select Build Path -> Add to Build Path.
+6. (You might not need to do this) Because we are using an external library for JSON objects (json-simple-1.1.1.jar), you need to add it to the build path. Expand the "lib" folder under the project in the package explorer. Right-click on "json-simple-1.1.1.jar" and select Build Path -> Add to Build Path.
 
-7. Done
+7. Right click on the project name in the Package Explorer and select Properties. Go to Java Compiler, check Enable project specific settings, and set the compiler compliance level to 1.7.
 
 ## How to compile javadocs
 
