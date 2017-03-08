@@ -58,9 +58,12 @@ public class GameData {
 		// Forward line position
 		forwardLine = ((Long)data.get("d1")).intValue();
 		
-		// TODO: Debug here and find out how the coordinates are stored in Map object
-		// TODO: Figure out if a String is the best way to represent the omega
+		// Dispenser position
+		dispenserPosition = new Coordinate(((Long)data.get("bx")).intValue(), ((Long)data.get("by")).intValue());
 		
+		// Defender zone
+		defenderZone = new Coordinate(((Long)data.get("w1")).intValue(), ((Long)data.get("w2")).intValue());
+				
 		// Omega
 		omega = (String) data.get("omega");
 	}
