@@ -3,15 +3,19 @@ package finalproject;
 import java.util.Map;
 
 import finalproject.objects.GameData;
+import finalproject.utilities.LCDInfo;
+import finalproject.utilities.Navigation;
+import finalproject.utilities.Odometer;
 import finalproject.utilities.WifiConnection;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.utility.Delay;
 
 @SuppressWarnings("rawtypes")
 /**
- * This is the main class that will execute all function of the robot.
+ * This is the main class that will execute all functions of the robot.
  * @author maxsn
  *
  */
@@ -21,10 +25,16 @@ public class MainController {
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	
-	public static void main(String[] args) {
+//	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+//	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	
+	private static final TextLCD t = LocalEV3.get().getTextLCD();
+	
+//	private static Odometer odometer;
+//	private static LCDInfo lcdInfo;
+//	private static Navigation navigation;
 		
-		final TextLCD t = LocalEV3.get().getTextLCD();
-
+	public static void main(String[] args) {
 		// Print message on the LCD screen
 		t.clear();
 		t.drawString("                ", 0, 0);
@@ -37,6 +47,11 @@ public class MainController {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE) {
 			Delay.msDelay(50);
 		}
+		
+		// Instantiate utilities
+//		odometer = new Odometer(leftMotor, rightMotor, 30, true);
+//		lcdInfo = new LCDInfo(odometer);
+//		navigation = new Navigation(odometer);
 		
 		// 1. Get game data from Wi-Fi
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
@@ -53,7 +68,9 @@ public class MainController {
 		}
 		
 		t.clear();
+		// 1. complete.
 		
+		// Below lines are for debug
 		System.out.println("Role: " + gd.getRole());
 		System.out.println("Corner: " + gd.getStartingCorner());
 		System.out.println("Omega: " + gd.getOmega());
