@@ -20,20 +20,17 @@ import lejos.utility.Delay;
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.19";
+	private static final String SERVER_IP = "192.168.2.24";
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	
-//	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
-//	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
-	
-//	private static Odometer odometer;
-//	private static LCDInfo lcdInfo;
-//	private static Navigation navigation;
 		
+	/**
+	 * This is the main function that will drive the robot throughout the entire game.
+	 * @param args Arguments provided to the main method. This is not used in this application.
+	 */
 	public static void main(String[] args) {
 		// Print message on the LCD screen
 		t.clear();
@@ -44,14 +41,12 @@ public class MainController {
 		t.drawString("      start     ", 0, 4);
 		
 		// Wait for user input before starting
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE) {
+		while (Button.waitForAnyPress() != Button.ID_ENTER) {
 			Delay.msDelay(50);
 		}
 		
-		// Instantiate utilities
-//		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-//		lcdInfo = new LCDInfo(odometer);
-//		navigation = new Navigation(odometer);
+		t.clear();
+		System.out.println("Connecting...");
 		
 		// 1. Get game data from Wi-Fi
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
@@ -62,15 +57,40 @@ public class MainController {
 			data = wc.getData();
 			gd = new GameData(data, TEAM_NUMBER);
 		} catch (Exception e) {
-			t.clear();
-			System.out.println(e.getMessage());
+			error(e.getMessage());
 			return;
 		}
 		
-		t.clear();
-		// 1. complete.
+		System.out.println("Game data OK");
 		
-		// Below lines are for debug
+		printGameData(gd);
+
+		Button.waitForAnyPress();
+		System.exit(0);
+		
+	}
+	
+	/**
+	 * This function displays an error message and prompts for a key press before
+	 * exiting the program.
+	 * @param message The error message to be displayed.
+	 */
+	private static void error(String message) {
+		System.out.println(message);
+		System.out.println("Press any button to exit.");
+		Button.waitForAnyPress();
+		System.exit(1);
+	}
+	
+	/**
+	 * Prints game data to standard output.
+	 * @param gd The GameData object that contains all game data.
+	 */
+	private static void printGameData(GameData gd) {
+		System.out.println("Press key for game data");
+		Button.waitForAnyPress();
+		
+		System.out.println("- Begin -");
 		System.out.println("Role: " + gd.getRole());
 		System.out.println("Corner: " + gd.getStartingCorner());
 		System.out.println("Omega: " + gd.getOmega());
@@ -81,15 +101,11 @@ public class MainController {
 		
 		System.out.println("DspnsrX: " + gd.getDispenserPosition().getX());
 		System.out.println("DspnsrY: " + gd.getDispenserPosition().getY());
-		System.out.println();
 		System.out.println("DefzonX: " + gd.getDefenderZone().getX());
 		System.out.println("DefzonY: " + gd.getDefenderZone().getY());
 		
-		wc = null;
-
-		Button.waitForAnyPress();
-		System.exit(0);
-		
+		System.out.println("- End -");
+		System.out.println("Press ENTER...");
 	}
 
 }
