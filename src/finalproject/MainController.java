@@ -25,16 +25,17 @@ public class MainController {
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	
-//	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
-//	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
 	
-//	private static Odometer odometer;
-//	private static LCDInfo lcdInfo;
-//	private static Navigation navigation;
+	private static Odometer odometer;
+	private static LCDInfo lcdInfo;
+	private static Navigation navigation;
 		
 	public static void main(String[] args) {
+		
 		// Print message on the LCD screen
 		t.clear();
 		t.drawString("                ", 0, 0);
@@ -49,12 +50,12 @@ public class MainController {
 		}
 		
 		// Instantiate utilities
-//		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-//		lcdInfo = new LCDInfo(odometer);
-//		navigation = new Navigation(odometer);
+		odometer = new Odometer(leftMotor, rightMotor, 30, true);
+		lcdInfo = new LCDInfo(odometer);
+		navigation = new Navigation(odometer);
 		
 		// 1. Get game data from Wi-Fi
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+/*		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
 		GameData gd;
 		
@@ -86,7 +87,15 @@ public class MainController {
 		System.out.println("DefzonY: " + gd.getDefenderZone().getY());
 		
 		wc = null;
-
+*/
+		
+		/* 
+		 * March 9, unable to get WifiConnection working 
+		 * JSON Object not found
+		 * Tested without WifiConnection
+		 */
+		odometer.driveSquare();
+		
 		Button.waitForAnyPress();
 		System.exit(0);
 		

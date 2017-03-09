@@ -48,9 +48,9 @@ public class Odometer implements TimerListener {
 		this.rightMotor = rightMotor;
 		
 		// default values, modify for your robot
-		this.rightRadius = 2.75;
-		this.leftRadius = 2.75;
-		this.width = 15.8;
+		this.rightRadius = 2.15;
+		this.leftRadius = 2.14;
+		this.width = 18.7;
 		
 		this.x = 0.0;
 		this.y = 0.0;
@@ -183,5 +183,9 @@ public class Odometer implements TimerListener {
 			return d;
 		else
 			return d - 360.0;
+	}
+	
+	public void driveSquare(){
+		SquareDriver.drive(leftMotor, rightMotor, leftRadius, rightRadius, width);
 	}
 }
