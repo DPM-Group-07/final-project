@@ -109,6 +109,13 @@ public class Odometer implements TimerListener {
 		oldDH[1] += dDH[1];
 	}
 
+	// set x
+	public void setX(double x) {
+		synchronized (this) {
+			this.x = x;
+		}
+	}
+	
 	// return X value
 	public double getX() {
 		synchronized (this) {
@@ -116,6 +123,13 @@ public class Odometer implements TimerListener {
 		}
 	}
 
+	// set y
+	public void setY(double y) {
+		synchronized (this) {
+			this.y = y;
+		}
+	}
+	
 	// return Y value
 	public double getY() {
 		synchronized (this) {
@@ -123,6 +137,13 @@ public class Odometer implements TimerListener {
 		}
 	}
 
+	// set theta
+	public void setAng(double theta) {
+		synchronized (this) {
+			this.theta = theta;
+		}
+	}
+	
 	// return theta value
 	public double getAng() {
 		synchronized (this) {

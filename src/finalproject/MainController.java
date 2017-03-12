@@ -4,13 +4,17 @@ import java.util.Map;
 
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
+import finalproject.utilities.LightLocalizer;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import finalproject.utilities.USLocalizer;
 import finalproject.utilities.WifiConnection;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
 @SuppressWarnings("rawtypes")
@@ -28,12 +32,20 @@ public class MainController {
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	
+	// Modify these during test
+	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
+	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
+	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S3"));
+	private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
+	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
 	
 	private static Odometer odometer;
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
-		
+	private static LightLocalizer lightLocalizer;
+	private static USLocalizer usLocalizer;
+	
 	public static void main(String[] args) {
 		
 		// Print message on the LCD screen
@@ -49,10 +61,22 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 		
+		// Pass these through for data collection
+		float[] leftUSData = new float[3], 
+				midUSData = new float[3], 
+				rightUSData = new float[3],
+				colorData = new float[3];
+		
 		// Instantiate utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
 		lcdInfo = new LCDInfo(odometer);
 		navigation = new Navigation(odometer);
+		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
+		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
+		
+		// Do localization
+		usLocalizer.doLocalization();
+		lightLocalizer.doLocalization();
 		
 		// 1. Get game data from Wi-Fi
 /*		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
@@ -94,6 +118,7 @@ public class MainController {
 		 * JSON Object not found
 		 * Tested without WifiConnection
 		 */
+		// Drives robot in a square to fine-tune leftRadius, rightRadius and width
 		odometer.driveSquare();
 		
 		Button.waitForAnyPress();
