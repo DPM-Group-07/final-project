@@ -12,12 +12,22 @@ package finalproject.utilities;
  */
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/**
+ * This is the navigation class which drives the robot from one position on the field
+ * to another.
+ * @author maxsn
+ *
+ */
 public class Navigation {
-	final static int FAST = 200, SLOW = 100, ACCELERATION = 4000;
+	final static int FAST = 200, SLOW = 50, ACCELERATION = 2000;
 	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
 	private Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 
+	/**
+	 * The public constructor for this class
+	 * @param odo The active Odometer object currently tracking the robot's position.
+	 */
 	public Navigation(Odometer odo) {
 		this.odometer = odo;
 
@@ -30,8 +40,10 @@ public class Navigation {
 		this.rightMotor.setAcceleration(ACCELERATION);
 	}
 
-	/*
-	 * Functions to set the motor speeds jointly
+	/**
+	 * Set the speeds of both motors to a float value.
+	 * @param lSpd The desired left motor speed.
+	 * @param rSpd The desired right motor speed.
 	 */
 	public void setSpeeds(float lSpd, float rSpd) {
 		this.leftMotor.setSpeed(lSpd);
@@ -46,6 +58,11 @@ public class Navigation {
 			this.rightMotor.forward();
 	}
 
+	/**
+	 * Set the speeds of both motor to an integer value.
+	 * @param lSpd The desired left motor speed.
+	 * @param rSpd The desired right motor speed.
+	 */
 	public void setSpeeds(int lSpd, int rSpd) {
 		this.leftMotor.setSpeed(lSpd);
 		this.rightMotor.setSpeed(rSpd);
@@ -59,8 +76,8 @@ public class Navigation {
 			this.rightMotor.forward();
 	}
 
-	/*
-	 * Float the two motors jointly
+	/**
+	 * Float both motors so that the wheels can be freely moved by a human.
 	 */
 	public void setFloat() {
 		this.leftMotor.stop();
@@ -69,9 +86,10 @@ public class Navigation {
 		this.rightMotor.flt(true);
 	}
 
-	/*
-	 * TravelTo function which takes as arguments the x and y position in cm Will travel to designated position, while
-	 * constantly updating it's heading
+	/**
+	 * Move the robot to a specified position on the field while constantly updating its heading.
+	 * @param x The desired x-coordinate of the new position.
+	 * @param y The desired y-coordinate of the new position.
 	 */
 	public void travelTo(double x, double y) {
 		double minAng;
@@ -85,9 +103,11 @@ public class Navigation {
 		this.setSpeeds(0, 0);
 	}
 
-	/*
-	 * TurnTo function which takes an angle and boolean as arguments The boolean controls whether or not to stop the
-	 * motors when the turn is completed
+	/**
+	 * Turn to a specified angle theta using the North-South-West-East logic. Angle zero is
+	 * North, 90 is East, 180 South and 270 West.
+	 * @param angle The desired final heading of the robot.
+	 * @param stop Whether to stop the motors at the end of the turn or not.
 	 */
 	public void turnTo(double angle, boolean stop) {
 
@@ -97,11 +117,17 @@ public class Navigation {
 
 			error = angle - this.odometer.getAng();
 
-			if (error < -180.0) {
-				this.setSpeeds(-SLOW, SLOW);
-			} else if (error < 0.0) {
-				this.setSpeeds(SLOW, -SLOW);
-			} else if (error > 180.0) {
+//			if (error < -180.0) {
+//				this.setSpeeds(-SLOW, SLOW);
+//			} else if (error < 0.0) {
+//				this.setSpeeds(SLOW, -SLOW);
+//			} else if (error > 180.0) {
+//				this.setSpeeds(SLOW, -SLOW);
+//			} else {
+//				this.setSpeeds(-SLOW, SLOW);
+//			}
+			
+			if (error > 0) {
 				this.setSpeeds(SLOW, -SLOW);
 			} else {
 				this.setSpeeds(-SLOW, SLOW);
@@ -113,8 +139,9 @@ public class Navigation {
 		}
 	}
 	
-	/*
-	 * Go foward a set distance in cm
+	/**
+	 * Travel a specified distance forward.
+	 * @param distance The distance to travel.
 	 */
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
