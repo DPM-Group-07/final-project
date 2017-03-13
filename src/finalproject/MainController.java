@@ -26,12 +26,22 @@ public class MainController {
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
+	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	
+	private static Odometer odometer;
+	private static Navigation navigation;
 		
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
 	 * @param args Arguments provided to the main method. This is not used in this application.
 	 */
 	public static void main(String[] args) {
+		
+		// Initialize critical classes
+		odometer = new Odometer(leftMotor, rightMotor, 30, true);
+		navigation = new Navigation(odometer);
+		
 		// Print message on the LCD screen
 		t.clear();
 		t.drawString("                ", 0, 0);
@@ -64,6 +74,10 @@ public class MainController {
 		System.out.println("Game data OK");
 		
 		printGameData(gd);
+		Button.waitForAnyPress();
+		
+		// 2. Initialize and localize
+		// TODO
 
 		Button.waitForAnyPress();
 		System.exit(0);
