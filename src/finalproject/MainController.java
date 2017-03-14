@@ -29,13 +29,16 @@ public class MainController {
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	
+	// Motor objects
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	private static final EV3LargeRegulatedMotor leftLaunchMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+	private static final EV3LargeRegulatedMotor rightLaunchMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
-	// Modify these during test
-	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
-	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
-	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S3"));
+	// Sensor objects
+	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
+	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
+	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
 	private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
 	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
@@ -47,6 +50,13 @@ public class MainController {
 	private static USLocalizer usLocalizer;
 	
 	public static void main(String[] args) {
+		// Slowly make launch arm vertical to reduce robot size
+		leftLaunchMotor.setAcceleration(1000);
+		rightLaunchMotor.setAcceleration(1000);
+		leftLaunchMotor.rotate(90,true);
+		rightLaunchMotor.rotate(90,false);
+		leftLaunchMotor.stop();
+		rightLaunchMotor.stop();
 		
 		// Print message on the LCD screen
 		t.clear();
@@ -74,9 +84,13 @@ public class MainController {
 		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
 		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
 		
+		// Temporarily disable left and right US to avoid interference
+		leftUS.disable();
+		rightUS.disable();
+		
 		// Do localization
-		usLocalizer.doLocalization();
-		lightLocalizer.doLocalization();
+//		usLocalizer.doLocalization();
+//		lightLocalizer.doLocalization();
 		
 		// 1. Get game data from Wi-Fi
 /*		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);

@@ -25,7 +25,7 @@ public class LightLocalizer {
 		this.odometer = odometer;
 		this.navigation = navigation;
 		this.colorData = colorData;
-//		Sound.setVolume(10);
+		Sound.setVolume(10);
 	}
 	
 	/**
@@ -43,9 +43,10 @@ public class LightLocalizer {
 		
 		while(lineCount < 4){
 			colorSensor.getRedMode().fetchSample(colorData, 0);
+			 System.out.println(colorData[0]);
 			// Line detected
 			if(colorData[0] < COLOR_THRESHOLD){
-//				Sound.playTone(1000, 250);
+				Sound.playTone(1000, 250);
 				theta[lineCount] = odometer.getAng();
 				lineCount++;
 			}
