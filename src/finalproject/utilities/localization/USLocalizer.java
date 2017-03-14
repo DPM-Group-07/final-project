@@ -1,7 +1,9 @@
-package finalproject.utilities;
+package finalproject.utilities.localization;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import finalproject.utilities.Navigation;
+import finalproject.utilities.Odometer;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
@@ -18,11 +20,10 @@ public class USLocalizer{
 	private Navigation navigation;
 	private float[] usData;
 	
-	public USLocalizer(EV3UltrasonicSensor usSensor, EV3LargeRegulatedMotor leftMotor, 
-			EV3LargeRegulatedMotor rightMotor, Odometer odometer, Navigation navigation, float[] usData) {
+	public USLocalizer(EV3UltrasonicSensor usSensor, Odometer odometer, Navigation navigation, float[] usData) {
 		this.usSensor = usSensor;
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+		this.leftMotor = odometer.getLeftMotor();
+		this.rightMotor = odometer.getRightMotor();
 		this.odometer = odometer;
 		this.navigation = navigation;
 		this.usData = usData;

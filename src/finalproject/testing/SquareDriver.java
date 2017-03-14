@@ -1,7 +1,4 @@
-/*
- * SquareDriver.java
- */
-package finalproject.utilities;
+package finalproject.testing;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 

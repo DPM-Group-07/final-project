@@ -4,10 +4,9 @@ import java.util.Map;
 
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
-import finalproject.utilities.LightLocalizer;
+import finalproject.utilities.localization.*;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
-import finalproject.utilities.USLocalizer;
 import finalproject.utilities.WifiConnection;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -46,23 +45,13 @@ public class MainController {
 	private static Odometer odometer;
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
-	private static LightLocalizer lightLocalizer;
-	private static USLocalizer usLocalizer;
+	private static MasterLocalizer localizer;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
 	 * @param args Arguments provided to the main method. This is not used in this application.
 	 */
 	public static void main(String[] args) {
-		// Slowly make launch arm vertical to reduce robot size
-		leftLaunchMotor.setAcceleration(1000);
-		rightLaunchMotor.setAcceleration(1000);
-		leftLaunchMotor.rotate(90,true);
-		rightLaunchMotor.rotate(90,false);
-		leftLaunchMotor.stop();
-		rightLaunchMotor.stop();
-		
-
 		// Print message on the LCD screen
 		t.clear();
 		t.drawString("                ", 0, 0);
@@ -76,31 +65,12 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 		
-		// Pass these through for data collection
-		float[] leftUSData = new float[3], 
-				midUSData = new float[3], 
-				rightUSData = new float[3],
-				colorData = new float[3];
-		
-		// Instantiate utilities
-		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-		lcdInfo = new LCDInfo(odometer);
-		navigation = new Navigation(odometer);
-		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
-		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
-		
-		// Temporarily disable left and right US to avoid interference
-		leftUS.disable();
-		rightUS.disable();
-		
-		// Do localization
-//		usLocalizer.doLocalization();
-//		lightLocalizer.doLocalization();
+		initialize();
+
+		// 1. Get game data from Wi-Fi
 		t.clear();
 		System.out.println("Connecting...");
-
 		
-		// 1. Get game data from Wi-Fi
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
 		GameData gd;
@@ -115,15 +85,22 @@ public class MainController {
 		
 		System.out.println("Game data OK");
 		
-		printGameData(gd);
+		// 2. Initialize and localize
+		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
 		
-		// 2. Initialize and localize
-		// TODO*/
+		lcdInfo = new LCDInfo(odometer);
+		
+		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
+		localizer.localize();
+		
+		Button.waitForAnyPress();
+		
+		t.clear();
+		System.out.println("Localization OK");
 
 		Button.waitForAnyPress();
 		System.exit(0);
-		
 	}
 	
 	/**
@@ -160,18 +137,40 @@ public class MainController {
 		System.out.println("DefzonX: " + gd.getDefenderZone().getX());
 		System.out.println("DefzonY: " + gd.getDefenderZone().getY());
 		
-		// wc = null;
-		
-		/* 
-		 * March 9, unable to get WifiConnection working 
-		 * JSON Object not found
-		 * Tested without WifiConnection
-		 */
-		// Drives robot in a square to fine-tune leftRadius, rightRadius and width
-		
-		
 		System.out.println("- End -");
 		System.out.println("Press ENTER...");
 	}
-
+	
+	/**
+	 * Slowly raises the launch arm to the vertical position to reduce robot size.
+	 */
+	private static void raiseArm() {
+		// TODO: Move this to Shooter class.
+		leftLaunchMotor.setAcceleration(1000);
+		rightLaunchMotor.setAcceleration(1000);
+		
+		leftLaunchMotor.rotate(90,true);
+		rightLaunchMotor.rotate(90,false);
+		
+		leftLaunchMotor.stop(true);
+		rightLaunchMotor.stop();
+	}
+	
+	/**
+	 * Performs various functions related to initialization. Things that should be done
+	 * before executing any other task.
+	 */
+	private static void initialize() {
+		// Raise the arm
+		raiseArm();
+		
+		// Instantiate critical utilities
+		odometer = new Odometer(leftMotor, rightMotor, 30, true);
+		navigation = new Navigation(odometer);
+		
+		// Disable side sensors and enable middle sensor
+		leftUS.disable();
+		midUS.enable();
+		rightUS.disable();
+	}
 }

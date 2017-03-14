@@ -1,5 +1,7 @@
-package finalproject.utilities;
+package finalproject.utilities.localization;
 
+import finalproject.utilities.Navigation;
+import finalproject.utilities.Odometer;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -16,12 +18,11 @@ public class LightLocalizer {
 	private Odometer odometer;
 	private EV3ColorSensor colorSensor;
 	
-	public LightLocalizer(EV3ColorSensor colorSensor, EV3LargeRegulatedMotor leftMotor, 
-			EV3LargeRegulatedMotor rightMotor, Odometer odometer, Navigation navigation, float[] colorData) {
+	public LightLocalizer(EV3ColorSensor colorSensor, Odometer odometer, Navigation navigation, float[] colorData) {
 		this.colorSensor = colorSensor;
 		this.colorSensor.setFloodlight(Color.RED);
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+		this.leftMotor = odometer.getLeftMotor();
+		this.rightMotor = odometer.getRightMotor();
 		this.odometer = odometer;
 		this.navigation = navigation;
 		this.colorData = colorData;
