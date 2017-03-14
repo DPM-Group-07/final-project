@@ -65,14 +65,7 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 		
-		// Raise the arm
-		t.clear();
-		System.out.println("Raising arm...");
-		raiseArm();
-		
-		// Instantiate critical utilities
-		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-		navigation = new Navigation(odometer);
+		initialize();
 
 		// 1. Get game data from Wi-Fi
 		t.clear();
@@ -152,6 +145,7 @@ public class MainController {
 	 * Slowly raises the launch arm to the vertical position to reduce robot size.
 	 */
 	private static void raiseArm() {
+		// TODO: Move this to Shooter class.
 		leftLaunchMotor.setAcceleration(1000);
 		rightLaunchMotor.setAcceleration(1000);
 		
@@ -161,5 +155,22 @@ public class MainController {
 		leftLaunchMotor.stop(true);
 		rightLaunchMotor.stop();
 	}
-
+	
+	/**
+	 * Performs various functions related to initialization. Things that should be done
+	 * before executing any other task.
+	 */
+	private static void initialize() {
+		// Raise the arm
+		raiseArm();
+		
+		// Instantiate critical utilities
+		odometer = new Odometer(leftMotor, rightMotor, 30, true);
+		navigation = new Navigation(odometer);
+		
+		// Disable side sensors and enable middle sensor
+		leftUS.disable();
+		midUS.enable();
+		rightUS.disable();
+	}
 }
