@@ -45,8 +45,8 @@ public class MainController {
 	private static Odometer odometer;
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
-	private static LightLocalizer lightLocalizer;
-	private static USLocalizer usLocalizer;
+//	private static LightLocalizer lightLocalizer;
+//	private static USLocalizer usLocalizer;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -78,8 +78,8 @@ public class MainController {
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
 		lcdInfo = new LCDInfo(odometer);
 		navigation = new Navigation(odometer);
-		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
-		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
+//		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
+//		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
 		
 		// Temporarily disable left and right US to avoid interference
 		leftUS.disable();
