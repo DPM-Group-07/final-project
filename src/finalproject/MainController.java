@@ -45,8 +45,7 @@ public class MainController {
 	private static Odometer odometer;
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
-//	private static LightLocalizer lightLocalizer;
-//	private static USLocalizer usLocalizer;
+	private static MasterLocalizer localizer;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -97,26 +96,11 @@ public class MainController {
 		// 2. Initialize and localize
 		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
-		
-		// Pass these through for data collection
-		float[] leftUSData = new float[3], 
-				midUSData = new float[3], 
-				rightUSData = new float[3],
-				colorData = new float[3];
-		
-//		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
-//		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
-		
-		// Temporarily disable left and right US to avoid interference
-		leftUS.disable();
-		rightUS.disable();
-		
-//		usLocalizer.doLocalization();
-//		lightLocalizer.doLocalization();
+		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
+		localizer.localize();
 
 		Button.waitForAnyPress();
 		System.exit(0);
-		
 	}
 	
 	/**
