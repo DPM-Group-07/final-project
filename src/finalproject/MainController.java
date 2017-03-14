@@ -72,7 +72,6 @@ public class MainController {
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-		lcdInfo = new LCDInfo(odometer);
 		navigation = new Navigation(odometer);
 
 		// 1. Get game data from Wi-Fi
@@ -96,8 +95,13 @@ public class MainController {
 		// 2. Initialize and localize
 		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
+		
+		lcdInfo = new LCDInfo(odometer);
+		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
 		localizer.localize();
+		
+		Button.waitForAnyPress();
 		
 		t.clear();
 		System.out.println("Localization OK");
