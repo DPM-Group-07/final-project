@@ -98,6 +98,9 @@ public class MainController {
 		Button.waitForAnyPress();
 		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
 		localizer.localize();
+		
+		t.clear();
+		System.out.println("Localization OK");
 
 		Button.waitForAnyPress();
 		System.exit(0);
