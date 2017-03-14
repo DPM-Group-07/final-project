@@ -30,6 +30,7 @@ package finalproject.utilities;
 
 import lejos.utility.Timer;
 import lejos.utility.TimerListener;
+import finalproject.testing.SquareDriver;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer implements TimerListener {
