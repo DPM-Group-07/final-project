@@ -53,8 +53,6 @@ public class MainController {
 	 * @param args Arguments provided to the main method. This is not used in this application.
 	 */
 	public static void main(String[] args) {
-		raiseArm();
-
 		// Print message on the LCD screen
 		t.clear();
 		t.drawString("                ", 0, 0);
@@ -68,31 +66,20 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 		
-		// Pass these through for data collection
-		float[] leftUSData = new float[3], 
-				midUSData = new float[3], 
-				rightUSData = new float[3],
-				colorData = new float[3];
+		// Raise the arm
+		t.clear();
+		System.out.println("Raising arm...");
+		raiseArm();
 		
-		// Instantiate utilities
+		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
 		lcdInfo = new LCDInfo(odometer);
 		navigation = new Navigation(odometer);
-//		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
-//		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
-		
-		// Temporarily disable left and right US to avoid interference
-		leftUS.disable();
-		rightUS.disable();
-		
-		// Do localization
-//		usLocalizer.doLocalization();
-//		lightLocalizer.doLocalization();
+
+		// 1. Get game data from Wi-Fi
 		t.clear();
 		System.out.println("Connecting...");
-
 		
-		// 1. Get game data from Wi-Fi
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
 		GameData gd;
@@ -107,11 +94,25 @@ public class MainController {
 		
 		System.out.println("Game data OK");
 		
-		printGameData(gd);
+		// 2. Initialize and localize
+		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
 		
-		// 2. Initialize and localize
-		// TODO*/
+		// Pass these through for data collection
+		float[] leftUSData = new float[3], 
+				midUSData = new float[3], 
+				rightUSData = new float[3],
+				colorData = new float[3];
+		
+//		usLocalizer = new USLocalizer(midUS, leftMotor, rightMotor, odometer, navigation, midUSData);
+//		lightLocalizer = new LightLocalizer(colorSensor, leftMotor, rightMotor, odometer, navigation, colorData);
+		
+		// Temporarily disable left and right US to avoid interference
+		leftUS.disable();
+		rightUS.disable();
+		
+//		usLocalizer.doLocalization();
+//		lightLocalizer.doLocalization();
 
 		Button.waitForAnyPress();
 		System.exit(0);
