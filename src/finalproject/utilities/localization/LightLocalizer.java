@@ -1,4 +1,4 @@
-package finalproject.utilities;
+package finalproject.utilities.localization;
 
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;

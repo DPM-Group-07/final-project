@@ -1,4 +1,4 @@
-package lab5EV3Shooter;
+package finalproject.utilities;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 

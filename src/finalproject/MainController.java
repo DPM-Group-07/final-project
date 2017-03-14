@@ -4,10 +4,9 @@ import java.util.Map;
 
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
-import finalproject.utilities.LightLocalizer;
+import finalproject.utilities.localization.*;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
-import finalproject.utilities.USLocalizer;
 import finalproject.utilities.WifiConnection;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -54,14 +53,7 @@ public class MainController {
 	 * @param args Arguments provided to the main method. This is not used in this application.
 	 */
 	public static void main(String[] args) {
-		// Slowly make launch arm vertical to reduce robot size
-		leftLaunchMotor.setAcceleration(1000);
-		rightLaunchMotor.setAcceleration(1000);
-		leftLaunchMotor.rotate(90,true);
-		rightLaunchMotor.rotate(90,false);
-		leftLaunchMotor.stop();
-		rightLaunchMotor.stop();
-		
+		raiseArm();
 
 		// Print message on the LCD screen
 		t.clear();
@@ -160,18 +152,22 @@ public class MainController {
 		System.out.println("DefzonX: " + gd.getDefenderZone().getX());
 		System.out.println("DefzonY: " + gd.getDefenderZone().getY());
 		
-		// wc = null;
-		
-		/* 
-		 * March 9, unable to get WifiConnection working 
-		 * JSON Object not found
-		 * Tested without WifiConnection
-		 */
-		// Drives robot in a square to fine-tune leftRadius, rightRadius and width
-		
-		
 		System.out.println("- End -");
 		System.out.println("Press ENTER...");
+	}
+	
+	/**
+	 * Slowly raises the launch arm to the vertical position to reduce robot size.
+	 */
+	private static void raiseArm() {
+		leftLaunchMotor.setAcceleration(1000);
+		rightLaunchMotor.setAcceleration(1000);
+		
+		leftLaunchMotor.rotate(90,true);
+		rightLaunchMotor.rotate(90,false);
+		
+		leftLaunchMotor.stop(true);
+		rightLaunchMotor.stop();
 	}
 
 }

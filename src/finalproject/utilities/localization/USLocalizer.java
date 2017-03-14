@@ -1,4 +1,4 @@
-package finalproject.utilities;
+package finalproject.utilities.localization;
 import java.util.Collections;
 import java.util.LinkedList;
 
