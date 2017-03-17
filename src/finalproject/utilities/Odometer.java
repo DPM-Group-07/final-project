@@ -30,6 +30,7 @@ package finalproject.utilities;
 
 import lejos.utility.Timer;
 import lejos.utility.TimerListener;
+import finalproject.testing.SquareDriver;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer implements TimerListener {
@@ -48,9 +49,9 @@ public class Odometer implements TimerListener {
 		this.rightMotor = rightMotor;
 		
 		// default values, modify for your robot
-		this.rightRadius = 2.75;
-		this.leftRadius = 2.75;
-		this.width = 15.8;
+		this.rightRadius = 2.15;
+		this.leftRadius = 2.14;
+		this.width = 18.7;
 		
 		this.x = 0.0;
 		this.y = 0.0;
@@ -85,7 +86,7 @@ public class Odometer implements TimerListener {
 		rightTacho = rightMotor.getTachoCount();
 
 		data[0] = (leftTacho * leftRadius + rightTacho * rightRadius) * Math.PI / 360.0;
-		data[1] = (rightTacho * rightRadius - leftTacho * leftRadius) / width;
+		data[1] = (leftTacho * leftRadius - rightTacho * rightRadius) / width;
 	}
 	
 	/*
@@ -109,6 +110,13 @@ public class Odometer implements TimerListener {
 		oldDH[1] += dDH[1];
 	}
 
+	// set x
+	public void setX(double x) {
+		synchronized (this) {
+			this.x = x;
+		}
+	}
+	
 	// return X value
 	public double getX() {
 		synchronized (this) {
@@ -116,6 +124,13 @@ public class Odometer implements TimerListener {
 		}
 	}
 
+	// set y
+	public void setY(double y) {
+		synchronized (this) {
+			this.y = y;
+		}
+	}
+	
 	// return Y value
 	public double getY() {
 		synchronized (this) {
@@ -123,6 +138,13 @@ public class Odometer implements TimerListener {
 		}
 	}
 
+	// set theta
+	public void setAng(double theta) {
+		synchronized (this) {
+			this.theta = theta;
+		}
+	}
+	
 	// return theta value
 	public double getAng() {
 		synchronized (this) {
@@ -183,5 +205,9 @@ public class Odometer implements TimerListener {
 			return d;
 		else
 			return d - 360.0;
+	}
+	
+	public void driveSquare(){
+		SquareDriver.drive(leftMotor, rightMotor, leftRadius, rightRadius, width);
 	}
 }
