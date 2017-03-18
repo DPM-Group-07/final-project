@@ -2,12 +2,15 @@ package finalproject;
 
 import java.util.Map;
 
+import finalproject.defense.Defense;
+import finalproject.forward.Forward;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -48,6 +51,7 @@ public class MainController {
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
 	private static MasterLocalizer localizer;
+	private static Shooter shooter;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -100,9 +104,27 @@ public class MainController {
 		
 		t.clear();
 		t.drawString("Localization OK", 0 ,0);
-
-		// TODO: Navigate to shooting position
-		// TODO: Shoot
+		
+		// 3. Travel to starting corner
+		goToStart(gd);
+		
+		// 4. Call respective role
+		// In progress
+		if(gd.getRole() == GameData.Role.Forward){ 
+			navigation.travelTo(5*30.48, 30.48);
+			navigation.turnTo(90, false);
+			Forward forward = new Forward(gd, navigation, odometer, shooter);
+			while(true){
+				forward.acquireBall();
+				forward.moveToTarget();
+				forward.shoot();
+			}
+		}
+		else if(gd.getRole() == GameData.Role.Defense){
+			navigation.travelTo(5*30.48, 9*30.48);
+			navigation.turnTo(270, false);
+			Defense defense = new Defense(gd, navigation, odometer, midUS, shooter);
+		}
 		
 		Button.waitForAnyPress();
 		lowerArm();
@@ -154,48 +176,13 @@ public class MainController {
 	}
 	
 	/**
-	 * Slowly raises the launch arm to the vertical position to reduce robot size.
-	 */
-	private static void raiseArm() {
-		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(500);
-		rightLaunchMotor.setAcceleration(500);
-		
-		leftLaunchMotor.setSpeed(25);
-		rightLaunchMotor.setSpeed(25);
-		
-		leftLaunchMotor.rotate(90,true);
-		rightLaunchMotor.rotate(90,false);
-		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
-	}
-	
-	/**
-	 * Slowly lowers the launch arm to the vertical position to reduce robot size.
-	 */
-	private static void lowerArm() {
-		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(500);
-		rightLaunchMotor.setAcceleration(500);
-		
-		leftLaunchMotor.setSpeed(25);
-		rightLaunchMotor.setSpeed(25);
-		
-		leftLaunchMotor.rotate(0,true);
-		rightLaunchMotor.rotate(0,false);
-		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
-	}
-	
-	/**
 	 * Performs various functions related to initialization. Things that should be done
 	 * before executing any other task.
 	 */
 	private static void initialize() {
 		// Raise the arm
-		raiseArm();
+		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
+		shooter.raiseArm();
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
@@ -205,5 +192,27 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
+	}
+	
+	/**
+	 * Travels to the starting corner.
+	 * @param gd The GameData object that contains all game data.
+	 */
+	private static void goToStart(GameData gd){
+		int corner = gd.getStartingCorner();
+		switch(corner){
+			case 1: navigation.travelTo(-15.0, -15.0);
+					navigation.turnTo(0, false);
+					break;
+			case 2: navigation.travelTo(304.8 + 15.0, -15.0);
+					navigation.turnTo(270, false);
+					break;
+			case 3: navigation.travelTo(304.8 + 15.0, 304.8 + 15.0);
+					navigation.turnTo(270, false);
+					break;
+			case 4: navigation.travelTo(-15.0, 304.8 + 15.0);
+					navigation.turnTo(0, false);
+					break;
+		}
 	}
 }
