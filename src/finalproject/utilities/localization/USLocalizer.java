@@ -10,7 +10,7 @@ import lejos.robotics.SampleProvider;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	private final static int ROTATION_SPEED = 120;
+	private final static int ROTATION_SPEED = 150;
 	private final static int FILTER_OUT = 10;
 	private final static int UPPER_NOISE_BOUND = 105;
 	private final static int LOWER_NOISE_BOUND = 90;

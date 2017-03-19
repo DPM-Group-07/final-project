@@ -7,7 +7,7 @@ import lejos.robotics.SampleProvider;
 
 public class LightLocalizer {
 	private static final double COLOR_SENSOR_RADIUS = 15.0;
-	private static final int ROTATION_SPEED = 100;
+	private static final int ROTATION_SPEED = 150;
 	private static final double COLOR_SENSOR_BOUND = 0.45;
 	private static final double START_TURN_TO = 45.0;
 	private static final double START_GO_FORWARD = 10.0;
