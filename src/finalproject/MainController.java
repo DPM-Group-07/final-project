@@ -89,10 +89,13 @@ public class MainController {
 		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
 		
+		t.clear();
+		
 		lcdInfo = new LCDInfo(odometer);
 		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
 		localizer.localize();
+		lcdInfo.stop();
 		
 		Button.waitForAnyPress();
 		
@@ -148,7 +151,8 @@ public class MainController {
 		// TODO: Move this to Shooter class.
 		leftLaunchMotor.setAcceleration(1000);
 		rightLaunchMotor.setAcceleration(1000);
-		
+		leftLaunchMotor.setSpeed(100);
+		rightLaunchMotor.setSpeed(100);
 		leftLaunchMotor.rotate(90,true);
 		rightLaunchMotor.rotate(90,false);
 		

@@ -2,6 +2,8 @@ package finalproject.utilities.localization;
 
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 
@@ -49,6 +51,10 @@ public class MasterLocalizer {
 		lightLocalizer = new LightLocalizer(colorSensor, odometer, navigation, colorData);
 
 		usLocalizer.doLocalization();
+		
+		Sound.twoBeeps();
+		Button.waitForAnyPress();
+		
 		lightLocalizer.doLocalization();
 	}
 }

@@ -10,7 +10,7 @@ import lejos.robotics.Color;
 public class LightLocalizer {
 	// Change these to desired performance
 	private final double COLOR_THRESHOLD = 0.40;
-	private final double SENSOR_DISTANCE = 15.0;
+	private final double SENSOR_DISTANCE = 14.3;
 	
 	private float[] colorData;	
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
