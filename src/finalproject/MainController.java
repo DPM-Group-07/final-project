@@ -71,17 +71,17 @@ public class MainController {
 		t.clear();
 		System.out.println("Connecting...");
 		
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-		Map data;
-		GameData gd;
-		
-		try {
-			data = wc.getData();
-			gd = new GameData(data, TEAM_NUMBER);
-		} catch (Exception e) {
-			error(e.getMessage());
-			return;
-		}
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		GameData gd;
+//		
+//		try {
+//			data = wc.getData();
+//			gd = new GameData(data, TEAM_NUMBER);
+//		} catch (Exception e) {
+//			error(e.getMessage());
+//			return;
+//		}
 		
 		System.out.println("Game data OK");
 		
