@@ -105,6 +105,10 @@ public class MainController {
 		System.out.println("Localization OK");
 
 		Button.waitForAnyPress();
+		
+		navigation.travelTo(30.48, 30.48);
+		navigation.turnTo(0.0, true);
+		
 		System.exit(0);
 	}
 	
