@@ -10,10 +10,10 @@ import lejos.robotics.SampleProvider;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	private final static int ROTATION_SPEED = 60;
+	private final static int ROTATION_SPEED = 120;
 	private final static int FILTER_OUT = 10;
-	private final static int UPPER_NOISE_BOUND = 110;
-	private final static int LOWER_NOISE_BOUND = 100;
+	private final static int UPPER_NOISE_BOUND = 105;
+	private final static int LOWER_NOISE_BOUND = 90;
 	private final static int FILTER_VALUE = 200;
 	
 	private Odometer odo;
@@ -124,7 +124,7 @@ public class USLocalizer {
 			// angles to the right of angleB is 45 degrees past 'north'
 			
 			if (angleA < angleB) {
-				deltaTheta = 45.0 - ((angleA + angleB) / 2.0);
+				deltaTheta = 50.0 - ((angleA + angleB) / 2.0);
 			} else {
 				deltaTheta = 225.0 - ((angleA + angleB) / 2.0);
 			}

@@ -71,7 +71,7 @@ public class MainController {
 
 		// 1. Get game data from Wi-Fi
 		t.clear();
-		System.out.println("Connecting...");
+//		System.out.println("Connecting...");
 		
 //		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 //		Map data;
@@ -85,10 +85,10 @@ public class MainController {
 //			return;
 //		}
 		
-		System.out.println("Game data OK");
+//		System.out.println("Game data OK");
 		
 		// 2. Initialize and localize
-		System.out.println("Press ENTER to localize...");
+//		System.out.println("Press ENTER to localize...");
 		Button.waitForAnyPress();
 		
 		t.clear();
@@ -151,8 +151,8 @@ public class MainController {
 	 */
 	private static void raiseArm() {
 		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(1000);
-		rightLaunchMotor.setAcceleration(1000);
+		leftLaunchMotor.setAcceleration(500);
+		rightLaunchMotor.setAcceleration(500);
 		
 		leftLaunchMotor.setSpeed(25);
 		rightLaunchMotor.setSpeed(25);
