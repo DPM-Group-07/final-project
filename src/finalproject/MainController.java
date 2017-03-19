@@ -5,6 +5,7 @@ import java.util.Map;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
+import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.WifiConnection;
@@ -27,6 +28,7 @@ public class MainController {
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
+	private static final LocalizationType LOCALIZATION_TYPE = LocalizationType.RISING_EDGE;
 
 	// Motor objects
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
@@ -93,7 +95,7 @@ public class MainController {
 		
 		lcdInfo = new LCDInfo(odometer);
 		
-		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
+		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
 		lcdInfo.stop();
 		

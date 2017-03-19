@@ -20,6 +20,7 @@ public class MasterLocalizer {
 	
 	private USLocalizer usLocalizer;
 	private LightLocalizer lightLocalizer;
+	private LocalizationType localizationType;
 	
 	private EV3UltrasonicSensor usSensor;
 	private EV3ColorSensor colorSensor;
@@ -34,11 +35,12 @@ public class MasterLocalizer {
 	 * @param usSensor A reference to an ultrasonic sensor used for US localization.
 	 * @param colorSensor A reference to a color sensor for for light localization.
 	 */
-	public MasterLocalizer(Odometer odometer, Navigation navigation, EV3UltrasonicSensor usSensor, EV3ColorSensor colorSensor) {
+	public MasterLocalizer(Odometer odometer, Navigation navigation, EV3UltrasonicSensor usSensor, EV3ColorSensor colorSensor, LocalizationType localizationType) {
 		this.odometer = odometer;
 		this.navigation = navigation;
 		this.usSensor = usSensor;
 		this.colorSensor = colorSensor;
+		this.localizationType = localizationType;
 	}
 	
 	/**
@@ -53,7 +55,7 @@ public class MasterLocalizer {
 		SampleProvider colorValue = colorSensor.getMode("Red");			// colorValue provides samples from this instance
 		float[] colorData = new float[colorValue.sampleSize()];			// colorData is the buffer in which data are returned
 		
-		usLocalizer = new USLocalizer(odometer, usValue, usData, LocalizationType.FALLING_EDGE);
+		usLocalizer = new USLocalizer(odometer, usValue, usData, localizationType);
 		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
 
 		usLocalizer.doLocalization();
