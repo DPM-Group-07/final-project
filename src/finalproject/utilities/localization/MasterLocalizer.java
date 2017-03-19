@@ -2,10 +2,13 @@ package finalproject.utilities.localization;
 
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.SampleProvider;
 
 /**
  * MasterLocalizer is the main localization class that performs both ultrasonic and
@@ -43,18 +46,24 @@ public class MasterLocalizer {
 	 * light localization is performed.
 	 */
 	public void localize() {
-		// Pass these through for data collection
-		float[] usData = new float[3],
-				colorData = new float[3];
+		
+		SampleProvider usValue = usSensor.getMode("Distance");
+		float[] usData = new float[usValue.sampleSize()];	
 
-		usLocalizer = new USLocalizer(usSensor, odometer, navigation, usData);
-		lightLocalizer = new LightLocalizer(colorSensor, odometer, navigation, colorData);
+		SampleProvider colorValue = colorSensor.getMode("Red");			// colorValue provides samples from this instance
+		float[] colorData = new float[colorValue.sampleSize()];			// colorData is the buffer in which data are returned
+		
+		usLocalizer = new USLocalizer(odometer, usValue, usData, LocalizationType.FALLING_EDGE);
+		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
 
 		usLocalizer.doLocalization();
 		
 		Sound.twoBeeps();
-		Button.waitForAnyPress();
+		int button = Button.waitForAnyPress();
 		
+		if (button == Button.ID_ESCAPE) {
+			System.exit(1);
+		}
 		lightLocalizer.doLocalization();
 	}
 }
