@@ -106,7 +106,7 @@ public class MainController {
 
 		Button.waitForAnyPress();
 		
-		navigation.travelTo(30.48, 30.48);
+		navigation.travelTo(0.0, 60.0);
 		navigation.turnTo(0.0, true);
 		
 		System.exit(0);

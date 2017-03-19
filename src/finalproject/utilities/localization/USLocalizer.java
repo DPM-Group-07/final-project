@@ -124,7 +124,7 @@ public class USLocalizer {
 			// angles to the right of angleB is 45 degrees past 'north'
 			
 			if (angleA < angleB) {
-				deltaTheta = 55.0 - ((angleA + angleB) / 2.0);
+				deltaTheta = 45.0 - ((angleA + angleB) / 2.0);
 			} else {
 				deltaTheta = 225.0 - ((angleA + angleB) / 2.0);
 			}
