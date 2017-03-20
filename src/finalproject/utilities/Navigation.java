@@ -111,21 +111,11 @@ public class Navigation {
 	 */
 	public void turnTo(double angle, boolean stop) {
 
-		double error = angle - this.odometer.getAng();
+		double error = getDifference(angle, this.odometer.getAng());
 
 		while (Math.abs(error) > DEG_ERR) {
 
-			error = angle - this.odometer.getAng();
-
-//			if (error < -180.0) {
-//				this.setSpeeds(-SLOW, SLOW);
-//			} else if (error < 0.0) {
-//				this.setSpeeds(SLOW, -SLOW);
-//			} else if (error > 180.0) {
-//				this.setSpeeds(SLOW, -SLOW);
-//			} else {
-//				this.setSpeeds(-SLOW, SLOW);
-//			}
+			error = getDifference(angle, this.odometer.getAng());
 			
 			if (error > 0) {
 				this.setSpeeds(SLOW, -SLOW);
@@ -146,5 +136,9 @@ public class Navigation {
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
 
+	}
+	
+	private double getDifference(double a1, double a2) {
+	    return Math.min((a1-a2)<0?a1-a2+360:a1-a2, (a2-a1)<0?a2-a1+360:a2-a1);
 	}
 }
