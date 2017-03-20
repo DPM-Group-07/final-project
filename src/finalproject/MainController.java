@@ -106,9 +106,10 @@ public class MainController {
 
 		Button.waitForAnyPress();
 		
-		navigation.travelTo(0.0, 61.0);
+		navigation.travelTo(182.88, 0.0);
 		navigation.turnTo(0.0, true);
 		
+		lowerArm();
 		System.exit(0);
 	}
 	
@@ -163,6 +164,24 @@ public class MainController {
 		
 		leftLaunchMotor.rotate(90,true);
 		rightLaunchMotor.rotate(90,false);
+		
+		leftLaunchMotor.stop(true);
+		rightLaunchMotor.stop();
+	}
+	
+	/**
+	 * Slowly lowers the launch arm to the vertical position to reduce robot size.
+	 */
+	private static void lowerArm() {
+		// TODO: Move this to Shooter class.
+		leftLaunchMotor.setAcceleration(500);
+		rightLaunchMotor.setAcceleration(500);
+		
+		leftLaunchMotor.setSpeed(25);
+		rightLaunchMotor.setSpeed(25);
+		
+		leftLaunchMotor.rotate(0,true);
+		rightLaunchMotor.rotate(0,false);
 		
 		leftLaunchMotor.stop(true);
 		rightLaunchMotor.stop();
