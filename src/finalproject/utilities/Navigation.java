@@ -115,7 +115,7 @@ public class Navigation {
 
 		while (Math.abs(error) > DEG_ERR) {
 
-			error = getDifference(angle, this.odometer.getAng());
+			error =  getDifference(angle, this.odometer.getAng());
 			
 			if (error > 0) {
 				this.setSpeeds(SLOW, -SLOW);
@@ -145,6 +145,11 @@ public class Navigation {
 	 * @return The minimal angle.
 	 */
 	private double getDifference(double a1, double a2) {
-	    return Math.min((a1-a2)<0?a1-a2+360:a1-a2, (a2-a1)<0?a2-a1+360:a2-a1);
+		double rotationAngle = a1 - a2;
+		if (rotationAngle > 180)
+			rotationAngle -= 360;
+		else if (rotationAngle < -180)
+			rotationAngle += 360;
+		return rotationAngle;
 	}
 }
