@@ -138,6 +138,12 @@ public class Navigation {
 
 	}
 	
+	/**
+	 * Computes the minimal angle between two angles in the range [0,360).
+	 * @param a1 The first angle.
+	 * @param a2 The second angle.
+	 * @return The minimal angle.
+	 */
 	private double getDifference(double a1, double a2) {
 	    return Math.min((a1-a2)<0?a1-a2+360:a1-a2, (a2-a1)<0?a2-a1+360:a2-a1);
 	}
