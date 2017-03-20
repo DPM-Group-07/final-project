@@ -47,7 +47,6 @@ public class MasterLocalizer {
 	 * light localization is performed.
 	 */
 	public void localize() {
-		
 		SampleProvider usValue = usSensor.getMode("Distance");
 		float[] usData = new float[usValue.sampleSize()];	
 
@@ -58,13 +57,7 @@ public class MasterLocalizer {
 		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
 
 		usLocalizer.doLocalization();
-		
-		Sound.twoBeeps();
-		int button = Button.waitForAnyPress();
-		
-		if (button == Button.ID_ESCAPE) {
-			System.exit(1);
-		}
+		Sound.beep();
 		lightLocalizer.doLocalization();
 	}
 }

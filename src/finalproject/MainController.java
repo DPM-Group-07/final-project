@@ -38,9 +38,9 @@ public class MainController {
 	
 	// Sensor objects
 	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
-	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
+	//private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
 	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
-	private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
+	//private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
 	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
 	
@@ -106,7 +106,7 @@ public class MainController {
 
 		Button.waitForAnyPress();
 		
-		navigation.travelTo(0.0, 60.0);
+		navigation.travelTo(0.0, 61.0);
 		navigation.turnTo(0.0, true);
 		
 		System.exit(0);
@@ -181,8 +181,8 @@ public class MainController {
 		navigation = new Navigation(odometer);
 		
 		// Disable side sensors and enable middle sensor
-		leftUS.disable();
+		//leftUS.disable();
 		midUS.enable();
-		rightUS.disable();
+		//rightUS.disable();
 	}
 }
