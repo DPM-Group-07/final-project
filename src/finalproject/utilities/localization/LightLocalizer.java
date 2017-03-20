@@ -49,12 +49,12 @@ public class LightLocalizer {
 			// Get the color reading
 			colorSensor.fetchSample(this.colorData, 0);
 
-			if (this.colorData[0] < this.COLOR_SENSOR_BOUND && !sensorAboveLine) {
+			if (this.colorData[0] < COLOR_SENSOR_BOUND && !sensorAboveLine) {
 				sensorAboveLine = true;
 				angleOne = odo.getAng();
 			}
 			
-			else if (this.colorData[0] > this.COLOR_SENSOR_BOUND && sensorAboveLine) {
+			else if (this.colorData[0] > COLOR_SENSOR_BOUND && sensorAboveLine) {
 				angleTwo = odo.getAng();
 				angles[clockedLines++] = (angleOne + angleTwo)/2.0;
 				sensorAboveLine = false;

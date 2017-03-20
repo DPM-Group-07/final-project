@@ -3,10 +3,8 @@ package finalproject.utilities.localization;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.lcd.TextLCD;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
@@ -35,18 +33,12 @@ public class USLocalizer {
 	}
 	
 	public void doLocalization() {
-		double [] pos = new double [3];
 		double angleA, angleB;
 		double deltaTheta = 0.0;
 		
 		navigation.setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
 		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Delay.msDelay(1000);
 		
 		boolean robotIsFacingWall = getFilteredData() < ((UPPER_NOISE_BOUND + LOWER_NOISE_BOUND)/2.0);
 		
@@ -87,12 +79,7 @@ public class USLocalizer {
 			// switch direction and wait until it sees no wall
 			navigation.setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Delay.msDelay(1000);
 			
 			while (robotIsFacingWall) {
 				// Robot will keep rotating until it no longer faces the wall
@@ -163,13 +150,7 @@ public class USLocalizer {
 			angleA = (angleOne + angleTwo)/2.0;
 			navigation.setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			Delay.msDelay(1000);
 			
 			while (!robotIsFacingWall) {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
