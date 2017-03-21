@@ -94,7 +94,7 @@ public class MainController {
 		t.clear();
 		
 		lcdInfo = new LCDInfo(odometer);
-		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor, LOCALIZATION_TYPE);
+		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
 		lcdInfo.stop();
 		

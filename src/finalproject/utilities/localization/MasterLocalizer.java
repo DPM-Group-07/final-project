@@ -1,9 +1,7 @@
 package finalproject.utilities.localization;
 
-import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -24,7 +22,6 @@ public class MasterLocalizer {
 	private EV3UltrasonicSensor usSensor;
 	private EV3ColorSensor colorSensor;
 	private Odometer odometer;
-	private Navigation navigation;
 	
 	/**
 	 * Public constructor for MasterLocalizer must be called with valid references to all
@@ -34,9 +31,8 @@ public class MasterLocalizer {
 	 * @param usSensor A reference to an ultrasonic sensor used for US localization.
 	 * @param colorSensor A reference to a color sensor for for light localization.
 	 */
-	public MasterLocalizer(Odometer odometer, Navigation navigation, EV3UltrasonicSensor usSensor, EV3ColorSensor colorSensor, LocalizationType localizationType) {
+	public MasterLocalizer(Odometer odometer, EV3UltrasonicSensor usSensor, EV3ColorSensor colorSensor, LocalizationType localizationType) {
 		this.odometer = odometer;
-		this.navigation = navigation;
 		this.usSensor = usSensor;
 		this.colorSensor = colorSensor;
 		this.localizationType = localizationType;
