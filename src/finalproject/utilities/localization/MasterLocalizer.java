@@ -17,8 +17,8 @@ import lejos.robotics.SampleProvider;
  */
 public class MasterLocalizer {
 	
-	private USLocalizer usLocalizer;
-	private LightLocalizer lightLocalizer;
+	private ILocalizer usLocalizer;
+	private ILocalizer lightLocalizer;
 	private LocalizationType localizationType;
 	
 	private EV3UltrasonicSensor usSensor;

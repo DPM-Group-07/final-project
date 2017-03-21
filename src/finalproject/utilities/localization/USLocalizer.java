@@ -6,7 +6,7 @@ import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
-public class USLocalizer {
+public class USLocalizer implements ILocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final static int ROTATION_SPEED = 175;
 	private final static int FILTER_OUT = 10;

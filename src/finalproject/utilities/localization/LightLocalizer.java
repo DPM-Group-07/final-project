@@ -5,7 +5,7 @@ import finalproject.utilities.Odometer;
 import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
-public class LightLocalizer {
+public class LightLocalizer implements ILocalizer {
 	private static final double COLOR_SENSOR_RADIUS = 14.7;
 	private static final int ROTATION_SPEED = 175;
 	private static final double COLOR_SENSOR_BOUND = 0.45;
