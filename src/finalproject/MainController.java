@@ -38,9 +38,9 @@ public class MainController {
 	
 	// Sensor objects
 	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
-	//private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
+	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
 	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
-	//private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
+	private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
 	
 	private static final TextLCD t = LocalEV3.get().getTextLCD();
 	
@@ -71,44 +71,40 @@ public class MainController {
 
 		// 1. Get game data from Wi-Fi
 		t.clear();
-//		System.out.println("Connecting...");
+		t.drawString("Connecting...", 0, 0);
 		
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
-//		GameData gd;
-//		
-//		try {
-//			data = wc.getData();
-//			gd = new GameData(data, TEAM_NUMBER);
-//		} catch (Exception e) {
-//			error(e.getMessage());
-//			return;
-//		}
+		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		Map data;
+		GameData gd;
 		
-//		System.out.println("Game data OK");
+		try {
+			data = wc.getData();
+			gd = new GameData(data, TEAM_NUMBER);
+		} catch (Exception e) {
+			error(e.getMessage());
+			return;
+		}
+		
+		t.drawString("Game data OK", 0, 1);
 		
 		// 2. Initialize and localize
-//		System.out.println("Press ENTER to localize...");
+		t.drawString("Press ENTER to localize...", 0, 2);
 		Button.waitForAnyPress();
 		
 		t.clear();
 		
 		lcdInfo = new LCDInfo(odometer);
-		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
 		lcdInfo.stop();
 		
-		Button.waitForAnyPress();
-		
 		t.clear();
-		System.out.println("Localization OK");
+		t.drawString("Localization OK", 0 ,0);
 
-		Button.waitForAnyPress();
-
-		navigation.travelTo(30.48, 30.48);
-		navigation.turnTo(0.0, true);
+		// TODO: Navigate to shooting position
+		// TODO: Shoot
 		
+		Button.waitForAnyPress();
 		lowerArm();
 		System.exit(0);
 	}
@@ -119,7 +115,12 @@ public class MainController {
 	 * @param message The error message to be displayed.
 	 */
 	private static void error(String message) {
+		t.clear();
 		System.out.println(message);
+		
+		Sound.twoBeeps();
+		Sound.twoBeeps();
+		
 		System.out.println("Press any button to exit.");
 		Button.waitForAnyPress();
 		System.exit(1);
@@ -130,6 +131,7 @@ public class MainController {
 	 * @param gd The GameData object that contains all game data.
 	 */
 	private static void printGameData(GameData gd) {
+		t.clear();
 		System.out.println("Press key for game data");
 		Button.waitForAnyPress();
 		
@@ -200,8 +202,8 @@ public class MainController {
 		navigation = new Navigation(odometer);
 		
 		// Disable side sensors and enable middle sensor
-		//leftUS.disable();
+		leftUS.disable();
 		midUS.enable();
-		//rightUS.disable();
+		rightUS.disable();
 	}
 }
