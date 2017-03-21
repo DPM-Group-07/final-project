@@ -5,6 +5,7 @@ import java.util.Map;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
+import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.WifiConnection;
@@ -27,6 +28,7 @@ public class MainController {
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
+	private static final LocalizationType LOCALIZATION_TYPE = LocalizationType.RISING_EDGE;
 
 	// Motor objects
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
@@ -69,7 +71,7 @@ public class MainController {
 
 		// 1. Get game data from Wi-Fi
 		t.clear();
-		System.out.println("Connecting...");
+		t.drawString("Connecting...", 0, 0);
 		
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
@@ -83,23 +85,27 @@ public class MainController {
 			return;
 		}
 		
-		System.out.println("Game data OK");
+		t.drawString("Game data OK", 0, 1);
 		
 		// 2. Initialize and localize
-		System.out.println("Press ENTER to localize...");
-		Button.waitForAnyPress();
-		
-		lcdInfo = new LCDInfo(odometer);
-		
-		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
-		localizer.localize();
-		
+		t.drawString("Press ENTER to localize...", 0, 2);
 		Button.waitForAnyPress();
 		
 		t.clear();
-		System.out.println("Localization OK");
+		
+		lcdInfo = new LCDInfo(odometer);
+		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
+		localizer.localize();
+		lcdInfo.stop();
+		
+		t.clear();
+		t.drawString("Localization OK", 0 ,0);
 
+		// TODO: Navigate to shooting position
+		// TODO: Shoot
+		
 		Button.waitForAnyPress();
+		lowerArm();
 		System.exit(0);
 	}
 	
@@ -109,7 +115,12 @@ public class MainController {
 	 * @param message The error message to be displayed.
 	 */
 	private static void error(String message) {
+		t.clear();
 		System.out.println(message);
+		
+		Sound.twoBeeps();
+		Sound.twoBeeps();
+		
 		System.out.println("Press any button to exit.");
 		Button.waitForAnyPress();
 		System.exit(1);
@@ -120,6 +131,7 @@ public class MainController {
 	 * @param gd The GameData object that contains all game data.
 	 */
 	private static void printGameData(GameData gd) {
+		t.clear();
 		System.out.println("Press key for game data");
 		Button.waitForAnyPress();
 		
@@ -146,11 +158,32 @@ public class MainController {
 	 */
 	private static void raiseArm() {
 		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(1000);
-		rightLaunchMotor.setAcceleration(1000);
+		leftLaunchMotor.setAcceleration(500);
+		rightLaunchMotor.setAcceleration(500);
+		
+		leftLaunchMotor.setSpeed(25);
+		rightLaunchMotor.setSpeed(25);
 		
 		leftLaunchMotor.rotate(90,true);
 		rightLaunchMotor.rotate(90,false);
+		
+		leftLaunchMotor.stop(true);
+		rightLaunchMotor.stop();
+	}
+	
+	/**
+	 * Slowly lowers the launch arm to the vertical position to reduce robot size.
+	 */
+	private static void lowerArm() {
+		// TODO: Move this to Shooter class.
+		leftLaunchMotor.setAcceleration(500);
+		rightLaunchMotor.setAcceleration(500);
+		
+		leftLaunchMotor.setSpeed(25);
+		rightLaunchMotor.setSpeed(25);
+		
+		leftLaunchMotor.rotate(0,true);
+		rightLaunchMotor.rotate(0,false);
 		
 		leftLaunchMotor.stop(true);
 		rightLaunchMotor.stop();

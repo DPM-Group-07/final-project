@@ -3,72 +3,100 @@ package finalproject.utilities.localization;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import lejos.hardware.Sound;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.robotics.Color;
+import lejos.robotics.SampleProvider;
 
-public class LightLocalizer {
-	// Change these to desired performance
-	private final double COLOR_THRESHOLD = 0.40;
-	private final double SENSOR_DISTANCE = 15.0;
+public class LightLocalizer implements ILocalizer {
+	private static final double COLOR_SENSOR_RADIUS = 14.7;
+	private static final int ROTATION_SPEED = 175;
+	private static final double COLOR_SENSOR_BOUND = 0.45;
+	private static final double START_TURN_TO = 45.0;
+	private static final double START_GO_FORWARD = 7.5;
+	private static final double ANGLE_CORRECTION = 10;
 	
-	private float[] colorData;	
-	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	private Odometer odo;
+	private SampleProvider colorSensor;
+	private float[] colorData;
 	private Navigation navigation;
-	private Odometer odometer;
-	private EV3ColorSensor colorSensor;
 	
-	public LightLocalizer(EV3ColorSensor colorSensor, Odometer odometer, Navigation navigation, float[] colorData) {
+	public LightLocalizer(Odometer odo, SampleProvider colorSensor, float[] colorData) {
+		this.odo = odo;
 		this.colorSensor = colorSensor;
-		this.colorSensor.setFloodlight(Color.RED);
-		this.leftMotor = odometer.getLeftMotor();
-		this.rightMotor = odometer.getRightMotor();
-		this.odometer = odometer;
-		this.navigation = navigation;
 		this.colorData = colorData;
-		Sound.setVolume(10);
+		this.navigation = new Navigation(odo);
 	}
 	
-	/**
-	 * Does light localization by acquiring four angle samples during rotation.
-	 */
 	public void doLocalization() {
-		int lineCount = 0;
-		
-		double[] theta = new double[4];
-		double thetaX, thetaY;
-		double x, y;
-		
 		// drive to location listed in tutorial
-		// start rotating and clock all 4 gridlines
+		navigation.turnTo(START_TURN_TO, true);
+		navigation.goForward(START_GO_FORWARD);
 		
-		while(lineCount < 4){
-			colorSensor.getRedMode().fetchSample(colorData, 0);
-			 System.out.println(colorData[0]);
-			// Line detected
-			if(colorData[0] < COLOR_THRESHOLD){
-				Sound.playTone(1000, 250);
-				theta[lineCount] = odometer.getAng();
-				lineCount++;
+		double finalX = 0.0;
+		double finalY = 0.0;
+		double finalTheta = 0.0;
+		
+		// start rotating and clock all 4 gridlines
+		navigation.setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
+		int clockedLines = 0;
+		
+		boolean sensorAboveLine = false;
+		
+		double angleOne = 0.0;
+		double angleTwo = 0.0;
+		
+		double[] angles = new double[4];
+		
+		while (clockedLines < 4) {
+			// Get the color reading
+			colorSensor.fetchSample(this.colorData, 0);
+
+			if (this.colorData[0] < COLOR_SENSOR_BOUND && !sensorAboveLine) {
+				sensorAboveLine = true;
+				angleOne = odo.getAng();
+			}
+			
+			else if (this.colorData[0] > COLOR_SENSOR_BOUND && sensorAboveLine) {
+				angleTwo = odo.getAng();
+				angles[clockedLines++] = (angleOne + angleTwo)/2.0;
+				sensorAboveLine = false;
+				Sound.beep();
 			}
 		}
 		
-		leftMotor.setSpeed(0);
-		rightMotor.setSpeed(0);
+		navigation.setSpeeds(0, 0);
 		
-		// update thetaY and thetaX values
-		thetaY = Math.abs(theta[2] - theta[0]);
-		thetaX = Math.abs(theta[3] - theta[1]);
+		// do trig to compute (0,0) and 0 degrees
+		// X
+		double thetaX = Math.abs(angles[0] - angles[2]);
 		
+		if (thetaX > 180) {
+			thetaX = 360 - thetaX;
+		}
 		
-		x = -SENSOR_DISTANCE * Math.cos(thetaY * Math.PI / 360);
-		y = -SENSOR_DISTANCE * Math.cos(thetaX * Math.PI / 360);
+		finalX = -COLOR_SENSOR_RADIUS * Math.cos(Math.toRadians(thetaX / 2.0));
 		
-		odometer.setX(x);
-		odometer.setY(y);
+		// Y
+		double thetaY = Math.abs(angles[1] - angles[3]);
 		
+		if (thetaY > 180) {
+			thetaY = 360 - thetaY;
+		}
+		
+		finalY = -COLOR_SENSOR_RADIUS * Math.cos(Math.toRadians(thetaY / 2.0));
+		
+		// Theta
+		double deltaTheta = 270 + (thetaX/2.0) - angles[0];
+		finalTheta = odo.getAng() + deltaTheta + ANGLE_CORRECTION;
+		
+		if (finalTheta > 180.0) {
+			finalTheta -= 180.0;
+		}
+		
+		odo.setPosition(new double[] {finalX, finalY, finalTheta}, new boolean[] {true, true, true});
 		// when done travel to (0,0) and turn to 0 degrees
-		navigation.travelTo(0, 0);
-		navigation.turnTo(0.0, false);
+		navigation.travelTo(0.0, 0.0);
+		navigation.turnTo(0.0, true);
+		
+		odo.setPosition(new double[] {0.0,  0.0, 0.0}, new boolean[] {true, true, false});
 	}
+
 }
