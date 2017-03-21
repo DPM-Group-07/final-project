@@ -27,7 +27,6 @@ public class MasterLocalizer {
 	 * Public constructor for MasterLocalizer must be called with valid references to all
 	 * dependencies.
 	 * @param odometer Main Odometer object for odometry.
-	 * @param navigation Main Navigation class for navigation.
 	 * @param usSensor A reference to an ultrasonic sensor used for US localization.
 	 * @param colorSensor A reference to a color sensor for for light localization.
 	 */
