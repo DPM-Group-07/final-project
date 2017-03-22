@@ -4,46 +4,67 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.utility.Delay;
 
 /**
- * This is the Shooter class which controls the launch arm motors.
- * @author steven
- *
+ * Shooter class uses odometry to turn robot to selected target. Then shoots a ball at the target. Currently uses a fixed angle but 
+ * later on if 1.RObot position is known and 2. Target position is known, the angle to turn to could be calculated. 
+ * 
+ * Tuesday February 14, 2017
+ * 9:45am
+ * 
+ * @author thomaschristinck
+ * @author alexmasciotra
  */
 public class Shooter {
-	// Modify these to desired performance
-	private final int SHOOT_ACCELERATION = 6000;
-	private final int SMOOTH_ACCELERATION = 1000;
-	private final int SMOOTH_SPEED = 150;
-	private final int SHOOT_SPEED = 700;
-	private final int ANGLE_FROM_HOR = -20;
-	private final int LAUNCH_ANGLE = 90;
+	//Relevant speeds; note when shooting straight ahead launch speed won't need to be as fast as the "skew speed"
+	private static final int ROTATION_SPEED = 80;
+	private static final int SLOWDOWN_SPEED = 200;
+	private static final int STRAIGHT_SHOOTING_SPEED = 4000;
+	private static final int STRAIGHT_ACCEL = 8000;
+	private static final int ANGLE_FROM_HOR = 20;
+	private static final int SMOOTH_ACCELERATION = 2000;
 	
-	private EV3LargeRegulatedMotor leftLaunchMotor, rightLaunchMotor;
+	//Angle the robot is facing (off of 90 degree) when aiming at left or right target
+	private static final int TARGET_ANGLE = 18;
+	private static final int BUFFER = 5;
 	
+	//Angle shooting arm rotates through to shoot
+	private static final int SHOOTING_ANGLE = -120;
+	private static final int COMPENSATION = 2;
+	private static int targetNumber;
+	
+	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
+		
 	/**
-	 * This is the public constructor for the Shooter class.
-	 * @param leftLaunchMotor Left Launch Motor object.
-	 * @param rightLaunchMotor Right Launch Motor object.
+	 * This is the initializer. It gets the wheel motors from the odometer. The shooter motors should be passed when the
+	 * initializer is called.
 	 */
-	public Shooter(EV3LargeRegulatedMotor leftLaunchMotor, EV3LargeRegulatedMotor rightLaunchMotor){
-		this.leftLaunchMotor = leftLaunchMotor;
-		this.rightLaunchMotor = rightLaunchMotor;
+	public Shooter(EV3LargeRegulatedMotor shooterMotorR, EV3LargeRegulatedMotor shooterMotorL) {
+		this.shooterMotorR = shooterMotorR;
+		this.shooterMotorL = shooterMotorL;
 	}
-	
+
 	/**
-	 * Launches the ball.
+	 * This can be called when the robot is in a position to shoot.
 	 */
-	public void shoot(){
-		leftLaunchMotor.setAcceleration(SHOOT_ACCELERATION);
-		rightLaunchMotor.setAcceleration(SHOOT_ACCELERATION);
+	public void shoot() {
+		Delay.msDelay(500);
+		//Sets motor speeds and accelerations
+		shooterMotorL.setSpeed(STRAIGHT_SHOOTING_SPEED);
+		shooterMotorL.setAcceleration(STRAIGHT_ACCEL);
+		shooterMotorR.setSpeed(STRAIGHT_SHOOTING_SPEED);
+		shooterMotorR.setAcceleration(STRAIGHT_ACCEL);
+
+		//Possibly:
+		//aim();
 		
-		leftLaunchMotor.setSpeed(SHOOT_SPEED);
-		rightLaunchMotor.setSpeed(SHOOT_SPEED);
+		//Now shoot
+		shooterMotorL.rotate(SHOOTING_ANGLE, true);
+		shooterMotorR.rotate(SHOOTING_ANGLE, false);
 		
-		leftLaunchMotor.rotate((int)(LAUNCH_ANGLE - ANGLE_FROM_HOR), true);
-		rightLaunchMotor.rotate((int)(LAUNCH_ANGLE - ANGLE_FROM_HOR), false);
-		
-		// Wait for a bit for wobbling to settle down
-		Delay.msDelay(1000);
+		//Return to resting position
+		shooterMotorL.setSpeed(ROTATION_SPEED);
+		shooterMotorR.setSpeed(ROTATION_SPEED);
+		shooterMotorL.rotate(-SHOOTING_ANGLE, true);
+		shooterMotorR.rotate(-SHOOTING_ANGLE, false);
 	}
 	
 	/**
@@ -68,19 +89,19 @@ public class Shooter {
 	 * @param angle Rotation angle in degrees.
 	 */
 	public void rotate(int angle){
-		leftLaunchMotor.rotate(angle, true);
-		rightLaunchMotor.rotate(angle, false);
+		shooterMotorL.rotate(-angle, true);
+		shooterMotorR.rotate(-angle, false);
 		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
+		shooterMotorL.stop(true);
+		shooterMotorR.stop();
 	}
 	
 	/**
 	 * Floats both launch motors.
 	 */
 	public void floatMotor(){
-		leftLaunchMotor.flt();
-		rightLaunchMotor.flt();
+		shooterMotorL.flt();
+		shooterMotorR.flt();
 	}
 	
 	/**
@@ -99,10 +120,11 @@ public class Shooter {
 	 * Set acceleration and speed to a lower value.
 	 */
 	public void smoothAcceleration(){
-		leftLaunchMotor.setAcceleration(SMOOTH_ACCELERATION);
-		rightLaunchMotor.setAcceleration(SMOOTH_ACCELERATION);
+		shooterMotorL.setAcceleration(SMOOTH_ACCELERATION);
+		shooterMotorR.setAcceleration(SMOOTH_ACCELERATION);
 		
-		leftLaunchMotor.setSpeed(SMOOTH_SPEED);
-		rightLaunchMotor.setSpeed(SMOOTH_SPEED);
+		shooterMotorL.setSpeed(ROTATION_SPEED);
+		shooterMotorR.setSpeed(ROTATION_SPEED);
 	}
+	
 }
