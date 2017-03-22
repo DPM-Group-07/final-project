@@ -106,7 +106,7 @@ public class MainController {
 		t.clear();
 		t.drawString("Localization OK", 0 ,0);
 		
-		// 3. Travel to starting corner
+		// 3. Play the game
 		MasterGameRole mgr = new MasterGameRole(gd, navigation);
 		mgr.play();
 		
