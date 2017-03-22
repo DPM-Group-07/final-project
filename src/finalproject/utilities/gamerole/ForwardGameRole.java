@@ -39,17 +39,16 @@ public class ForwardGameRole implements IGameRole {
 	}
 	
 	/**
-	 * Main GameRole method which will start the Forward role action cycle.
+	 * Main GameRole method that will start the Forward role action cycle.
 	 */
 	public void play() {
 		navigation.travelTo(5*30.48, 30.48);
 		navigation.turnTo(90, false);
-		ForwardGameRole forward = new ForwardGameRole(gd, navigation, odometer, shooter);
 		
 		while(true) {
-			forward.acquireBall();
-			forward.moveToTarget();
-			forward.shoot();
+			acquireBall();
+			moveToTarget();
+			shoot();
 		}
 	}
 	

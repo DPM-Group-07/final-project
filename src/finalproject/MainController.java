@@ -107,15 +107,8 @@ public class MainController {
 		t.drawString("Localization OK", 0 ,0);
 		
 		// 3. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter);
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
 		mgr.play();
-		
-		// 4. Call respective role
-		if(gd.getRole() == GameData.Role.Defense){
-			navigation.travelTo(5*30.48, 9*30.48);
-			navigation.turnTo(270, false);
-			DefenseGameRole defense = new DefenseGameRole(gd, navigation, odometer, midUS, shooter);
-		}
 		
 		Button.waitForAnyPress();
 		shooter.lowerArm();

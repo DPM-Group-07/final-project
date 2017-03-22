@@ -10,7 +10,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * This is the defense class which serves to track the opponent and block shots.
  * @author steven
  */
-public class DefenseGameRole {
+public class DefenseGameRole implements IGameRole {
 	private GameData gd;
 	private Navigation navigation;
 	private Odometer odometer;
@@ -34,16 +34,26 @@ public class DefenseGameRole {
 	}
 	
 	/**
+	 * Main GameRole method that will start the Forward role action cycle.
+	 */
+	public void play() {
+		navigation.travelTo(5*30.48, 9*30.48);
+		navigation.turnTo(270, false);
+		
+		// TODO WIP
+	}
+	
+	/**
 	 * Tracks the opponent using the ultrasonic sensor.
 	 */
-	public void trackOpp(){
+	private void trackOpp(){
 		// TODO
 	}
 	
 	/**
 	 * Raises the launch arm to attempt to block the ball.
 	 */
-	public void block(){
+	private void block(){
 		shooter.raiseArm();
 	}
 }
