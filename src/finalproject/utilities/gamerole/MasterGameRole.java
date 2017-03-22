@@ -38,6 +38,8 @@ public class MasterGameRole {
 		} else {
 			gameRole = new DefenseGameRole(gameData, navigation, odometer, usSensor, shooter);
 		}
+		
+		gameRole.play();
 	}
 	
 	/**
