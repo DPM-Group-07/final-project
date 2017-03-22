@@ -127,7 +127,7 @@ public class MainController {
 		}
 		
 		Button.waitForAnyPress();
-		lowerArm();
+		shooter.lowerArm();
 		System.exit(0);
 	}
 	
