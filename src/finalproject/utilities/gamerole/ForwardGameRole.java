@@ -15,7 +15,7 @@ import lejos.utility.Delay;
  * @author steven
  *
  */
-public class Forward {
+public class ForwardGameRole {
 	// Clearance needed from center of rotation to the scope of the launch arm in cm
 	private int CLEARANCE = 30;
 	private double SQUARE_SIZE = 30.48;
@@ -32,7 +32,7 @@ public class Forward {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public Forward(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
+	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
 		this.gd = gd;
 		this.navigation = navigation;
 		this.shooter = shooter;

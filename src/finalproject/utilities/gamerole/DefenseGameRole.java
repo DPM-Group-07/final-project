@@ -10,7 +10,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * This is the defense class which serves to track the opponent and block shots.
  * @author steven
  */
-public class Defense {
+public class DefenseGameRole {
 	private GameData gd;
 	private Navigation navigation;
 	private Odometer odometer;
@@ -25,7 +25,7 @@ public class Defense {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public Defense(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor US, Shooter shooter){
+	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor US, Shooter shooter){
 		this.odometer = odometer;
 		this.gd = gd;
 		this.navigation = navigation;

@@ -10,8 +10,8 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
-import finalproject.utilities.gamerole.Defense;
-import finalproject.utilities.gamerole.Forward;
+import finalproject.utilities.gamerole.DefenseGameRole;
+import finalproject.utilities.gamerole.ForwardGameRole;
 import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -115,7 +115,7 @@ public class MainController {
 		if(gd.getRole() == GameData.Role.Forward){ 
 			navigation.travelTo(5*30.48, 30.48);
 			navigation.turnTo(90, false);
-			Forward forward = new Forward(gd, navigation, odometer, shooter);
+			ForwardGameRole forward = new ForwardGameRole(gd, navigation, odometer, shooter);
 			while(true){
 				forward.acquireBall();
 				forward.moveToTarget();
@@ -125,7 +125,7 @@ public class MainController {
 		else if(gd.getRole() == GameData.Role.Defense){
 			navigation.travelTo(5*30.48, 9*30.48);
 			navigation.turnTo(270, false);
-			Defense defense = new Defense(gd, navigation, odometer, midUS, shooter);
+			DefenseGameRole defense = new DefenseGameRole(gd, navigation, odometer, midUS, shooter);
 		}
 		
 		Button.waitForAnyPress();
