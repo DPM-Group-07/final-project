@@ -1,4 +1,4 @@
-package finalproject.defense;
+package finalproject.utilities.gamerole;
 
 import finalproject.objects.GameData;
 import finalproject.utilities.Navigation;

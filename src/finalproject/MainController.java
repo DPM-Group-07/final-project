@@ -2,8 +2,6 @@ package finalproject;
 
 import java.util.Map;
 
-import finalproject.defense.Defense;
-import finalproject.forward.Forward;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
@@ -12,6 +10,8 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.Defense;
+import finalproject.utilities.gamerole.Forward;
 import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;

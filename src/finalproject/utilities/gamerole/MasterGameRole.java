@@ -6,6 +6,7 @@ import finalproject.utilities.Navigation;
 public class MasterGameRole {
 	private GameData gameData;
 	private Navigation navigation;
+	private IGameRole gameRole;
 	
 	/**
 	 * Public constructor for MasterGameRole.
@@ -22,6 +23,12 @@ public class MasterGameRole {
 	 */
 	public void play() {
 		goToStart();
+		
+		if (gameData.getRole() == GameData.Role.Forward) {
+			// TODO:
+		} else {
+			// TODO:
+		}
 	}
 	
 	/**

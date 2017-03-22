@@ -1,4 +1,4 @@
-package finalproject.forward;
+package finalproject.utilities.gamerole;
 
 import java.util.Random;
 
