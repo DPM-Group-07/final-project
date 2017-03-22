@@ -15,7 +15,7 @@ public class DefenseGameRole implements IGameRole {
 	private Navigation navigation;
 	private Odometer odometer;
 	private Shooter shooter;
-	private EV3UltrasonicSensor US;
+	private EV3UltrasonicSensor usSensor;
 	
 	/**
 	 * Public constructor for Defense class. Must be called with valid references.
@@ -25,18 +25,22 @@ public class DefenseGameRole implements IGameRole {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor US, Shooter shooter){
+	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, Shooter shooter){
 		this.odometer = odometer;
 		this.gd = gd;
 		this.navigation = navigation;
 		this.shooter = shooter;
-		this.US = US;
+		this.usSensor = usSensor;
 	}
 	
 	/**
 	 * Main GameRole method that will start the Forward role action cycle.
 	 */
 	public void play() {
+		if (!usSensor.isEnabled()) {
+			usSensor.enable();
+		}
+		
 		navigation.travelTo(5*30.48, 9*30.48);
 		navigation.turnTo(270, false);
 		
