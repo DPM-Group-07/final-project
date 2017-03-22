@@ -12,6 +12,7 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
@@ -106,7 +107,8 @@ public class MainController {
 		t.drawString("Localization OK", 0 ,0);
 		
 		// 3. Travel to starting corner
-		goToStart(gd);
+		MasterGameRole mgr = new MasterGameRole(gd, navigation);
+		mgr.play();
 		
 		// 4. Call respective role
 		// In progress
@@ -192,27 +194,5 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
-	}
-	
-	/**
-	 * Travels to the starting corner.
-	 * @param gd The GameData object that contains all game data.
-	 */
-	private static void goToStart(GameData gd){
-		int corner = gd.getStartingCorner();
-		switch(corner){
-			case 1: navigation.travelTo(-15.0, -15.0);
-					navigation.turnTo(0, false);
-					break;
-			case 2: navigation.travelTo(304.8 + 15.0, -15.0);
-					navigation.turnTo(270, false);
-					break;
-			case 3: navigation.travelTo(304.8 + 15.0, 304.8 + 15.0);
-					navigation.turnTo(270, false);
-					break;
-			case 4: navigation.travelTo(-15.0, 304.8 + 15.0);
-					navigation.turnTo(0, false);
-					break;
-		}
 	}
 }
