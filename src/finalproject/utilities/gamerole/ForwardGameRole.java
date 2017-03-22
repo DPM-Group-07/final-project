@@ -1,4 +1,4 @@
-package finalproject.forward;
+package finalproject.utilities.gamerole;
 
 import java.util.Random;
 
@@ -15,7 +15,7 @@ import lejos.utility.Delay;
  * @author steven
  *
  */
-public class Forward {
+public class ForwardGameRole implements IGameRole {
 	// Clearance needed from center of rotation to the scope of the launch arm in cm
 	private int CLEARANCE = 30;
 	private double SQUARE_SIZE = 30.48;
@@ -32,16 +32,30 @@ public class Forward {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public Forward(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
+	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
 		this.gd = gd;
 		this.navigation = navigation;
 		this.shooter = shooter;
 	}
 	
 	/**
+	 * Main GameRole method that will start the Forward role action cycle.
+	 */
+	public void play() {
+		navigation.travelTo(5*30.48, 30.48);
+		navigation.turnTo(90, false);
+		
+		while(true) {
+			acquireBall();
+			moveToTarget();
+			shoot();
+		}
+	}
+	
+	/**
 	 * Goes to the dispenser to acquire a ball.
 	 */
-	public void acquireBall(){
+	private void acquireBall(){
 		double dispenserX = gd.getDispenserPosition().getX() * SQUARE_SIZE;
 		double dispenserY = gd.getDispenserPosition().getY() * SQUARE_SIZE;
 		
@@ -72,7 +86,7 @@ public class Forward {
 	/**
 	 * Moves into position to launch the ball;
 	 */
-	public void moveToTarget(){
+	private void moveToTarget(){
 		// TODO implement Shooter class
 		shooter.raiseArmToMove();
 		
@@ -94,7 +108,7 @@ public class Forward {
 	/**
 	 * Rotate toward the target and launches the ball at the target.
 	 */
-	public void shoot(){
+	private void shoot() {
 		double angle = 2 * Math.PI / 360 * Math.atan2(5 * SQUARE_SIZE - odometer.getX(), 
 				10 * SQUARE_SIZE - odometer.getY());
 		navigation.turnTo(angle, false);

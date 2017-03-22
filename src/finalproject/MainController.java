@@ -2,8 +2,6 @@ package finalproject;
 
 import java.util.Map;
 
-import finalproject.defense.Defense;
-import finalproject.forward.Forward;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
@@ -12,6 +10,9 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.DefenseGameRole;
+import finalproject.utilities.gamerole.ForwardGameRole;
+import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
@@ -105,26 +106,9 @@ public class MainController {
 		t.clear();
 		t.drawString("Localization OK", 0 ,0);
 		
-		// 3. Travel to starting corner
-		goToStart(gd);
-		
-		// 4. Call respective role
-		// In progress
-		if(gd.getRole() == GameData.Role.Forward){ 
-			navigation.travelTo(5*30.48, 30.48);
-			navigation.turnTo(90, false);
-			Forward forward = new Forward(gd, navigation, odometer, shooter);
-			while(true){
-				forward.acquireBall();
-				forward.moveToTarget();
-				forward.shoot();
-			}
-		}
-		else if(gd.getRole() == GameData.Role.Defense){
-			navigation.travelTo(5*30.48, 9*30.48);
-			navigation.turnTo(270, false);
-			Defense defense = new Defense(gd, navigation, odometer, midUS, shooter);
-		}
+		// 3. Play the game
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
+		mgr.play();
 		
 		Button.waitForAnyPress();
 		shooter.lowerArm();
@@ -192,27 +176,5 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
-	}
-	
-	/**
-	 * Travels to the starting corner.
-	 * @param gd The GameData object that contains all game data.
-	 */
-	private static void goToStart(GameData gd){
-		int corner = gd.getStartingCorner();
-		switch(corner){
-			case 1: navigation.travelTo(-15.0, -15.0);
-					navigation.turnTo(0, false);
-					break;
-			case 2: navigation.travelTo(304.8 + 15.0, -15.0);
-					navigation.turnTo(270, false);
-					break;
-			case 3: navigation.travelTo(304.8 + 15.0, 304.8 + 15.0);
-					navigation.turnTo(270, false);
-					break;
-			case 4: navigation.travelTo(-15.0, 304.8 + 15.0);
-					navigation.turnTo(0, false);
-					break;
-		}
 	}
 }
