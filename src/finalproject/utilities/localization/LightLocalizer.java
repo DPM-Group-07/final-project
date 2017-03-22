@@ -25,6 +25,7 @@ public class LightLocalizer implements ILocalizer {
 		this.navigation = new Navigation(odo);
 	}
 	
+	@Override
 	public void doLocalization() {
 		// drive to location listed in tutorial
 		navigation.turnTo(START_TURN_TO, true);

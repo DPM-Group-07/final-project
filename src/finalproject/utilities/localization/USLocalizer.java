@@ -32,6 +32,7 @@ public class USLocalizer implements ILocalizer {
 		distance = 0;
 	}
 	
+	@Override
 	public void doLocalization() {
 		double angleA, angleB;
 		double deltaTheta = 0.0;

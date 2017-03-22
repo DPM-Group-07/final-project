@@ -10,8 +10,10 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.BetaGameRole;
 import finalproject.utilities.gamerole.DefenseGameRole;
 import finalproject.utilities.gamerole.ForwardGameRole;
+import finalproject.utilities.gamerole.IGameRole;
 import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -93,24 +95,25 @@ public class MainController {
 		}
 		
 		t.drawString("Game data OK", 0, 1);
+		Sound.beep();
 		
 		// 2. Initialize and localize
-		t.drawString("Press ENTER to localize...", 0, 2);
-		Button.waitForAnyPress();
+		t.drawString("Localizing...", 0, 2);
 		
-		t.clear();
-		
-		lcdInfo = new LCDInfo(odometer);
 		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
-		lcdInfo.stop();
 		
+		Sound.beep();
 		t.clear();
 		t.drawString("Localization OK", 0 ,0);
+		Delay.msDelay(2000);
 		
 		// 3. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
-		mgr.play();
+//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
+//		mgr.play();
+		
+		IGameRole gameRole = new BetaGameRole(gd, navigation, odometer, shooter);
+		gameRole.play();
 		
 		Button.waitForAnyPress();
 		shooter.lowerArm();

@@ -36,6 +36,7 @@ public class DefenseGameRole implements IGameRole {
 	/**
 	 * Main GameRole method that will start the Forward role action cycle.
 	 */
+	@Override
 	public void play() {
 		if (!usSensor.isEnabled()) {
 			usSensor.enable();

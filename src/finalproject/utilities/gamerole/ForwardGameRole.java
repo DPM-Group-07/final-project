@@ -41,6 +41,7 @@ public class ForwardGameRole implements IGameRole {
 	/**
 	 * Main GameRole method that will start the Forward role action cycle.
 	 */
+	@Override
 	public void play() {
 		navigation.travelTo(5*30.48, 30.48);
 		navigation.turnTo(90, false);
