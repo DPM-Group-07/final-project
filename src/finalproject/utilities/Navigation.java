@@ -135,7 +135,6 @@ public class Navigation {
 	 */
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
-
 	}
 	
 	/**

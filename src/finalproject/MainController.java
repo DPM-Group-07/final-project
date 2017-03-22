@@ -8,7 +8,11 @@ import finalproject.utilities.localization.*;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.DefenseGameRole;
+import finalproject.utilities.gamerole.ForwardGameRole;
+import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
@@ -48,6 +52,7 @@ public class MainController {
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
 	private static MasterLocalizer localizer;
+	private static Shooter shooter;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -100,12 +105,13 @@ public class MainController {
 		
 		t.clear();
 		t.drawString("Localization OK", 0 ,0);
-
-		// TODO: Navigate to shooting position
-		// TODO: Shoot
+		
+		// 3. Play the game
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
+		mgr.play();
 		
 		Button.waitForAnyPress();
-		lowerArm();
+		shooter.lowerArm();
 		System.exit(0);
 	}
 	
@@ -154,48 +160,13 @@ public class MainController {
 	}
 	
 	/**
-	 * Slowly raises the launch arm to the vertical position to reduce robot size.
-	 */
-	private static void raiseArm() {
-		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(500);
-		rightLaunchMotor.setAcceleration(500);
-		
-		leftLaunchMotor.setSpeed(25);
-		rightLaunchMotor.setSpeed(25);
-		
-		leftLaunchMotor.rotate(90,true);
-		rightLaunchMotor.rotate(90,false);
-		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
-	}
-	
-	/**
-	 * Slowly lowers the launch arm to the vertical position to reduce robot size.
-	 */
-	private static void lowerArm() {
-		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(500);
-		rightLaunchMotor.setAcceleration(500);
-		
-		leftLaunchMotor.setSpeed(25);
-		rightLaunchMotor.setSpeed(25);
-		
-		leftLaunchMotor.rotate(0,true);
-		rightLaunchMotor.rotate(0,false);
-		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
-	}
-	
-	/**
 	 * Performs various functions related to initialization. Things that should be done
 	 * before executing any other task.
 	 */
 	private static void initialize() {
 		// Raise the arm
-		raiseArm();
+		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
+		shooter.raiseArm();
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
