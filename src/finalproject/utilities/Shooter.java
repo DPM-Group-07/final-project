@@ -16,20 +16,13 @@ import lejos.utility.Delay;
 public class Shooter {
 	//Relevant speeds; note when shooting straight ahead launch speed won't need to be as fast as the "skew speed"
 	private static final int ROTATION_SPEED = 80;
-	private static final int SLOWDOWN_SPEED = 200;
 	private static final int STRAIGHT_SHOOTING_SPEED = 4000;
 	private static final int STRAIGHT_ACCEL = 8000;
 	private static final int ANGLE_FROM_HOR = 20;
 	private static final int SMOOTH_ACCELERATION = 2000;
 	
-	//Angle the robot is facing (off of 90 degree) when aiming at left or right target
-	private static final int TARGET_ANGLE = 18;
-	private static final int BUFFER = 5;
-	
 	//Angle shooting arm rotates through to shoot
 	private static final int SHOOTING_ANGLE = -120;
-	private static final int COMPENSATION = 2;
-	private static int targetNumber;
 	
 	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
 		
