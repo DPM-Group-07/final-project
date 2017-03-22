@@ -15,7 +15,7 @@ import lejos.utility.Delay;
  * @author steven
  *
  */
-public class ForwardGameRole {
+public class ForwardGameRole implements IGameRole {
 	// Clearance needed from center of rotation to the scope of the launch arm in cm
 	private int CLEARANCE = 30;
 	private double SQUARE_SIZE = 30.48;
@@ -39,9 +39,24 @@ public class ForwardGameRole {
 	}
 	
 	/**
+	 * Main GameRole method which will start the Forward role action cycle.
+	 */
+	public void play() {
+		navigation.travelTo(5*30.48, 30.48);
+		navigation.turnTo(90, false);
+		ForwardGameRole forward = new ForwardGameRole(gd, navigation, odometer, shooter);
+		
+		while(true) {
+			forward.acquireBall();
+			forward.moveToTarget();
+			forward.shoot();
+		}
+	}
+	
+	/**
 	 * Goes to the dispenser to acquire a ball.
 	 */
-	public void acquireBall(){
+	private void acquireBall(){
 		double dispenserX = gd.getDispenserPosition().getX() * SQUARE_SIZE;
 		double dispenserY = gd.getDispenserPosition().getY() * SQUARE_SIZE;
 		
@@ -72,7 +87,7 @@ public class ForwardGameRole {
 	/**
 	 * Moves into position to launch the ball;
 	 */
-	public void moveToTarget(){
+	private void moveToTarget(){
 		// TODO implement Shooter class
 		shooter.raiseArmToMove();
 		
@@ -94,7 +109,7 @@ public class ForwardGameRole {
 	/**
 	 * Rotate toward the target and launches the ball at the target.
 	 */
-	public void shoot(){
+	private void shoot() {
 		double angle = 2 * Math.PI / 360 * Math.atan2(5 * SQUARE_SIZE - odometer.getX(), 
 				10 * SQUARE_SIZE - odometer.getY());
 		navigation.turnTo(angle, false);

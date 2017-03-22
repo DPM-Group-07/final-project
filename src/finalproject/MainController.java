@@ -107,22 +107,11 @@ public class MainController {
 		t.drawString("Localization OK", 0 ,0);
 		
 		// 3. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation);
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter);
 		mgr.play();
 		
 		// 4. Call respective role
-		// In progress
-		if(gd.getRole() == GameData.Role.Forward){ 
-			navigation.travelTo(5*30.48, 30.48);
-			navigation.turnTo(90, false);
-			ForwardGameRole forward = new ForwardGameRole(gd, navigation, odometer, shooter);
-			while(true){
-				forward.acquireBall();
-				forward.moveToTarget();
-				forward.shoot();
-			}
-		}
-		else if(gd.getRole() == GameData.Role.Defense){
+		if(gd.getRole() == GameData.Role.Defense){
 			navigation.travelTo(5*30.48, 9*30.48);
 			navigation.turnTo(270, false);
 			DefenseGameRole defense = new DefenseGameRole(gd, navigation, odometer, midUS, shooter);

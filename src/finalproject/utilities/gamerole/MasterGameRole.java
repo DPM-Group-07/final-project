@@ -2,20 +2,26 @@ package finalproject.utilities.gamerole;
 
 import finalproject.objects.GameData;
 import finalproject.utilities.Navigation;
+import finalproject.utilities.Odometer;
+import finalproject.utilities.Shooter;
 
 public class MasterGameRole {
 	private GameData gameData;
 	private Navigation navigation;
 	private IGameRole gameRole;
+	private Odometer odometer;
+	private Shooter shooter;
 	
 	/**
 	 * Public constructor for MasterGameRole.
 	 * @param gameData The GameData object that contains all game data.
 	 * @param navigation The Navigation object for controlling the robot.
 	 */
-	public MasterGameRole(GameData gameData, Navigation navigation) {
+	public MasterGameRole(GameData gameData, Navigation navigation, Odometer odometer, Shooter shooter) {
 		this.gameData = gameData;
 		this.navigation = navigation;
+		this.odometer = odometer;
+		this.shooter = shooter;
 	}
 	
 	/**
@@ -25,7 +31,7 @@ public class MasterGameRole {
 		goToStart();
 		
 		if (gameData.getRole() == GameData.Role.Forward) {
-			// TODO:
+			gameRole = new ForwardGameRole(gameData, navigation, odometer, shooter);
 		} else {
 			// TODO:
 		}
