@@ -5,12 +5,16 @@ import finalproject.objects.GameData;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
+import lejos.hardware.Button;
 import lejos.utility.Delay;
 
 public class BetaGameRole implements IGameRole {
 	
 	private static final double ROBOT_NOSE_CLEARANCE = 0.5;
 	private static final double SQUARE_SIZE = 30.48;
+	
+	private static final int TARGET_X = 2;
+	private static final int TARGET_Y = 6;
 	
 	private GameData gameData;
 	private Navigation navigation;
@@ -24,7 +28,7 @@ public class BetaGameRole implements IGameRole {
 		this.odometer = odometer;
 		this.shooter = shooter;
 		
-		targetCoordinate = new Coordinate(2, 6);
+		targetCoordinate = new Coordinate(TARGET_X, TARGET_Y);
 	}
 
 	@Override
@@ -37,5 +41,11 @@ public class BetaGameRole implements IGameRole {
 		// 2. Shoot
 		shooter.lowerArm();
 		shooter.shoot();
+		
+		// Debug
+//		while (Button.waitForAnyPress() == Button.ID_UP) {
+//			Delay.msDelay(2000);
+//			shooter.shoot();
+//		}
 	}
 }

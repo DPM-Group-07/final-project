@@ -9,7 +9,7 @@ import lejos.utility.Delay;
 public class USLocalizer implements ILocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final static int ROTATION_SPEED = 175;
-	private final static int FILTER_OUT = 10;
+	private final static int FILTER_OUT = 20;
 	private final static int UPPER_NOISE_BOUND = 100;
 	private final static int LOWER_NOISE_BOUND = 80;
 	private final static int FILTER_VALUE = 200;
@@ -128,7 +128,7 @@ public class USLocalizer implements ILocalizer {
 			while (!robotIsFacingWall) {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
 					robotIsFacingWall = true;
-					Sound.twoBeeps();
+//					Sound.twoBeeps();
 				}
 			}
 			
@@ -141,7 +141,7 @@ public class USLocalizer implements ILocalizer {
 				if (wasWithinMargin && distance > UPPER_NOISE_BOUND) {
 					angleTwo = odo.getAng();
 					robotIsFacingWall = false;
-					Sound.beep();
+//					Sound.beep();
 				} else if (distance > LOWER_NOISE_BOUND) {
 					wasWithinMargin = true;
 					angleOne = odo.getAng();
@@ -156,7 +156,7 @@ public class USLocalizer implements ILocalizer {
 			while (!robotIsFacingWall) {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
 					robotIsFacingWall = true;
-					Sound.twoBeeps();
+//					Sound.twoBeeps();
 				}
 			}
 			
@@ -167,7 +167,7 @@ public class USLocalizer implements ILocalizer {
 				if (wasWithinMargin && distance > UPPER_NOISE_BOUND) {
 					angleTwo = odo.getAng();
 					robotIsFacingWall = false;
-					Sound.beep();
+//					Sound.beep();
 				} else if (distance > LOWER_NOISE_BOUND) {
 					wasWithinMargin = true;
 					angleOne = odo.getAng();
@@ -179,7 +179,7 @@ public class USLocalizer implements ILocalizer {
 			
 			if (angleA < angleB) {
 				deltaTheta = 220.0 - ((angleA + angleB) / 2.0);
-				Sound.twoBeeps();
+//				Sound.twoBeeps();
 			} else {
 				deltaTheta = 40.0 - ((angleA + angleB) / 2.0);
 			}
