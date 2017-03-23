@@ -2,6 +2,7 @@ package finalproject.utilities.localization;
 
 import finalproject.utilities.Odometer;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -53,6 +54,7 @@ public class MasterLocalizer {
 
 		usLocalizer.doLocalization();
 		Sound.beep();
+		Button.waitForAnyPress();
 		lightLocalizer.doLocalization();
 	}
 }

@@ -75,22 +75,22 @@ public class MainController {
 		initialize();
 
 		// 1. Get game data from Wi-Fi
-		t.clear();
-		t.drawString("Connecting...", 0, 0);
-		
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-		Map data;
-		GameData gd;
-		
-		try {
-			data = wc.getData();
-			gd = new GameData(data, TEAM_NUMBER);
-		} catch (Exception e) {
-			error(e.getMessage());
-			return;
-		}
-		
-		t.drawString("Game data OK", 0, 1);
+//		t.clear();
+//		t.drawString("Connecting...", 0, 0);
+//		
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		GameData gd;
+//		
+//		try {
+//			data = wc.getData();
+//			gd = new GameData(data, TEAM_NUMBER);
+//		} catch (Exception e) {
+//			error(e.getMessage());
+//			return;
+//		}
+//		
+//		t.drawString("Game data OK", 0, 1);
 		
 		// 2. Initialize and localize
 		t.drawString("Press ENTER to localize...", 0, 2);
@@ -107,8 +107,8 @@ public class MainController {
 		t.drawString("Localization OK", 0 ,0);
 		
 		// 3. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
-		mgr.play();
+//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
+//		mgr.play();
 		
 		Button.waitForAnyPress();
 		shooter.lowerArm();
