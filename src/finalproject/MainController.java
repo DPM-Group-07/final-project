@@ -72,6 +72,8 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 		
+		Sound.twoBeeps();
+		
 		initialize();
 
 		// 1. Get game data from Wi-Fi

@@ -6,12 +6,12 @@ import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
 public class LightLocalizer implements ILocalizer {
-	private static final double COLOR_SENSOR_RADIUS = 14.7;
+	private static final double COLOR_SENSOR_RADIUS = 15.7;
 	private static final int ROTATION_SPEED = 175;
 	private static final double COLOR_SENSOR_BOUND = 0.45;
 	private static final double START_TURN_TO = 45.0;
 	private static final double START_GO_FORWARD = 7.5;
-	private static final double ANGLE_CORRECTION = 10;
+	private static final double ANGLE_CORRECTION = 5;
 	
 	private Odometer odo;
 	private SampleProvider colorSensor;

@@ -53,7 +53,6 @@ public class MasterLocalizer {
 		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
 
 		usLocalizer.doLocalization();
-		Sound.beep();
 		Button.waitForAnyPress();
 		lightLocalizer.doLocalization();
 	}

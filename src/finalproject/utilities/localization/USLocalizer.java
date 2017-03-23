@@ -10,8 +10,8 @@ public class USLocalizer implements ILocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final static int ROTATION_SPEED = 175;
 	private final static int FILTER_OUT = 10;
-	private final static int UPPER_NOISE_BOUND = 105;
-	private final static int LOWER_NOISE_BOUND = 90;
+	private final static int UPPER_NOISE_BOUND = 100;
+	private final static int LOWER_NOISE_BOUND = 80;
 	private final static int FILTER_VALUE = 200;
 	
 	private Odometer odo;
@@ -178,6 +178,7 @@ public class USLocalizer implements ILocalizer {
 			
 			if (angleA < angleB) {
 				deltaTheta = 220.0 - ((angleA + angleB) / 2.0);
+				Sound.twoBeeps();
 			} else {
 				deltaTheta = 40.0 - ((angleA + angleB) / 2.0);
 			}
