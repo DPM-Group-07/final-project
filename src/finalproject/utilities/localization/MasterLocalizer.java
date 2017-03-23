@@ -53,7 +53,6 @@ public class MasterLocalizer {
 		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
 
 		usLocalizer.doLocalization();
-		Button.waitForAnyPress();
 		lightLocalizer.doLocalization();
 	}
 }
