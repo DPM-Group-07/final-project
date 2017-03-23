@@ -116,7 +116,6 @@ public class MainController {
 		gameRole.play();
 		
 		Button.waitForAnyPress();
-		shooter.lowerArm();
 		System.exit(0);
 	}
 	
