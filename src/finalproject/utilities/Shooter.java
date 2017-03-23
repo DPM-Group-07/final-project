@@ -65,7 +65,7 @@ public class Shooter {
 	 */
 	public void raiseArm() {
 		smoothAcceleration();
-		rotate((int)(90 - ANGLE_FROM_HOR));
+		rotate((int)(135 - ANGLE_FROM_HOR));
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class Shooter {
 	 */
 	public void lowerArm() {
 		smoothAcceleration();
-		rotate(-90);
+		rotate(-135);
 		floatMotor();
 		
 		// Wait a bit for arm to reset to its natural position
