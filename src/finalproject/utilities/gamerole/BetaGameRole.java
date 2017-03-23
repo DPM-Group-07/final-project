@@ -24,7 +24,7 @@ public class BetaGameRole implements IGameRole {
 		this.odometer = odometer;
 		this.shooter = shooter;
 		
-		targetCoordinate = new Coordinate(5, 6);
+		targetCoordinate = new Coordinate(2, 6);
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class BetaGameRole implements IGameRole {
 		Delay.msDelay(1000);
 		
 		// 2. Shoot
+		shooter.lowerArm();
 		shooter.shoot();
 	}
 }

@@ -30,7 +30,7 @@ import lejos.utility.Delay;
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.24";
+	private static final String SERVER_IP = "192.168.2.17";
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
