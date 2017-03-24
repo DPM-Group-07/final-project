@@ -44,7 +44,6 @@ public class MasterGameRole {
 	
 	/**
 	 * Travels to the starting corner.
-	 * @param gd The GameData object that contains all game data.
 	 */
 	private void goToStart(){
 		int corner = gameData.getStartingCorner();

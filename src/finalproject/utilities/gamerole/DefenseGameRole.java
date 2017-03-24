@@ -22,8 +22,8 @@ public class DefenseGameRole implements IGameRole {
 	 * Public constructor for Defense class. Must be called with valid references.
 	 * @param gd GameData object for map awareness.
 	 * @param navigation Navigation object to navigate across the field.
-	 * @param US Ultrasonic sensor object to ping opponent location.
 	 * @param odometer Odometer object for odometry.
+	 * @param usSensor Ultrasonic sensor object to ping opponent location.
 	 * @param shooter Shooter object to control launch motors.
 	 */
 	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, Shooter shooter){
