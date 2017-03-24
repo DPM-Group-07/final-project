@@ -2,13 +2,12 @@ package finalproject.utilities.localization;
 
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
-import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
 public class LightLocalizer implements ILocalizer {
 	private static final double COLOR_SENSOR_RADIUS = 15.7;
 	private static final int ROTATION_SPEED = 175;
-	private static final double COLOR_SENSOR_BOUND = 0.45;
+	private static final double COLOR_SENSOR_BOUND = 0.38;
 	private static final double START_TURN_TO = 45.0;
 	private static final double START_GO_FORWARD = 7.5;
 	private static final double ANGLE_CORRECTION = 5;
@@ -25,6 +24,7 @@ public class LightLocalizer implements ILocalizer {
 		this.navigation = new Navigation(odo);
 	}
 	
+	@Override
 	public void doLocalization() {
 		// drive to location listed in tutorial
 		navigation.turnTo(START_TURN_TO, true);
@@ -58,7 +58,6 @@ public class LightLocalizer implements ILocalizer {
 				angleTwo = odo.getAng();
 				angles[clockedLines++] = (angleOne + angleTwo)/2.0;
 				sensorAboveLine = false;
-				Sound.beep();
 			}
 		}
 		

@@ -22,7 +22,7 @@ public class Shooter {
 	private static final int SMOOTH_ACCELERATION = 2000;
 	
 	//Angle shooting arm rotates through to shoot
-	private static final int SHOOTING_ANGLE = -120;
+	private static final int SHOOTING_ANGLE = - 120;
 	
 	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
 		
@@ -102,8 +102,8 @@ public class Shooter {
 	 */
 	public void lowerArm() {
 		smoothAcceleration();
-		rotate(-135);
-		floatMotor();
+		rotate(-95);
+//		floatMotor();
 		
 		// Wait a bit for arm to reset to its natural position
 		Delay.msDelay(2000);

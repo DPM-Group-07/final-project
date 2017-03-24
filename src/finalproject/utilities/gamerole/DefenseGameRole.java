@@ -10,6 +10,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * This is the defense class which serves to track the opponent and block shots.
  * @author steven
  */
+@SuppressWarnings("unused")
 public class DefenseGameRole implements IGameRole {
 	private GameData gd;
 	private Navigation navigation;
@@ -21,8 +22,8 @@ public class DefenseGameRole implements IGameRole {
 	 * Public constructor for Defense class. Must be called with valid references.
 	 * @param gd GameData object for map awareness.
 	 * @param navigation Navigation object to navigate across the field.
-	 * @param US Ultrasonic sensor object to ping opponent location.
 	 * @param odometer Odometer object for odometry.
+	 * @param usSensor Ultrasonic sensor object to ping opponent location.
 	 * @param shooter Shooter object to control launch motors.
 	 */
 	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, Shooter shooter){
@@ -36,6 +37,7 @@ public class DefenseGameRole implements IGameRole {
 	/**
 	 * Main GameRole method that will start the Forward role action cycle.
 	 */
+	@Override
 	public void play() {
 		if (!usSensor.isEnabled()) {
 			usSensor.enable();
