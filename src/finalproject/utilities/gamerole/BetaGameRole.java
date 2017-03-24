@@ -13,6 +13,7 @@ import lejos.utility.Delay;
  * @author maxsn
  *
  */
+@SuppressWarnings("unused")
 public class BetaGameRole implements IGameRole {
 	
 	private static final double ROBOT_NOSE_CLEARANCE = 0.5;

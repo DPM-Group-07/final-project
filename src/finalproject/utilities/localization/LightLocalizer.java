@@ -2,7 +2,6 @@ package finalproject.utilities.localization;
 
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
-import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
 public class LightLocalizer implements ILocalizer {

@@ -10,6 +10,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * This is the defense class which serves to track the opponent and block shots.
  * @author steven
  */
+@SuppressWarnings("unused")
 public class DefenseGameRole implements IGameRole {
 	private GameData gd;
 	private Navigation navigation;
