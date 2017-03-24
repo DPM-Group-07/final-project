@@ -50,7 +50,7 @@ public class BetaGameRole implements IGameRole {
 	@Override
 	public void play() {
 		// 1. Go to shooting position
-		navigation.travelTo((targetCoordinate.getY() - gameData.getForwardLine() - ROBOT_NOSE_CLEARANCE) * SQUARE_SIZE, targetCoordinate.getX() * SQUARE_SIZE);
+		navigation.travelTo((targetCoordinate.getY() - 4 - ROBOT_NOSE_CLEARANCE) * SQUARE_SIZE, targetCoordinate.getX() * SQUARE_SIZE);
 		navigation.turnTo(0.0, true);
 		Delay.msDelay(1000);
 		

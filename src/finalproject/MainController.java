@@ -11,8 +11,6 @@ import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
 import finalproject.utilities.gamerole.BetaGameRole;
-import finalproject.utilities.gamerole.DefenseGameRole;
-import finalproject.utilities.gamerole.ForwardGameRole;
 import finalproject.utilities.gamerole.IGameRole;
 import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
@@ -23,14 +21,14 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "unused" })
 /**
  * This is the main class that will execute all functions of the robot.
  * @author maxsn
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.17";
+	private static final String SERVER_IP = "192.168.2.33";
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
