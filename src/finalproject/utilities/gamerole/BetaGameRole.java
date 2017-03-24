@@ -19,7 +19,7 @@ public class BetaGameRole implements IGameRole {
 	private static final double ROBOT_NOSE_CLEARANCE = 0.5;
 	private static final double SQUARE_SIZE = 30.48;
 	
-	private static final int TARGET_X = 2;
+	private static final int TARGET_X = 5;
 	private static final int TARGET_Y = 6;
 	
 	private GameData gameData;
