@@ -19,8 +19,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  *
  */
 public class Navigation {
-	final static int FAST = 200, SLOW = 50, ACCELERATION = 2000;
-	final static double DEG_ERR = 3.0, CM_ERR = 1.0;
+	final static int FAST = 240, SLOW = 175, ACCELERATION = 1250;
+	final static double DEG_ERR = 3, CM_ERR = 1.0;
 	private Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 
@@ -111,21 +111,11 @@ public class Navigation {
 	 */
 	public void turnTo(double angle, boolean stop) {
 
-		double error = angle - this.odometer.getAng();
+		double error = getDifference(angle, this.odometer.getAng());
 
 		while (Math.abs(error) > DEG_ERR) {
 
-			error = angle - this.odometer.getAng();
-
-//			if (error < -180.0) {
-//				this.setSpeeds(-SLOW, SLOW);
-//			} else if (error < 0.0) {
-//				this.setSpeeds(SLOW, -SLOW);
-//			} else if (error > 180.0) {
-//				this.setSpeeds(SLOW, -SLOW);
-//			} else {
-//				this.setSpeeds(-SLOW, SLOW);
-//			}
+			error =  getDifference(angle, this.odometer.getAng());
 			
 			if (error > 0) {
 				this.setSpeeds(SLOW, -SLOW);
@@ -145,6 +135,20 @@ public class Navigation {
 	 */
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
-
+	}
+	
+	/**
+	 * Computes the minimal angle between two angles in the range [0,360).
+	 * @param a1 The first angle.
+	 * @param a2 The second angle.
+	 * @return The minimal angle.
+	 */
+	private double getDifference(double a1, double a2) {
+		double rotationAngle = a1 - a2;
+		if (rotationAngle > 180)
+			rotationAngle -= 360;
+		else if (rotationAngle < -180)
+			rotationAngle += 360;
+		return rotationAngle;
 	}
 }

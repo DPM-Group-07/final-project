@@ -5,9 +5,14 @@ import java.util.Map;
 import finalproject.objects.GameData;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
+import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
+import finalproject.utilities.Shooter;
 import finalproject.utilities.WifiConnection;
+import finalproject.utilities.gamerole.BetaGameRole;
+import finalproject.utilities.gamerole.IGameRole;
+import finalproject.utilities.gamerole.MasterGameRole;
 import lejos.hardware.*;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
@@ -16,17 +21,18 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "unused" })
 /**
  * This is the main class that will execute all functions of the robot.
  * @author maxsn
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.24";
+	private static final String SERVER_IP = "192.168.2.3";
 	private static final int TEAM_NUMBER = 7;
 
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
+	private static final LocalizationType LOCALIZATION_TYPE = LocalizationType.RISING_EDGE;
 
 	// Motor objects
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
@@ -46,6 +52,7 @@ public class MainController {
 	private static LCDInfo lcdInfo;
 	private static Navigation navigation;
 	private static MasterLocalizer localizer;
+	private static Shooter shooter;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -64,12 +71,12 @@ public class MainController {
 		while (Button.waitForAnyPress() != Button.ID_ENTER) {
 			Delay.msDelay(50);
 		}
-		
+				
 		initialize();
 
 		// 1. Get game data from Wi-Fi
 		t.clear();
-		System.out.println("Connecting...");
+		t.drawString("Connecting...", 0, 0);
 		
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
@@ -83,22 +90,27 @@ public class MainController {
 			return;
 		}
 		
-		System.out.println("Game data OK");
+		t.drawString("Game data OK", 0, 1);
+		Sound.beep();
 		
 		// 2. Initialize and localize
-		System.out.println("Press ENTER to localize...");
-		Button.waitForAnyPress();
+		t.drawString("Localizing...", 0, 2);
 		
-		lcdInfo = new LCDInfo(odometer);
-		
-		localizer = new MasterLocalizer(odometer, navigation, midUS, colorSensor);
+		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
 		
-		Button.waitForAnyPress();
-		
+		Sound.beep();
 		t.clear();
-		System.out.println("Localization OK");
-
+		t.drawString("Localization OK", 0 ,0);
+		Delay.msDelay(2000);
+		
+		// 3. Play the game
+//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
+//		mgr.play();
+		
+		IGameRole gameRole = new BetaGameRole(gd, navigation, odometer, shooter);
+		gameRole.play();
+		
 		Button.waitForAnyPress();
 		System.exit(0);
 	}
@@ -109,7 +121,12 @@ public class MainController {
 	 * @param message The error message to be displayed.
 	 */
 	private static void error(String message) {
+		t.clear();
 		System.out.println(message);
+		
+		Sound.twoBeeps();
+		Sound.twoBeeps();
+		
 		System.out.println("Press any button to exit.");
 		Button.waitForAnyPress();
 		System.exit(1);
@@ -120,6 +137,7 @@ public class MainController {
 	 * @param gd The GameData object that contains all game data.
 	 */
 	private static void printGameData(GameData gd) {
+		t.clear();
 		System.out.println("Press key for game data");
 		Button.waitForAnyPress();
 		
@@ -142,27 +160,13 @@ public class MainController {
 	}
 	
 	/**
-	 * Slowly raises the launch arm to the vertical position to reduce robot size.
-	 */
-	private static void raiseArm() {
-		// TODO: Move this to Shooter class.
-		leftLaunchMotor.setAcceleration(1000);
-		rightLaunchMotor.setAcceleration(1000);
-		
-		leftLaunchMotor.rotate(90,true);
-		rightLaunchMotor.rotate(90,false);
-		
-		leftLaunchMotor.stop(true);
-		rightLaunchMotor.stop();
-	}
-	
-	/**
 	 * Performs various functions related to initialization. Things that should be done
 	 * before executing any other task.
 	 */
 	private static void initialize() {
 		// Raise the arm
-		raiseArm();
+		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
+		shooter.raiseArm();
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
