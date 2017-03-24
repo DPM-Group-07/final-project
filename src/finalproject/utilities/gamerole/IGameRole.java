@@ -8,7 +8,7 @@ package finalproject.utilities.gamerole;
 public interface IGameRole {
 	/**
 	 * The play method which, when called, will drive the robot according to its role
-	 * until the game ends.
+	 * until the game ends. This is the entry point for each specific game role.
 	 */
 	public void play();
 }

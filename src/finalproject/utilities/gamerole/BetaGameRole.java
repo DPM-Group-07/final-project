@@ -8,6 +8,11 @@ import finalproject.utilities.Shooter;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
 
+/**
+ * This game role class contains all procedures related to the beta demo.
+ * @author maxsn
+ *
+ */
 public class BetaGameRole implements IGameRole {
 	
 	private static final double ROBOT_NOSE_CLEARANCE = 0.5;
@@ -22,6 +27,13 @@ public class BetaGameRole implements IGameRole {
 	private Shooter shooter;
 	private Coordinate targetCoordinate;
 	
+	/**
+	 * Public constructor for this game role.
+	 * @param gameData GameData object containing all game data values for this round.
+	 * @param navigation Navigation object for navigation.
+	 * @param odometer Odometer object for odometry.
+	 * @param shooter Shooter object for shooting.
+	 */
 	public BetaGameRole(GameData gameData, Navigation navigation, Odometer odometer, Shooter shooter) {
 		this.gameData = gameData;
 		this.navigation = navigation;
@@ -31,6 +43,9 @@ public class BetaGameRole implements IGameRole {
 		targetCoordinate = new Coordinate(TARGET_X, TARGET_Y);
 	}
 
+	/**
+	 * This method implements the play() method, the entry point for this game role.
+	 */
 	@Override
 	public void play() {
 		// 1. Go to shooting position
