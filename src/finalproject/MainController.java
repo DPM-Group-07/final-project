@@ -2,7 +2,9 @@ package finalproject;
 
 import java.util.Map;
 
+import finalproject.objects.Coordinate;
 import finalproject.objects.GameData;
+import finalproject.objects.GameData.Role;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
@@ -30,7 +32,8 @@ import lejos.utility.Delay;
 public class MainController {
 	private static final String SERVER_IP = "192.168.2.3";
 	private static final int TEAM_NUMBER = 7;
-
+	private static final double BOX_SIZE = 30.48;
+	
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	private static final LocalizationType LOCALIZATION_TYPE = LocalizationType.RISING_EDGE;
 
@@ -78,9 +81,11 @@ public class MainController {
 		t.clear();
 		t.drawString("Connecting...", 0, 0);
 		
+		/*
+		GameData gd;
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
-		GameData gd;
+		
 		
 		try {
 			data = wc.getData();
@@ -88,7 +93,10 @@ public class MainController {
 		} catch (Exception e) {
 			error(e.getMessage());
 			return;
-		}
+		}*/
+		
+		GameData gd = null;
+		gd = noWifi(gd);
 		
 		t.drawString("Game data OK", 0, 1);
 		Sound.beep();
@@ -101,15 +109,14 @@ public class MainController {
 		
 		Sound.beep();
 		t.clear();
-		t.drawString("Localization OK", 0 ,0);
-		Delay.msDelay(2000);
+		System.out.println("Localization OK");
+
+		// 3. Reset odometer to match the figure given in the project description
+		resetOdo(gd);
 		
-		// 3. Play the game
-//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS);
-//		mgr.play();
-		
-		IGameRole gameRole = new BetaGameRole(gd, navigation, odometer, shooter);
-		gameRole.play();
+		// 4. Play the game
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, BOX_SIZE);
+		mgr.play();
 		
 		Button.waitForAnyPress();
 		System.exit(0);
@@ -176,5 +183,53 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
+	}
+	
+	/**
+	 * Resets the odometer to correct data based on starting corner.
+	 * @param gd The GameData object that contains all game data.
+	 */
+	private static void resetOdo(GameData gd){
+		int corner = gd.getStartingCorner();
+		boolean[] update = {true, true, true};
+		switch(corner){
+			case 1: odometer.setPosition(new double[] {0.0, 0.0, 0.0}, update);
+					break;
+			case 2: odometer.setPosition(new double[] {10 * BOX_SIZE, 0.0, 270.0}, update);
+					break;
+			case 3: odometer.setPosition(new double[] {10 * BOX_SIZE, 10 * BOX_SIZE, 180.0}, update);
+					break;
+			case 4: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 90.0}, update);
+					break;
+		}
+	}
+	
+	/**
+	 * To test the robot without wifi
+	 * @param gd
+	 * @return
+	 */
+	
+	private static GameData noWifi(GameData gd){
+		int teamNumber = 7;
+		Role role = GameData.Role.Forward;
+		int startingCorner = 1;
+		int forwardLine = 1;
+		int w1 = 2, w2 = 4;
+		int bx = 5, by = 5;
+		
+		Coordinate defenderZone = new Coordinate(w1, w2);
+		Coordinate dispenserPosition = new Coordinate(bx, by);
+		String omega = "N";	
+		
+		gd.setTeamNumber(teamNumber);
+		gd.setRole(role);
+		gd.setStartingCorner(startingCorner);
+		gd.setForwardLine(forwardLine);
+		gd.setDefenderZone(defenderZone);
+		gd.setDispenserPosition(dispenserPosition);
+		gd.setOmega(omega);
+		
+		return gd;
 	}
 }

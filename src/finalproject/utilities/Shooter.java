@@ -72,9 +72,9 @@ public class Shooter {
 	 * Slowly raises the launch to an angle above the horizon to the robot to move 
 	 * with the ball.
 	 */
-	public void raiseArmToMove(){
+	public void lowerArm(){
 		smoothAcceleration();
-		rotate((int) (60 - ANGLE_FROM_HOR));
+		rotate((int) (- (90 - ANGLE_FROM_HOR)));
 	}
 	
 	/**
@@ -98,12 +98,12 @@ public class Shooter {
 	}
 	
 	/**
-	 * Slowly lowers the launch arm to a horizontal position.
+	 * Slowly lowers the launch arm to the ground.
 	 */
-	public void lowerArm() {
+	public void floatArm() {
 		smoothAcceleration();
-		rotate(-95);
-//		floatMotor();
+		rotate((int)(-90));
+		floatMotor();
 		
 		// Wait a bit for arm to reset to its natural position
 		Delay.msDelay(2000);
