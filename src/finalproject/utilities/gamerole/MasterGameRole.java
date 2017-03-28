@@ -12,7 +12,7 @@ public class MasterGameRole {
 	private IGameRole gameRole;
 	private Odometer odometer;
 	private Shooter shooter;
-	private EV3UltrasonicSensor usSensor;
+	private EV3UltrasonicSensor midSensor, rightSensor;
 	
 	private final double BOX_SIZE;
 	
@@ -22,12 +22,13 @@ public class MasterGameRole {
 	 * @param navigation The Navigation object for controlling the robot.
 	 */
 	public MasterGameRole(GameData gameData, Navigation navigation, Odometer odometer, Shooter shooter, 
-			EV3UltrasonicSensor usSensor, double BOX_SIZE) {
+			EV3UltrasonicSensor midSensor, EV3UltrasonicSensor rightSensor, double BOX_SIZE) {
 		this.gameData = gameData;
 		this.navigation = navigation;
 		this.odometer = odometer;
 		this.shooter = shooter;
-		this.usSensor = usSensor;
+		this.midSensor = midSensor;
+		this.rightSensor = rightSensor;
 		this.BOX_SIZE = BOX_SIZE;
 	}
 	
@@ -36,9 +37,9 @@ public class MasterGameRole {
 	 */
 	public void play() {
 		if (gameData.getRole() == GameData.Role.Forward) {
-			gameRole = new ForwardGameRole(gameData, navigation, odometer, shooter, BOX_SIZE);
+			gameRole = new ForwardGameRole(gameData, navigation, odometer, midSensor, shooter, BOX_SIZE);
 		} else {
-			gameRole = new DefenseGameRole(gameData, navigation, odometer, usSensor, shooter, BOX_SIZE);
+			gameRole = new DefenseGameRole(gameData, navigation, odometer, rightSensor, shooter, BOX_SIZE);
 		}
 		
 		gameRole.play();

@@ -81,7 +81,6 @@ public class MainController {
 		t.clear();
 		t.drawString("Connecting...", 0, 0);
 		
-		/*
 		GameData gd;
 		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 		Map data;
@@ -93,10 +92,11 @@ public class MainController {
 		} catch (Exception e) {
 			error(e.getMessage());
 			return;
-		}*/
+		}
 		
-		GameData gd = null;
-		gd = noWifi(gd);
+		// Test without wifi
+//		GameData gd = null;
+//		gd = noWifi(gd);
 		
 		t.drawString("Game data OK", 0, 1);
 		Sound.beep();
@@ -115,7 +115,7 @@ public class MainController {
 		resetOdo(gd);
 		
 		// 4. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, BOX_SIZE);
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
 		mgr.play();
 		
 		Button.waitForAnyPress();

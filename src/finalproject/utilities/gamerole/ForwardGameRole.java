@@ -7,6 +7,7 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import lejos.hardware.Sound;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
 /**
@@ -32,7 +33,8 @@ public class ForwardGameRole implements IGameRole {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter, double BOX_SIZE){
+	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, 
+			Shooter shooter, double BOX_SIZE){
 		this.gd = gd;
 		this.navigation = navigation;
 		this.shooter = shooter;
@@ -96,13 +98,30 @@ public class ForwardGameRole implements IGameRole {
 		Random rand = new Random();
 		int randInt = rand.nextInt(6) + 1;
 		
-		switch(randInt){
-			case 1: navigation.travelTo(2*BOX_SIZE, BOX_SIZE); break;
-			case 2: navigation.travelTo(3*BOX_SIZE, BOX_SIZE/2); break;
-			case 3: navigation.travelTo(4*BOX_SIZE, BOX_SIZE/3); break;
-			case 4: navigation.travelTo(6*BOX_SIZE, BOX_SIZE/3); break;
-			case 5: navigation.travelTo(7*BOX_SIZE, BOX_SIZE/2); break;
-			case 6: navigation.travelTo(8*BOX_SIZE, BOX_SIZE); break;
+		moveToLocation(randInt);
+		
+		// If the random generation is true, move to a new position to throw off the opponent
+		// If not move on to firing
+		boolean moveAgain = rand.nextBoolean();
+		if(moveAgain){
+			randInt = rand.nextInt(6) + 1;
+			moveToLocation(randInt);
+		}
+	}
+	
+	/**
+	 * Moves the robot into position using a Navigation object.
+	 * @param pos Integer representation of the location of launch.
+	 */
+	private void moveToLocation(int pos){
+		
+		switch(pos){
+			case 1: navigation.travelTo(2*BOX_SIZE, 2*BOX_SIZE); break;
+			case 2: navigation.travelTo(3*BOX_SIZE, 2*BOX_SIZE/2); break;
+			case 3: navigation.travelTo(4*BOX_SIZE, 2*BOX_SIZE/3); break;
+			case 4: navigation.travelTo(6*BOX_SIZE, 2*BOX_SIZE/3); break;
+			case 5: navigation.travelTo(7*BOX_SIZE, 2*BOX_SIZE/2); break;
+			case 6: navigation.travelTo(8*BOX_SIZE, 2*BOX_SIZE); break;
 		}
 	}
 	

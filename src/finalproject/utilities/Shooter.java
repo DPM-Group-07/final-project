@@ -25,12 +25,14 @@ public class Shooter {
 	private static final int SHOOTING_ANGLE = - 120;
 	
 	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
-		
+	
+	private boolean armRaised;
 	/**
 	 * This is the initializer. It gets the wheel motors from the odometer. The shooter motors should be passed when the
 	 * initializer is called.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorR, EV3LargeRegulatedMotor shooterMotorL) {
+		armRaised = true;
 		this.shooterMotorR = shooterMotorR;
 		this.shooterMotorL = shooterMotorL;
 	}
@@ -64,8 +66,11 @@ public class Shooter {
 	 * Slowly raises the launch arm to the vertical position to reduce robot size.
 	 */
 	public void raiseArm() {
-		smoothAcceleration();
-		rotate((int)(135 - ANGLE_FROM_HOR));
+		if(!armRaised){
+			smoothAcceleration();
+			rotate((int)(90 - ANGLE_FROM_HOR));
+			armRaised = true;
+		}
 	}
 	
 	/**
@@ -73,8 +78,11 @@ public class Shooter {
 	 * with the ball.
 	 */
 	public void lowerArm(){
-		smoothAcceleration();
-		rotate((int) (- (90 - ANGLE_FROM_HOR)));
+		if(armRaised){
+			smoothAcceleration();
+			rotate((int) (- (90 - ANGLE_FROM_HOR)));
+			armRaised = false;
+		}
 	}
 	
 	/**
@@ -101,12 +109,13 @@ public class Shooter {
 	 * Slowly lowers the launch arm to the ground.
 	 */
 	public void floatArm() {
-		smoothAcceleration();
-		rotate((int)(-90));
-		floatMotor();
-		
-		// Wait a bit for arm to reset to its natural position
-		Delay.msDelay(2000);
+		if(armRaised){
+			lowerArm();
+			smoothAcceleration();
+			floatMotor();
+			// Wait a bit for arm to reset to its natural position
+			Delay.msDelay(2000);
+		}
 	}
 	
 	/**
