@@ -12,7 +12,7 @@ public class USLocalizer implements ILocalizer {
 	private final static int FILTER_OUT = 20;
 	private final static int UPPER_NOISE_BOUND = 100;
 	private final static int LOWER_NOISE_BOUND = 80;
-	private final static int FILTER_VALUE = 200;
+	private final static int FILTER_VALUE = 150;
 	
 	private Odometer odo;
 	private SampleProvider usSensor;
@@ -37,11 +37,19 @@ public class USLocalizer implements ILocalizer {
 		double angleA, angleB;
 		double deltaTheta = 0.0;
 		
+		float[] someData = new float[100];
+		
+		for (int i = 0; i < someData.length; i++) {
+			someData[i] = getFilteredData();
+			Delay.msDelay(200);
+		}
+		
+		double averageDistance = average(someData);
+		
+		boolean robotIsFacingWall = averageDistance < ((UPPER_NOISE_BOUND + LOWER_NOISE_BOUND)/2.0);
+		
 		navigation.setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
-		
 		Delay.msDelay(1000);
-		
-		boolean robotIsFacingWall = getFilteredData() < ((UPPER_NOISE_BOUND + LOWER_NOISE_BOUND)/2.0);
 		
 		if (locType == LocalizationType.FALLING_EDGE) {
 			
@@ -186,6 +194,14 @@ public class USLocalizer implements ILocalizer {
 		}
 		odo.setPosition(new double[] {0.0, 0.0, Odometer.fixDegAngle(odo.getAng() + deltaTheta)}, new boolean[] {false, false, true});
 		navigation.turnTo(0.0, true);
+	}
+	
+	private double average(float[] data) {
+		double sum = 0;
+		for (int i = 0; i < data.length; i++) {
+			sum += data[i];
+		}
+		return sum/data.length;
 	}
 	
 	private float getFilteredData() {

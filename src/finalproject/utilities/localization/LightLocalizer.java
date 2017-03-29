@@ -10,7 +10,7 @@ public class LightLocalizer implements ILocalizer {
 	private static final double COLOR_SENSOR_BOUND = 0.38;
 	private static final double START_TURN_TO = 45.0;
 	private static final double START_GO_FORWARD = 7.5;
-	private static final double ANGLE_CORRECTION = 5;
+	private static final double ANGLE_CORRECTION = 10;
 	
 	private Odometer odo;
 	private SampleProvider colorSensor;

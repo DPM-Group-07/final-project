@@ -104,6 +104,9 @@ public class MainController {
 		// 2. Initialize and localize
 		t.drawString("Localizing...", 0, 2);
 		
+		Button.waitForAnyPress();
+		Delay.msDelay(1000);
+		
 		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		localizer.localize();
 		
