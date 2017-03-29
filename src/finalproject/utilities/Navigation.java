@@ -136,7 +136,7 @@ public class Navigation {
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getAng())) * distance, Math.cos(Math.toRadians(this.odometer.getAng())) * distance);
 	}
-	
+
 	/**
 	 * Computes the minimal angle between two angles in the range [0,360).
 	 * @param a1 The first angle.

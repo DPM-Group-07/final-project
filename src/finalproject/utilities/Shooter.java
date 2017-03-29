@@ -16,8 +16,8 @@ import lejos.utility.Delay;
 public class Shooter {
 	//Relevant speeds; note when shooting straight ahead launch speed won't need to be as fast as the "skew speed"
 	private static final int ROTATION_SPEED = 80;
-	private static final int STRAIGHT_SHOOTING_SPEED = 4000;
-	private static final int STRAIGHT_ACCEL = 8000;
+	private static final int STRAIGHT_SHOOTING_SPEED = 12000;
+	private static final int STRAIGHT_ACCEL = 15000;
 	private static final int ANGLE_FROM_HOR = 20;
 	private static final int SMOOTH_ACCELERATION = 2000;
 	
@@ -25,12 +25,14 @@ public class Shooter {
 	private static final int SHOOTING_ANGLE = - 120;
 	
 	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
-		
+	
+	private boolean armRaised;
 	/**
 	 * This is the initializer. It gets the wheel motors from the odometer. The shooter motors should be passed when the
 	 * initializer is called.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorR, EV3LargeRegulatedMotor shooterMotorL) {
+		armRaised = true;
 		this.shooterMotorR = shooterMotorR;
 		this.shooterMotorL = shooterMotorL;
 	}
@@ -64,17 +66,23 @@ public class Shooter {
 	 * Slowly raises the launch arm to the vertical position to reduce robot size.
 	 */
 	public void raiseArm() {
-		smoothAcceleration();
-		rotate((int)(135 - ANGLE_FROM_HOR));
+		if(!armRaised){
+			smoothAcceleration();
+			rotate((int)(90 - ANGLE_FROM_HOR));
+			armRaised = true;
+		}
 	}
 	
 	/**
 	 * Slowly raises the launch to an angle above the horizon to the robot to move 
 	 * with the ball.
 	 */
-	public void raiseArmToMove(){
-		smoothAcceleration();
-		rotate((int) (60 - ANGLE_FROM_HOR));
+	public void lowerArm(){
+		if(armRaised){
+			smoothAcceleration();
+			rotate((int) (- (90 - ANGLE_FROM_HOR)));
+			armRaised = false;
+		}
 	}
 	
 	/**
@@ -98,15 +106,16 @@ public class Shooter {
 	}
 	
 	/**
-	 * Slowly lowers the launch arm to a horizontal position.
+	 * Slowly lowers the launch arm to the ground.
 	 */
-	public void lowerArm() {
-		smoothAcceleration();
-		rotate(-95);
-//		floatMotor();
-		
-		// Wait a bit for arm to reset to its natural position
-		Delay.msDelay(2000);
+	public void floatArm() {
+		if(armRaised){
+			lowerArm();
+			smoothAcceleration();
+			floatMotor();
+			// Wait a bit for arm to reset to its natural position
+			Delay.msDelay(2000);
+		}
 	}
 	
 	/**

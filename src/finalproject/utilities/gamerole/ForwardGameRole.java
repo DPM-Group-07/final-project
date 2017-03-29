@@ -7,6 +7,7 @@ import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
 import lejos.hardware.Sound;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
 /**
@@ -18,7 +19,7 @@ import lejos.utility.Delay;
 public class ForwardGameRole implements IGameRole {
 	// Clearance needed from center of rotation to the scope of the launch arm in cm
 	private int CLEARANCE = 30;
-	private double SQUARE_SIZE = 30.48;
+	private final double BOX_SIZE;
 	
 	private GameData gd;
 	private Navigation navigation;
@@ -32,10 +33,12 @@ public class ForwardGameRole implements IGameRole {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
+	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, 
+			Shooter shooter, double BOX_SIZE){
 		this.gd = gd;
 		this.navigation = navigation;
 		this.shooter = shooter;
+		this.BOX_SIZE = BOX_SIZE;
 	}
 	
 	/**
@@ -43,7 +46,7 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	@Override
 	public void play() {
-		navigation.travelTo(5*30.48, 30.48);
+		navigation.travelTo(5 * BOX_SIZE, BOX_SIZE);
 		navigation.turnTo(90, false);
 		
 		while(true) {
@@ -57,8 +60,8 @@ public class ForwardGameRole implements IGameRole {
 	 * Goes to the dispenser to acquire a ball.
 	 */
 	private void acquireBall(){
-		double dispenserX = gd.getDispenserPosition().getX() * SQUARE_SIZE;
-		double dispenserY = gd.getDispenserPosition().getY() * SQUARE_SIZE;
+		double dispenserX = gd.getDispenserPosition().getX() * BOX_SIZE;
+		double dispenserY = gd.getDispenserPosition().getY() * BOX_SIZE;
 		
 		switch(gd.getOmega()){
 			case "N": navigation.travelTo(dispenserX, dispenserY + CLEARANCE);
@@ -74,8 +77,8 @@ public class ForwardGameRole implements IGameRole {
 					  navigation.turnTo(180, false);
 					  break;
 		}
-		// TODO implement Shooter class
-		shooter.lowerArm();
+		
+		shooter.floatArm();
 		Sound.setVolume(100);
 		Sound.beep();
 		
@@ -88,21 +91,37 @@ public class ForwardGameRole implements IGameRole {
 	 * Moves into position to launch the ball;
 	 */
 	private void moveToTarget(){
-		// TODO implement Shooter class
-		shooter.raiseArmToMove();
+		shooter.raiseArm();
 		
 		// Let the robot randomly select a position to fire from
 		// Generate a random number from 1 to 6
 		Random rand = new Random();
 		int randInt = rand.nextInt(6) + 1;
 		
-		switch(randInt){
-			case 1: navigation.travelTo(2*SQUARE_SIZE, SQUARE_SIZE); break;
-			case 2: navigation.travelTo(3*SQUARE_SIZE, SQUARE_SIZE/2); break;
-			case 3: navigation.travelTo(4*SQUARE_SIZE, SQUARE_SIZE/3); break;
-			case 4: navigation.travelTo(6*SQUARE_SIZE, SQUARE_SIZE/3); break;
-			case 5: navigation.travelTo(7*SQUARE_SIZE, SQUARE_SIZE/2); break;
-			case 6: navigation.travelTo(8*SQUARE_SIZE, SQUARE_SIZE); break;
+		moveToLocation(randInt);
+		
+		// If the random generation is true, move to a new position to throw off the opponent
+		// If not move on to firing
+		boolean moveAgain = rand.nextBoolean();
+		if(moveAgain){
+			randInt = rand.nextInt(6) + 1;
+			moveToLocation(randInt);
+		}
+	}
+	
+	/**
+	 * Moves the robot into position using a Navigation object.
+	 * @param pos Integer representation of the location of launch.
+	 */
+	private void moveToLocation(int pos){
+		
+		switch(pos){
+			case 1: navigation.travelTo(2*BOX_SIZE, 2*BOX_SIZE); break;
+			case 2: navigation.travelTo(3*BOX_SIZE, 2*BOX_SIZE/2); break;
+			case 3: navigation.travelTo(4*BOX_SIZE, 2*BOX_SIZE/3); break;
+			case 4: navigation.travelTo(6*BOX_SIZE, 2*BOX_SIZE/3); break;
+			case 5: navigation.travelTo(7*BOX_SIZE, 2*BOX_SIZE/2); break;
+			case 6: navigation.travelTo(8*BOX_SIZE, 2*BOX_SIZE); break;
 		}
 	}
 	
@@ -110,8 +129,8 @@ public class ForwardGameRole implements IGameRole {
 	 * Rotate toward the target and launches the ball at the target.
 	 */
 	private void shoot() {
-		double angle = 2 * Math.PI / 360 * Math.atan2(5 * SQUARE_SIZE - odometer.getX(), 
-				10 * SQUARE_SIZE - odometer.getY());
+		double angle = 2 * Math.PI / 360 * Math.atan2(5 * BOX_SIZE - odometer.getX(), 
+				10 * BOX_SIZE - odometer.getY());
 		navigation.turnTo(angle, false);
 		shooter.shoot();
 	}

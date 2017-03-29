@@ -124,5 +124,35 @@ public class GameData {
 		return omega;
 	}
 	
+	/**
+	 * For testing only.
+	 * @param teamNumber
+	 */
+	public void setTeamNumber(int teamNumber){
+		this.teamNumber = teamNumber; 
+	}
 	
+	public void setRole(Role role){
+		this.role = role;
+	}
+	
+	public void setStartingCorner(int startingCorner){
+		this.startingCorner = startingCorner;
+	}
+	
+	public void setForwardLine(int forwardLine){
+		this.forwardLine = forwardLine;
+	}
+	
+	public void setDefenderZone(Coordinate defenderZone){
+		this.defenderZone = defenderZone;
+	}
+	
+	public void setDispenserPosition(Coordinate dispenserPosition){
+		this.dispenserPosition = dispenserPosition;
+	}
+	
+	public void setOmega(String omega){
+		this.omega = omega;
+	}
 }
