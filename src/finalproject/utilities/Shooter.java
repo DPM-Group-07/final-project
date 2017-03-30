@@ -32,7 +32,7 @@ public class Shooter {
 	 * initializer is called.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorR, EV3LargeRegulatedMotor shooterMotorL) {
-		armRaised = true;
+		armRaised = false;
 		this.shooterMotorR = shooterMotorR;
 		this.shooterMotorL = shooterMotorL;
 	}
@@ -68,7 +68,7 @@ public class Shooter {
 	public void raiseArm() {
 		if(!armRaised){
 			smoothAcceleration();
-			rotate((int)(90 - ANGLE_FROM_HOR));
+			rotate(150);
 			armRaised = true;
 		}
 	}
@@ -80,7 +80,7 @@ public class Shooter {
 	public void lowerArm(){
 		if(armRaised){
 			smoothAcceleration();
-			rotate((int) (- (90 - ANGLE_FROM_HOR)));
+			rotate(-150);
 			armRaised = false;
 		}
 	}

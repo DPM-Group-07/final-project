@@ -6,14 +6,14 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class SquareDriver {
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
-	private static final int LAP_NUMBER = 2;
+	private static final int LAP_NUMBER = 5;
 	private static final double DISTANCE = 60.96;
 	
 	/**
 	 * Test drives the robot in a square 4 times to see the calculate error. Obtained from lab 2. 
 	 * Modify parameters in Odometer.java to desired performance.
-	 * @param leftMotor 
-	 * @param rightMotor 
+	 * @param leftMotor Left Motor object.
+	 * @param rightMotor Right Motor object.
 	 * @param leftRadius radius of left wheel in cm
 	 * @param rightRadius radius of right wheel in cm
 	 * @param width width of chassis in cm

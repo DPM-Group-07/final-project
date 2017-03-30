@@ -5,11 +5,11 @@ import finalproject.utilities.Odometer;
 import lejos.robotics.SampleProvider;
 
 public class LightLocalizer implements ILocalizer {
-	private static final double COLOR_SENSOR_RADIUS = 15.7;
+	private static final double COLOR_SENSOR_RADIUS = 14.7;
 	private static final int ROTATION_SPEED = 175;
 	private static final double COLOR_SENSOR_BOUND = 0.38;
 	private static final double START_TURN_TO = 45.0;
-	private static final double START_GO_FORWARD = 7.5;
+	private static final double START_GO_FORWARD = 12.5;
 	private static final double ANGLE_CORRECTION = 10;
 	
 	private Odometer odo;
@@ -61,7 +61,7 @@ public class LightLocalizer implements ILocalizer {
 			}
 		}
 		
-		navigation.setSpeeds(0, 0);
+		navigation.stop();
 		
 		// do trig to compute (0,0) and 0 degrees
 		// X
@@ -95,7 +95,12 @@ public class LightLocalizer implements ILocalizer {
 		navigation.travelTo(0.0, 0.0);
 		navigation.turnTo(0.0, true);
 		
-		odo.setPosition(new double[] {0.0,  0.0, 0.0}, new boolean[] {true, true, false});
+		// odometry correction based on values collected
+		odo.setPosition(new double[] {0.0, -3.5, 5.0}, new boolean[] {true, true, true});
+		navigation.travelTo(0.0, 0.0);
+		navigation.turnTo(0.0, true);
+		
+		odo.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, false});
 	}
 
 }

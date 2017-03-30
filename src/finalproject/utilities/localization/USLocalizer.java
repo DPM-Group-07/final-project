@@ -37,7 +37,7 @@ public class USLocalizer implements ILocalizer {
 		double angleA, angleB;
 		double deltaTheta = 0.0;
 		
-		float[] someData = new float[100];
+		float[] someData = new float[3];
 		
 		for (int i = 0; i < someData.length; i++) {
 			someData[i] = getFilteredData();
@@ -192,7 +192,7 @@ public class USLocalizer implements ILocalizer {
 				deltaTheta = 40.0 - ((angleA + angleB) / 2.0);
 			}
 		}
-		odo.setPosition(new double[] {0.0, 0.0, Odometer.fixDegAngle(odo.getAng() + deltaTheta)}, new boolean[] {false, false, true});
+		odo.setPosition(new double[] {0.0, -3.5, Odometer.fixDegAngle(odo.getAng() + deltaTheta)}, new boolean[] {false, false, true});
 		navigation.turnTo(0.0, true);
 	}
 	
