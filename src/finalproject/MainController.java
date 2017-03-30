@@ -231,7 +231,6 @@ public class MainController {
 	 * @param gd
 	 * @return
 	 */
-	
 	private static GameData noWifi(){
 		GameData gd = new GameData();
 		int teamNumber = 7;
