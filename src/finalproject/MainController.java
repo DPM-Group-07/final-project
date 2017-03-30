@@ -87,6 +87,12 @@ public class MainController {
 //		Map data;
 		
 		
+//		
+//		GameData gd;
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		
+//		
 //		try {
 //			data = wc.getData();
 //			gd = new GameData(data, TEAM_NUMBER);
@@ -98,9 +104,11 @@ public class MainController {
 		// Test without wifi
 	
 		
+
 //		t.drawString("Game data OK", 0, 1);
 //		Sound.beep();
 		
+
 		// 2. Initialize and localize
 //		t.drawString("Localizing...", 0, 2);
 		
@@ -109,6 +117,7 @@ public class MainController {
 		LCDInfo lcd = new LCDInfo(odometer);
 		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		
+
 		for(int i = 0; i < 5; i++){
 			odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
 			localizer.localize();
@@ -124,7 +133,10 @@ public class MainController {
 			Button.waitForAnyPress();
 		}
 		
-		// 4. Play the game
+		// 3. Reset odometer to match the figure given in the project description
+//		resetOdo(gd);
+//		
+//		// 4. Play the game
 //		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
 //		mgr.play();
 		
