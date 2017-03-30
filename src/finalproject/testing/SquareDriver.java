@@ -2,7 +2,11 @@ package finalproject.testing;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-
+/**
+ * This class is provided for testing purposes only. Drives the robot in a square.
+ * @author maxsn
+ *
+ */
 public class SquareDriver {
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
@@ -37,11 +41,24 @@ public class SquareDriver {
 			rightMotor.rotate(-convertAngle(rightRadius, width, 90.0), false);
 		}
 	}
-
+	
+	/**
+	 * Converts a distance for straight travel.
+	 * @param radius Wheel radius.
+	 * @param distance Travel distance.
+	 * @return
+	 */
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
+	/**
+	 * Converts an angle for turning.
+	 * @param radius Wheel radius.
+	 * @param width Wheel track.
+	 * @param angle Turn angle.
+	 * @return
+	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
