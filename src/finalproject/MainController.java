@@ -78,21 +78,21 @@ public class MainController {
 		initialize();
 
 		// 1. Get game data from Wi-Fi
-		t.clear();
-		t.drawString("Connecting...", 0, 0);
-		
-		GameData gd;
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-		Map data;
-		
-		
-		try {
-			data = wc.getData();
-			gd = new GameData(data, TEAM_NUMBER);
-		} catch (Exception e) {
-			error(e.getMessage());
-			return;
-		}
+//		t.clear();
+//		t.drawString("Connecting...", 0, 0);
+//		
+//		GameData gd;
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		
+//		
+//		try {
+//			data = wc.getData();
+//			gd = new GameData(data, TEAM_NUMBER);
+//		} catch (Exception e) {
+//			error(e.getMessage());
+//			return;
+//		}
 		
 		// Test without wifi
 //		GameData gd = null;
@@ -100,7 +100,7 @@ public class MainController {
 		
 		t.drawString("Game data OK", 0, 1);
 		Sound.beep();
-		
+				
 		// 2. Initialize and localize
 		t.drawString("Localizing...", 0, 2);
 		
@@ -115,11 +115,11 @@ public class MainController {
 		System.out.println("Localization OK");
 
 		// 3. Reset odometer to match the figure given in the project description
-		resetOdo(gd);
-		
-		// 4. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
-		mgr.play();
+//		resetOdo(gd);
+//		
+//		// 4. Play the game
+//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
+//		mgr.play();
 		
 		Button.waitForAnyPress();
 		System.exit(0);
