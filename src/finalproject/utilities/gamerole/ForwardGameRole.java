@@ -18,7 +18,7 @@ import lejos.utility.Delay;
  */
 public class ForwardGameRole implements IGameRole {
 	// Clearance needed from center of rotation to the scope of the launch arm in cm
-	private int CLEARANCE = 30;
+	private int CLEARANCE = 35;
 	private final double BOX_SIZE;
 	
 	private GameData gd;
@@ -64,10 +64,10 @@ public class ForwardGameRole implements IGameRole {
 		double dispenserY = gd.getDispenserPosition().getY() * BOX_SIZE;
 		
 		switch(gd.getOmega()){
-			case "N": navigation.travelTo(dispenserX, dispenserY + CLEARANCE);
+			case "N": navigation.travelTo(dispenserY, dispenserX + CLEARANCE);
 					  navigation.turnTo(90, false);
 					  break;
-			case "S": navigation.travelTo(dispenserX, dispenserY - CLEARANCE);
+			case "S": navigation.travelTo(dispenserY, dispenserX - CLEARANCE);
 					  navigation.turnTo(270, false);
 					  break;
 			case "W": navigation.travelTo(dispenserX - CLEARANCE, dispenserY);

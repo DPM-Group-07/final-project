@@ -18,11 +18,16 @@ public class Shooter {
 	private static final int ROTATION_SPEED = 80;
 	private static final int STRAIGHT_SHOOTING_SPEED = 12000;
 	private static final int STRAIGHT_ACCEL = 15000;
-	private static final int ANGLE_FROM_HOR = 20;
 	private static final int SMOOTH_ACCELERATION = 8000;
 	
 	//Angle shooting arm rotates through to shoot
-	private static final int SHOOTING_ANGLE = - 120;
+	private static final int SHOOTING_ANGLE = 120;
+	//Angle at which the dispenser is located below the horizon
+	private static final int ANGLE_BELOW_HORIZON = 30;
+	//Angle to raise to vertical from resting position
+	private static final int RAISE_ANGLE = 160;
+	//Angle to lower
+	private static final int ARM_BELOW_HORIZON = 75;
 	
 	private EV3LargeRegulatedMotor shooterMotorL,shooterMotorR;
 	
@@ -32,7 +37,7 @@ public class Shooter {
 	 * initializer is called.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorR, EV3LargeRegulatedMotor shooterMotorL) {
-		armRaised = false;
+		armRaised = true;
 		this.shooterMotorR = shooterMotorR;
 		this.shooterMotorL = shooterMotorL;
 	}
@@ -52,14 +57,12 @@ public class Shooter {
 		//aim();
 		
 		//Now shoot
-		shooterMotorL.rotate(SHOOTING_ANGLE, true);
-		shooterMotorR.rotate(SHOOTING_ANGLE, false);
-		
+		rotate(-SHOOTING_ANGLE);
+				
 		//Return to resting position
 		shooterMotorL.setSpeed(ROTATION_SPEED);
 		shooterMotorR.setSpeed(ROTATION_SPEED);
-		shooterMotorL.rotate(-SHOOTING_ANGLE, true);
-		shooterMotorR.rotate(-SHOOTING_ANGLE, false);
+		rotate(SHOOTING_ANGLE);
 	}
 	
 	/**
@@ -68,7 +71,7 @@ public class Shooter {
 	public void raiseArm() {
 		if(!armRaised){
 			smoothAcceleration();
-			rotate(150);
+			rotate(RAISE_ANGLE);
 			armRaised = true;
 		}
 	}
@@ -80,9 +83,30 @@ public class Shooter {
 	public void lowerArm(){
 		if(armRaised){
 			smoothAcceleration();
-			rotate(-150);
+			rotate(-RAISE_ANGLE);
 			armRaised = false;
 		}
+	}
+	
+	/**
+	 * Lowers the arm to collect the ball.
+	 */
+	public void lowerArmToCollect(){
+		smoothAcceleration();
+		if(armRaised){
+			rotate(-RAISE_ANGLE + ANGLE_BELOW_HORIZON);
+			armRaised = false;
+		}
+		else{
+			rotate(70 - ANGLE_BELOW_HORIZON);
+		}
+	}
+	
+	/**
+	 * Raises the arm to move with the ball.
+	 */
+	public void raiseArmWithBall(){
+		rotate(ANGLE_BELOW_HORIZON);
 	}
 	
 	/**
@@ -93,6 +117,14 @@ public class Shooter {
 		shooterMotorL.rotate(-angle, true);
 		shooterMotorR.rotate(-angle, false);
 		
+		shooterMotorL.stop(true);
+		shooterMotorR.stop();
+	}
+	
+	/**
+	 * Stops both motors.
+	 */
+	public void stop(){
 		shooterMotorL.stop(true);
 		shooterMotorR.stop();
 	}

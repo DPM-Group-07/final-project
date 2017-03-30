@@ -117,7 +117,7 @@ public class MainController {
 		LCDInfo lcd = new LCDInfo(odometer);
 		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		
-
+		/*
 		for(int i = 0; i < 5; i++){
 			odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
 			localizer.localize();
@@ -130,6 +130,15 @@ public class MainController {
 			resetOdo(gd);
 			
 			navigation.travelTo(30.48, 0);
+			Button.waitForAnyPress();
+		}*/
+		
+		for(int i = 0; i < 10; i++){
+			shooter.raiseArm();
+			shooter.lowerArm();
+			shooter.lowerArmToCollect();
+			shooter.raiseArmWithBall();
+			shooter.shoot();
 			Button.waitForAnyPress();
 		}
 		
@@ -195,7 +204,7 @@ public class MainController {
 	private static void initialize() {
 		// Raise the arm
 		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
-		shooter.raiseArm();
+		shooter.stop();
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
