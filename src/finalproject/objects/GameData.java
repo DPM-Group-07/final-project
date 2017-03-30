@@ -37,6 +37,10 @@ public class GameData {
 		mapValues(data);
 	}
 	
+	public GameData(){
+		
+	}
+	
 	/**
 	 * Assign class variables to their respective values coming from the Map object.
 	 * @param data The Map object containing all key-value pairs (KVPs).

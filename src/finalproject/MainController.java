@@ -75,48 +75,70 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 				
+		GameData gd = noWifi();
 		initialize();
-
+		
 		// 1. Get game data from Wi-Fi
-		t.clear();
-		t.drawString("Connecting...", 0, 0);
+//		t.clear();
+//		t.drawString("Connecting...", 0, 0);
 		
-		GameData gd;
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-		Map data;
+//		GameData gd;
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
 		
 		
-		try {
-			data = wc.getData();
-			gd = new GameData(data, TEAM_NUMBER);
-		} catch (Exception e) {
-			error(e.getMessage());
-			return;
-		}
+//		
+//		GameData gd;
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		
+//		
+//		try {
+//			data = wc.getData();
+//			gd = new GameData(data, TEAM_NUMBER);
+//		} catch (Exception e) {
+//			error(e.getMessage());
+//			return;
+//		}
 		
 		// Test without wifi
-//		GameData gd = null;
-//		gd = noWifi(gd);
+	
 		
-		t.drawString("Game data OK", 0, 1);
-		Sound.beep();
-		
-		// 2. Initialize and localize
-		t.drawString("Localizing...", 0, 2);
-		
-		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
-		localizer.localize();
-		
-		Sound.beep();
-		t.clear();
-		System.out.println("Localization OK");
 
-		// 3. Reset odometer to match the figure given in the project description
-		resetOdo(gd);
+//		t.drawString("Game data OK", 0, 1);
+//		Sound.beep();
 		
-		// 4. Play the game
-		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
-		mgr.play();
+
+		// 2. Initialize and localize
+//		t.drawString("Localizing...", 0, 2);
+		
+//		Button.waitForAnyPress();
+			
+		LCDInfo lcd = new LCDInfo(odometer);
+		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
+		
+
+		for(int i = 0; i < 5; i++){
+			odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
+			localizer.localize();
+			
+			Sound.beep();
+	//		t.clear();
+	//		System.out.println("Localization OK");
+			
+			// 3. Reset odometer to match the figure given in the project description
+			resetOdo(gd);
+			
+			navigation.travelTo(30.48, 0);
+			Button.waitForAnyPress();
+		}
+		
+		// 3. Reset odometer to match the figure given in the project description
+//		resetOdo(gd);
+//		
+//		// 4. Play the game
+//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
+//		mgr.play();
 		
 		Button.waitForAnyPress();
 		System.exit(0);
@@ -209,8 +231,8 @@ public class MainController {
 	 * @param gd
 	 * @return
 	 */
-	
-	private static GameData noWifi(GameData gd){
+	private static GameData noWifi(){
+		GameData gd = new GameData();
 		int teamNumber = 7;
 		Role role = GameData.Role.Forward;
 		int startingCorner = 1;
