@@ -23,6 +23,8 @@ public class Navigation {
 	final static double DEG_ERR = 4.5, CM_ERR = 1.5;
 	private Odometer odometer;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	private boolean obstacleDetected = false;
+	private Object lock;
 
 	/**
 	 * The public constructor for this class
@@ -30,6 +32,8 @@ public class Navigation {
 	 */
 	public Navigation(Odometer odo) {
 		this.odometer = odo;
+		
+		this.lock = new Object();
 
 		EV3LargeRegulatedMotor[] motors = this.odometer.getMotors();
 		this.leftMotor = motors[0];
@@ -94,6 +98,18 @@ public class Navigation {
 	public void travelTo(double x, double y) {
 		double minAng;
 		while (Math.abs(x - odometer.getX()) > CM_ERR || Math.abs(y - odometer.getY()) > CM_ERR) {
+			
+			synchronized (lock) {
+				if (obstacleDetected) {
+					this.stop();
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
 			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
 			if (minAng < 0)
 				minAng += 360.0;
@@ -158,5 +174,17 @@ public class Navigation {
 		else if (rotationAngle < -180)
 			rotationAngle += 360;
 		return rotationAngle;
+	}
+	
+	public void setObstacleDetected(boolean value) {
+		this.obstacleDetected = value;
+	}
+	
+	public boolean getObstacleDetected() {
+		return this.obstacleDetected;
+	}
+	
+	public Object getLock() {
+		return this.lock;
 	}
 }
