@@ -46,7 +46,7 @@ public class MasterGameRole {
 	}
 	
 	/**
-	 * @deprecated Not required for this project.
+	 * @deprecated Taken care of inside mainController.java.
 	 * Travels to the starting corner.
 	 */
 	@SuppressWarnings("unused")

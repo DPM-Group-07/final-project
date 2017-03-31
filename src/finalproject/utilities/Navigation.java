@@ -80,7 +80,7 @@ public class Navigation {
 	 * Float both motors so that the wheels can be freely moved by a human.
 	 */
 	public void setFloat() {
-		this.leftMotor.stop();
+		this.leftMotor.stop(true);
 		this.rightMotor.stop();
 		this.leftMotor.flt(true);
 		this.rightMotor.flt(true);

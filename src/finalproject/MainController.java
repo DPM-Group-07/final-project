@@ -111,36 +111,38 @@ public class MainController {
 
 		// 2. Initialize and localize
 //		t.drawString("Localizing...", 0, 2);
-		
 //		Button.waitForAnyPress();
-			
-		LCDInfo lcd = new LCDInfo(odometer);
-		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
 		
+//		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
+//		localizer.localize();
+//		Sound.beep();
+//		t.clear();
+//		System.out.println("Localization OK");
+		
+		/**
+		 * Tests Localization
+		 */
 		/*
-		for(int i = 0; i < 5; i++){
-			odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
-			localizer.localize();
+		for(int i = 0; i < 2000; i++){
+			testLocalization();
+		}*/
 			
-			Sound.beep();
-	//		t.clear();
-	//		System.out.println("Localization OK");
-			
-			// 3. Reset odometer to match the figure given in the project description
-			resetOdo(gd);
-			
-			navigation.travelTo(30.48, 0);
-			Button.waitForAnyPress();
+		/**
+		 * Tests Shooter
+		 */
+		/*
+		for(int i = 0; i < 2000; i++){
+			testShooter();
 		}*/
 		
-		for(int i = 0; i < 10; i++){
-			shooter.raiseArm();
-			shooter.lowerArm();
-			shooter.lowerArmToCollect();
-			shooter.raiseArmWithBall();
-			shooter.shoot();
-			Button.waitForAnyPress();
+		/**
+		 * Tests Navigation
+		 */
+		/*
+		for(int i = 0; i < 2000; i++){
+			testNavigation();
 		}
+		 */
 		
 		// 3. Reset odometer to match the figure given in the project description
 //		resetOdo(gd);
@@ -202,7 +204,7 @@ public class MainController {
 	 * before executing any other task.
 	 */
 	private static void initialize() {
-		// Raise the arm
+		// Lock the arm in position
 		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
 		shooter.stop();
 		
@@ -236,9 +238,8 @@ public class MainController {
 	}
 	
 	/**
-	 * To test the robot without wifi
-	 * @param gd
-	 * @return
+	 * Mimics Wifi mode.
+	 * @return A configured GameData object containing all pertaining data.
 	 */
 	private static GameData noWifi(){
 		GameData gd = new GameData();
@@ -262,5 +263,41 @@ public class MainController {
 		gd.setOmega(omega);
 		
 		return gd;
+	}
+	
+	/**
+	 * Tests localization
+	 */
+	public static void testLocalization(){
+		LCDInfo lcd = new LCDInfo(odometer);
+		odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
+		localizer.localize();
+		Button.waitForAnyPress();
+	}
+	
+	/**
+	 * Tests shooter
+	 */
+	public static void testShooter(){
+		Button.waitForAnyPress();
+		shooter.shoot();
+	}
+	
+	/**
+	 * Tests Navigation
+	 * Drives to (0, 91.44), (60.96, 91.44), (30.48, 30.48), (0, 91.44), (0, 0)
+	 * Then rotates to 90 degrees, 270 degrees, 180 degrees and 0 degrees
+	 */
+	public static void testNavigation(){
+		navigation.travelTo(3 * BOX_SIZE, 0);
+		navigation.travelTo(3 * BOX_SIZE, 2 * BOX_SIZE);
+		navigation.travelTo(1 * BOX_SIZE, 1 * BOX_SIZE);
+		navigation.travelTo(3 * BOX_SIZE, 0);
+		navigation.travelTo(0, 0);
+		navigation.turnTo(90, false);
+		navigation.turnTo(270, false);
+		navigation.turnTo(180, false);
+		navigation.turnTo(0, true);
+		Button.waitForAnyPress();
 	}
 }

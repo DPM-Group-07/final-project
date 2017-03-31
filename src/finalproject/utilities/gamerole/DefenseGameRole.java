@@ -17,7 +17,7 @@ import lejos.utility.Delay;
  */
 @SuppressWarnings("unused")
 public class DefenseGameRole implements IGameRole {
-	public enum Side {LEFT, RIGHT}
+	public enum Side {WEST, EAST}
 	private GameData gd;
 	private Navigation navigation;
 	private Odometer odometer;
@@ -30,21 +30,20 @@ public class DefenseGameRole implements IGameRole {
 	private final double ORIENTATION = 90;
 	private final double CLEARANCE_FROM_DEF_ZONE = 0.5;
 	private final int FILTER_SIZE = 5;
-	private final int SPEED = 400;
+	private final int MOTOR_SPEED = 400;
+	private final double TOP_Y;
+	private final Side DISPENSER_SIDE;
 	
-	private double topY;
-	private Side dispenserSide;
-	private boolean tracking;
-	
+	private Side robotSide;
+
 	/**
 	 * Public constructor for Defense class. Must be called with valid references.
 	 * @param gd GameData object for map awareness.
 	 * @param navigation Navigation object to navigate across the field.
-	 * @param usSensor Ultrasonic sensor object to ping opponent location.
 	 * @param odometer Odometer object for odometry.
 	 * @param usSensor Ultrasonic sensor object to ping opponent location.
 	 * @param shooter Shooter object to control launch motors.
-	 * @param BOX_SIZE Double value to
+	 * @param BOX_SIZE Double distance from line to line.
 	 */
 	public DefenseGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor,
 			Shooter shooter, double BOX_SIZE){
@@ -54,9 +53,10 @@ public class DefenseGameRole implements IGameRole {
 		this.shooter = shooter;
 		this.usSensor = usSensor;
 		this.BOX_SIZE = BOX_SIZE;
+		this.TOP_Y = (10 - gd.getDefenderZone().getY()) * BOX_SIZE;
 		
-		if(gd.getDispenserPosition().getX() < 5) dispenserSide = Side.LEFT;
-		else dispenserSide = Side.RIGHT;
+		if(gd.getDispenserPosition().getX() <= 5) DISPENSER_SIDE = Side.WEST;
+		else DISPENSER_SIDE = Side.EAST;
 		
 		/* Apply similar triangle algorithm
 		 * 
@@ -82,31 +82,27 @@ public class DefenseGameRole implements IGameRole {
 		if (!usSensor.isEnabled()) {
 			usSensor.enable();
 		}
-		
-		getZone();
+
 		block();
 		
-		if(dispenserSide == Side.LEFT){
-			navigation.travelTo(WEST_PLAYING_FIELD_LIMIT * BOX_SIZE, topY - CLEARANCE_FROM_DEF_ZONE * BOX_SIZE);
+		// Travels to the left limit or the right limit depending on which side the dispenser is located
+		if(DISPENSER_SIDE == Side.WEST){
+			navigation.travelTo(WEST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - CLEARANCE_FROM_DEF_ZONE * BOX_SIZE);
 			navigation.turnTo(ORIENTATION, false);
+			robotSide = Side.WEST;
 		}
 		else{
-			navigation.travelTo(EAST_PLAYING_FIELD_LIMIT * BOX_SIZE, topY - CLEARANCE_FROM_DEF_ZONE * BOX_SIZE);
+			navigation.travelTo(EAST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - CLEARANCE_FROM_DEF_ZONE * BOX_SIZE);
 			navigation.turnTo(ORIENTATION, false);
+			robotSide = Side.EAST;
 		}
 		
-		// TODO WIP
 		while(true){
 			trackOpp();
 		}
 	}
 	
-	/**
-	 * Obtains the available play zone for defense
-	 */
-	private void getZone(){
-		topY = (int) (10 - gd.getDefenderZone().getY()) * BOX_SIZE;
-	}
+
 	
 	/**
 	 * Tracks the opponent using the ultrasonic sensor.
@@ -126,30 +122,28 @@ public class DefenseGameRole implements IGameRole {
 		Collections.sort(data);
 		
 		// Drives left or right in parallel
-		if(dispenserSide == Side.LEFT){
+		if(robotSide == Side.WEST){
 			if(data.get(FILTER_SIZE/2) < maxDistance){
-				tracking = true;
-				if(odometer.getX() < EAST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(SPEED, SPEED);
-				else navigation.setFloat();
+				if(odometer.getX() < EAST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(MOTOR_SPEED, MOTOR_SPEED);
+				else navigation.stop();
 			}
 			else{
-				tracking = false;
-				if(odometer.getX() > WEST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(-SPEED, -SPEED);
-				else navigation.setFloat();
+				if(odometer.getX() > WEST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(-MOTOR_SPEED, -MOTOR_SPEED);
+				else navigation.stop();
 			}
 		}
 		else{
 			if(data.get(FILTER_SIZE/2) < maxDistance){
-				tracking = true;
-				if(odometer.getX() > WEST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(-SPEED, -SPEED);
-				else navigation.setFloat();
+				if(odometer.getX() > WEST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(-MOTOR_SPEED, -MOTOR_SPEED);
+				else navigation.stop();
 			}
 			else{
-				tracking = false;
-				if(odometer.getX() < EAST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(SPEED, SPEED);
-				else navigation.setFloat();
+				if(odometer.getX() < EAST_PLAYING_FIELD_LIMIT * BOX_SIZE) navigation.setSpeeds(MOTOR_SPEED, MOTOR_SPEED);
+				else navigation.stop();
 			}
 		}
+		
+		updateSide();
 	}
 	
 	/**
@@ -157,5 +151,25 @@ public class DefenseGameRole implements IGameRole {
 	 */
 	private void block(){
 		shooter.raiseArm();
+	}
+	
+	/**
+	 * Updates the side that the robot is on.
+	 */
+	private void updateSide(){
+		if(odometer.getX() > 5 * BOX_SIZE){
+			if(robotSide != Side.EAST){
+				shooter.setAdjustMode();
+				shooter.rotate(-30);
+			}
+			robotSide = Side.EAST;
+		}
+		else{
+			if(robotSide != Side.WEST){
+				shooter.setAdjustMode();
+				shooter.rotate(30);
+			}
+			robotSide = Side.WEST;
+		}
 	}
 }
