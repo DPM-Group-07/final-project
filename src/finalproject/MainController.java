@@ -8,6 +8,7 @@ import finalproject.objects.GameData.Role;
 import finalproject.utilities.LCDInfo;
 import finalproject.utilities.localization.*;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
+import finalproject.utilities.obstacleavoidance.ObstacleAvoidance;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
@@ -56,6 +57,7 @@ public class MainController {
 	private static Navigation navigation;
 	private static MasterLocalizer localizer;
 	private static Shooter shooter;
+	private static ObstacleAvoidance oa;
 	
 	/**
 	 * This is the main function that will drive the robot throughout the entire game.
@@ -74,80 +76,24 @@ public class MainController {
 		while (Button.waitForAnyPress() != Button.ID_ENTER) {
 			Delay.msDelay(50);
 		}
-				
-		GameData gd = noWifi();
+		
 		initialize();
+				
+		odometer.setPosition(new double[] { 0.0, 0.0, 0.0 }, new boolean[] {true, true, true});
+		Delay.msDelay(1000);
 		
-		// 1. Get game data from Wi-Fi
-//		t.clear();
-//		t.drawString("Connecting...", 0, 0);
+		navigation.travelTo(0,  90);	
+		Delay.msDelay(1000);
 		
-//		GameData gd;
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
+		navigation.travelTo(60,  90);	
+		Delay.msDelay(1000);
 		
+		navigation.travelTo(60,  0);	
+		Delay.msDelay(1000);
 		
-//		
-//		GameData gd;
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
-//		
-//		
-//		try {
-//			data = wc.getData();
-//			gd = new GameData(data, TEAM_NUMBER);
-//		} catch (Exception e) {
-//			error(e.getMessage());
-//			return;
-//		}
+		oa.disable();
 		
-		// Test without wifi
-	
-		
-
-//		t.drawString("Game data OK", 0, 1);
-//		Sound.beep();
-		
-
-		// 2. Initialize and localize
-//		t.drawString("Localizing...", 0, 2);
-		
-//		Button.waitForAnyPress();
-			
-		LCDInfo lcd = new LCDInfo(odometer);
-		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
-		
-		/*
-		for(int i = 0; i < 5; i++){
-			odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
-			localizer.localize();
-			
-			Sound.beep();
-	//		t.clear();
-	//		System.out.println("Localization OK");
-			
-			// 3. Reset odometer to match the figure given in the project description
-			resetOdo(gd);
-			
-			navigation.travelTo(30.48, 0);
-			Button.waitForAnyPress();
-		}*/
-		
-		for(int i = 0; i < 10; i++){
-			shooter.raiseArm();
-			shooter.lowerArm();
-			shooter.lowerArmToCollect();
-			shooter.raiseArmWithBall();
-			shooter.shoot();
-			Button.waitForAnyPress();
-		}
-		
-		// 3. Reset odometer to match the figure given in the project description
-//		resetOdo(gd);
-//		
-//		// 4. Play the game
-//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
-//		mgr.play();
+		navigation.travelTo(0, 0);
 		
 		Button.waitForAnyPress();
 		System.exit(0);
@@ -214,6 +160,10 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
+		
+		oa = new ObstacleAvoidance(midUS, leftUS, rightUS, navigation, odometer);
+		oa.start();
+		oa.enable();
 	}
 	
 	/**
