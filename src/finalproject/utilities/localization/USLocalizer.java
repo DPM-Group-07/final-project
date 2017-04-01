@@ -37,14 +37,14 @@ public class USLocalizer implements ILocalizer {
 		double angleA, angleB;
 		double deltaTheta = 0.0;
 		
-		float[] someData = new float[3];
+		float[] someData = new float[50];
 		
 		for (int i = 0; i < someData.length; i++) {
 			someData[i] = getFilteredData();
 			Delay.msDelay(200);
 		}
 		
-		double averageDistance = average(someData);
+		double averageDistance = someData[49];
 		
 		boolean robotIsFacingWall = averageDistance < ((UPPER_NOISE_BOUND + LOWER_NOISE_BOUND)/2.0);
 		
@@ -209,21 +209,23 @@ public class USLocalizer implements ILocalizer {
 		float distance = usData[0] * (float)100.0;
 		
 		
-		// Filter code taken from Lab 1
-		if (distance >= FILTER_VALUE && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance var, however do increment the
-			// filter value
-			filterControl++;
-		} else if (distance >= FILTER_VALUE) {
-			// We have repeated large values, so there must actually be nothing
-			// there: leave the distance alone
-			this.distance = distance;
-		} else {
-			// distance went below 255: reset filter and leave
-			// distance alone.
-			filterControl = 0;
-			this.distance = distance;
-		}
+//		// Filter code taken from Lab 1
+//		if (distance >= FILTER_VALUE && filterControl < FILTER_OUT) {
+//			// bad value, do not set the distance var, however do increment the
+//			// filter value
+//			filterControl++;
+//		} else if (distance >= FILTER_VALUE) {
+//			// We have repeated large values, so there must actually be nothing
+//			// there: leave the distance alone
+//			this.distance = distance;
+//		} else {
+//			// distance went below 255: reset filter and leave
+//			// distance alone.
+//			filterControl = 0;
+//			this.distance = distance;
+//		}
+		
+		this.distance = distance;
 				
 		return this.distance;
 	}

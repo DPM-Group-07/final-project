@@ -75,8 +75,9 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 				
-		GameData gd = noWifi();
 		initialize();
+		
+		testLocalization();
 		
 		// 1. Get game data from Wi-Fi
 //		t.clear();
@@ -271,6 +272,7 @@ public class MainController {
 	public static void testLocalization(){
 		LCDInfo lcd = new LCDInfo(odometer);
 		odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
+		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LocalizationType.RISING_EDGE);
 		localizer.localize();
 		Button.waitForAnyPress();
 	}
