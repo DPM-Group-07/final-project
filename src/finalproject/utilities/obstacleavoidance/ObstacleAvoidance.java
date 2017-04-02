@@ -12,9 +12,12 @@ public class ObstacleAvoidance extends Thread {
 	private final static int OBJECT_DISTANCE = 15;
 	final static int WF_BANDCENTER = 20;			// Offset from the wall (cm)
 	final static int WF_BANDWIDTH = 5;
-	final static int WF_MOTOR_VERYLOW = -200;
-	final static int WF_MOTOR_LOW = 0;			// Speed of slower rotating wheel (deg/sec)
-	final static int WF_MOTOR_HIGH = 200;
+	
+	final static int WF_MOTOR_STRAIGHT = 200;
+	final static int WF_MOTOR_LEFT_L = 100;
+	final static int WF_MOTOR_LEFT_R = 250;
+	final static int WF_MOTOR_RIGHT_L = 150;
+	final static int WF_MOTOR_RIGHT_R = -150;
 	final static int WF_FINAL_ANGLE_THRESHOLD = 20;
 	
 	private EV3UltrasonicSensor usSensor;
@@ -77,16 +80,31 @@ public class ObstacleAvoidance extends Thread {
 	}
 	
 	private void wallFollow() {
-		ObstaclePoller opWall = new ObstaclePoller(leftSensor);
+		double minAng = (Math.atan2(4 - odometer.getY(), 4 - odometer.getX())) * (180.0 / Math.PI);
+		double error = navigation.getDifference(minAng, this.odometer.getAng());
 		
-		navigation.turnTo(odometer.getAng() + 90.0, true);
-				
+		EV3UltrasonicSensor wfSensor;
+		EV3LargeRegulatedMotor innerMotor;
+		EV3LargeRegulatedMotor outerMotor;
+		if (error > 0) {
+			// Need to turn right
+			wfSensor = leftSensor;
+			innerMotor = odometer.getLeftMotor();
+			outerMotor = odometer.getRightMotor();
+			navigation.turnTo(odometer.getAng() + 90.0, true);
+		} else {
+			// Need to turn left
+			wfSensor = rightSensor;
+			innerMotor = odometer.getRightMotor();
+			outerMotor = odometer.getLeftMotor();
+			navigation.turnTo(odometer.getAng() - 90.0, true);
+		}
+		
+		ObstaclePoller opWall = new ObstaclePoller(wfSensor);
+		
 		// Start following the wall
 		double finalAngle = odometer.getAng() - 180.0;
 		
-		EV3LargeRegulatedMotor leftMotor = odometer.getLeftMotor();
-		EV3LargeRegulatedMotor rightMotor = odometer.getRightMotor();
-				
 		// Follow the wall until you make a full 180 turn
 		int angle = (int) Math.abs(odometer.getAng() - finalAngle);
 		while (angle > WF_FINAL_ANGLE_THRESHOLD) {
@@ -97,24 +115,24 @@ public class ObstacleAvoidance extends Thread {
 			
 			// Right turn
 			if (distance < (bandCenter - bandWidth)) {
-				leftMotor.setSpeed(150);
-				rightMotor.setSpeed(-150);
+				innerMotor.setSpeed(WF_MOTOR_RIGHT_L);
+				outerMotor.setSpeed(WF_MOTOR_RIGHT_R);
 			}
 			
 			// Left turn
 			else if (distance > (bandCenter + bandWidth)) {
-				leftMotor.setSpeed(100);
-				rightMotor.setSpeed(250);
+				innerMotor.setSpeed(WF_MOTOR_LEFT_L);
+				outerMotor.setSpeed(WF_MOTOR_LEFT_R);
 			}
 			
 			// Straight
 			else {
-				leftMotor.setSpeed(200);
-				rightMotor.setSpeed(200);
+				innerMotor.setSpeed(WF_MOTOR_STRAIGHT);
+				outerMotor.setSpeed(WF_MOTOR_STRAIGHT);
 			}
 			
-			leftMotor.forward();
-			rightMotor.forward();
+			innerMotor.forward();
+			outerMotor.forward();
 			
 			angle = (int) Math.abs(odometer.getAng() - finalAngle);
 			if (angle > 360) {
@@ -122,8 +140,8 @@ public class ObstacleAvoidance extends Thread {
 			}
 		}
 		
-		leftMotor.stop(true);
-		rightMotor.stop();
+		innerMotor.stop(true);
+		outerMotor.stop();
 		
 		opWall.pause();
 		opWall.stop();

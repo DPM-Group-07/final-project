@@ -167,7 +167,7 @@ public class Navigation {
 	 * @param a2 The second angle.
 	 * @return The minimal angle.
 	 */
-	private double getDifference(double a1, double a2) {
+	public double getDifference(double a1, double a2) {
 		double rotationAngle = a1 - a2;
 		if (rotationAngle > 180)
 			rotationAngle -= 360;
