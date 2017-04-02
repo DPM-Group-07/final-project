@@ -9,13 +9,13 @@ import lejos.robotics.SampleProvider;
 
 public class ObstacleAvoidance extends Thread {
 	
-	private final static int OBJECT_DISTANCE = 25;
+	private final static int OBJECT_DISTANCE = 15;
 	final static int WF_BANDCENTER = 20;			// Offset from the wall (cm)
 	final static int WF_BANDWIDTH = 5;
 	final static int WF_MOTOR_VERYLOW = -200;
 	final static int WF_MOTOR_LOW = 0;			// Speed of slower rotating wheel (deg/sec)
 	final static int WF_MOTOR_HIGH = 200;
-	final static int WF_FINAL_ANGLE_THRESHOLD = 70;
+	final static int WF_FINAL_ANGLE_THRESHOLD = 20;
 	
 	private EV3UltrasonicSensor usSensor;
 	private EV3UltrasonicSensor leftSensor;
@@ -104,7 +104,7 @@ public class ObstacleAvoidance extends Thread {
 			// Left turn
 			else if (distance > (bandCenter + bandWidth)) {
 				leftMotor.setSpeed(100);
-				rightMotor.setSpeed(200);
+				rightMotor.setSpeed(250);
 			}
 			
 			// Straight
@@ -115,13 +115,6 @@ public class ObstacleAvoidance extends Thread {
 			
 			leftMotor.forward();
 			rightMotor.forward();
-			
-			// Pause for 100 ms
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			
 			angle = (int) Math.abs(odometer.getAng() - finalAngle);
 			if (angle > 360) {
