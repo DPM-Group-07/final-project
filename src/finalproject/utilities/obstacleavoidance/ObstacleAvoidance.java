@@ -83,6 +83,8 @@ public class ObstacleAvoidance extends Thread {
 		double minAng = (Math.atan2(4 - odometer.getY(), 4 - odometer.getX())) * (180.0 / Math.PI);
 		double error = navigation.getDifference(minAng, this.odometer.getAng());
 		
+		double initialAngle = odometer.getAng();
+		
 		EV3UltrasonicSensor wfSensor;
 		EV3LargeRegulatedMotor innerMotor;
 		EV3LargeRegulatedMotor outerMotor;
@@ -142,6 +144,8 @@ public class ObstacleAvoidance extends Thread {
 		
 		innerMotor.stop(true);
 		outerMotor.stop();
+		
+		navigation.turnTo(initialAngle, true);
 		
 		opWall.pause();
 		opWall.stop();

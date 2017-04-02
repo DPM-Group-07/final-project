@@ -78,6 +78,7 @@ public class MainController {
 		}
 		
 		initialize();
+		enableObsAv();
 				
 		odometer.setPosition(new double[] { 0.0, 0.0, 0.0 }, new boolean[] {true, true, true});
 		Delay.msDelay(1000);
@@ -90,11 +91,10 @@ public class MainController {
 		
 		navigation.travelTo(60,  0);	
 		Delay.msDelay(1000);
-		
-		oa.disable();
-		
+				
 		navigation.travelTo(0, 0);
 		
+		oa.disable();
 		Button.waitForAnyPress();
 		System.exit(0);
 	}
@@ -160,7 +160,12 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
-		
+	}
+	
+	/**
+	 * Enables obstacle avoidance;
+	 */
+	private static void enableObsAv() {
 		oa = new ObstacleAvoidance(midUS, leftUS, rightUS, navigation, odometer);
 		oa.start();
 		oa.enable();
