@@ -20,13 +20,13 @@ public class Shooter {
 	private static final int STRAIGHT_ACCEL = 15000;
 	
 	//Angle shooting arm rotates through to shoot
-	private static final int SHOOTING_ANGLE = 120;
+	private static final int SHOOTING_ANGLE = 140;
 	//Angle at which the dispenser is located from the horizon
 	private static final int DISPENSER_ANGLE = -30;
 	//Angle to raise to vertical from resting position
-	private static final int RAISE_ANGLE = 160;
+	private static final int RAISE_ANGLE = 135;
 	//Angle to lower the arm to resting position
-	private static final int REST_ANGLE = -70;
+	private static final int REST_ANGLE = -60;
 	
 	private EV3LargeRegulatedMotor shooterMotorL, shooterMotorR;
 	
@@ -62,12 +62,6 @@ public class Shooter {
 		// Sets motor speeds and accelerations to shooting mode
 		setShootMode();
 		
-		// Make adjustment if the robot has a ball
-		// Compensated for ForwardGameRole
-		if(hasBall){
-			rotate(REST_ANGLE);
-		}
-
 		// Now shoot from resting position
 		rotate(SHOOTING_ANGLE);
 				
@@ -111,11 +105,12 @@ public class Shooter {
 	public void collect(){
 		setAdjustMode();
 		if(armRaised){
-			rotate(-RAISE_ANGLE + (90 + DISPENSER_ANGLE));
+			rotate(-RAISE_ANGLE);
+			rotate(-(REST_ANGLE - DISPENSER_ANGLE));
 			armRaised = false;
 		}
 		else{
-			rotate(RAISE_ANGLE - (90 - DISPENSER_ANGLE));
+			rotate(-(REST_ANGLE-DISPENSER_ANGLE));
 		}
 		hasBall = true;
 	}
@@ -126,6 +121,14 @@ public class Shooter {
 	 */
 	public void raiseArmWithBall(){
 		rotate(-DISPENSER_ANGLE);
+	}
+	
+	/**
+	 * Lowers the arm from the horizon with the ball. Only call after raiseArmWithBall has been
+	 * called. this method roughly lowers the arm into the launching position.
+	 */
+	public void lowerArmWithBall(){
+		rotate(REST_ANGLE);
 	}
 	
 	/**

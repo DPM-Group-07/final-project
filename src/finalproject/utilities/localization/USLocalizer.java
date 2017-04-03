@@ -3,41 +3,38 @@ package finalproject.utilities.localization;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
 public class USLocalizer implements ILocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private final static int ROTATION_SPEED = 175;
-	private final static int FILTER_OUT = 20;
-	private final static int UPPER_NOISE_BOUND = 100;
-	private final static int LOWER_NOISE_BOUND = 80;
-	private final static int FILTER_VALUE = 150;
+	private final static int UPPER_NOISE_BOUND = 60;
+	private final static int LOWER_NOISE_BOUND = 45;
 	
 	private Odometer odo;
 	private SampleProvider usSensor;
 	private float[] usData;
 	private LocalizationType locType;
 	private Navigation navigation;
-	private int filterControl;
-	private float distance;
+
 	
-	public USLocalizer(Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
+	public USLocalizer(Odometer odo, Navigation navigation, SampleProvider usSensor, float[] usData, LocalizationType locType) {
 		this.odo = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
 		this.locType = locType;
-		this.navigation = new Navigation(odo);
-		filterControl = 0;
-		distance = 0;
+		this.navigation = navigation;
 	}
 	
 	@Override
 	public void doLocalization() {
+		
 		double angleA, angleB;
 		double deltaTheta = 0.0;
 		
-		float[] someData = new float[3];
+		float[] someData = new float[10];
 		
 		for (int i = 0; i < someData.length; i++) {
 			someData[i] = getFilteredData();
@@ -48,8 +45,9 @@ public class USLocalizer implements ILocalizer {
 		
 		boolean robotIsFacingWall = averageDistance < ((UPPER_NOISE_BOUND + LOWER_NOISE_BOUND)/2.0);
 		
-		navigation.setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
 		Delay.msDelay(1000);
+		
+		navigation.setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
 		
 		if (locType == LocalizationType.FALLING_EDGE) {
 			
@@ -136,7 +134,7 @@ public class USLocalizer implements ILocalizer {
 			while (!robotIsFacingWall) {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
 					robotIsFacingWall = true;
-//					Sound.twoBeeps();
+					Sound.twoBeeps();
 				}
 			}
 			
@@ -149,7 +147,7 @@ public class USLocalizer implements ILocalizer {
 				if (wasWithinMargin && distance > UPPER_NOISE_BOUND) {
 					angleTwo = odo.getAng();
 					robotIsFacingWall = false;
-//					Sound.beep();
+					Sound.beep();
 				} else if (distance > LOWER_NOISE_BOUND) {
 					wasWithinMargin = true;
 					angleOne = odo.getAng();
@@ -164,7 +162,7 @@ public class USLocalizer implements ILocalizer {
 			while (!robotIsFacingWall) {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
 					robotIsFacingWall = true;
-//					Sound.twoBeeps();
+					Sound.twoBeeps();
 				}
 			}
 			
@@ -175,7 +173,7 @@ public class USLocalizer implements ILocalizer {
 				if (wasWithinMargin && distance > UPPER_NOISE_BOUND) {
 					angleTwo = odo.getAng();
 					robotIsFacingWall = false;
-//					Sound.beep();
+					Sound.beep();
 				} else if (distance > LOWER_NOISE_BOUND) {
 					wasWithinMargin = true;
 					angleOne = odo.getAng();
@@ -192,8 +190,7 @@ public class USLocalizer implements ILocalizer {
 				deltaTheta = 40.0 - ((angleA + angleB) / 2.0);
 			}
 		}
-		odo.setPosition(new double[] {0.0, -3.5, Odometer.fixDegAngle(odo.getAng() + deltaTheta)}, new boolean[] {false, false, true});
-		navigation.turnTo(0.0, true);
+		odo.setPosition(new double[] {0, 0, Odometer.fixDegAngle(odo.getAng() + deltaTheta)}, new boolean[] {false, false, true});
 	}
 	
 	private double average(float[] data) {
@@ -207,25 +204,7 @@ public class USLocalizer implements ILocalizer {
 	private float getFilteredData() {
 		usSensor.fetchSample(usData, 0);
 		float distance = usData[0] * (float)100.0;
-		
-		
-		// Filter code taken from Lab 1
-		if (distance >= FILTER_VALUE && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance var, however do increment the
-			// filter value
-			filterControl++;
-		} else if (distance >= FILTER_VALUE) {
-			// We have repeated large values, so there must actually be nothing
-			// there: leave the distance alone
-			this.distance = distance;
-		} else {
-			// distance went below 255: reset filter and leave
-			// distance alone.
-			filterControl = 0;
-			this.distance = distance;
-		}
-				
-		return this.distance;
+		return distance;
 	}
 
 }

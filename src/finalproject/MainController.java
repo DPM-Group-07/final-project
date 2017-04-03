@@ -32,7 +32,7 @@ import lejos.utility.Delay;
 public class MainController {
 	private static final String SERVER_IP = "192.168.2.3";
 	private static final int TEAM_NUMBER = 7;
-	private static final double BOX_SIZE = 30.48;
+	private static final double BOX_SIZE = 29.50;
 	
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = false;
 	private static final LocalizationType LOCALIZATION_TYPE = LocalizationType.RISING_EDGE;
@@ -44,7 +44,7 @@ public class MainController {
 	private static final EV3LargeRegulatedMotor rightLaunchMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 	// Sensor objects
-	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
+	private static final EV3ColorSensor midColor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
 	private static final EV3UltrasonicSensor leftUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S1"));
 	private static final EV3UltrasonicSensor midUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S2"));
 	private static final EV3UltrasonicSensor rightUS = new EV3UltrasonicSensor(LocalEV3.get().getPort("S4"));
@@ -77,6 +77,8 @@ public class MainController {
 				
 		GameData gd = noWifi();
 		initialize();
+		
+		
 		
 		// 1. Get game data from Wi-Fi
 //		t.clear();
@@ -112,12 +114,30 @@ public class MainController {
 		// 2. Initialize and localize
 //		t.drawString("Localizing...", 0, 2);
 //		Button.waitForAnyPress();
-		
-//		localizer = new MasterLocalizer(odometer, midUS, colorSensor, LOCALIZATION_TYPE);
-//		localizer.localize();
-//		Sound.beep();
-//		t.clear();
+		LCDInfo lcd = new LCDInfo(odometer);
+		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
+		localizer.localize();
+		Sound.beep();
+		resetOdo(gd);
+		t.clear();
 //		System.out.println("Localization OK");
+		
+		/**
+		 * Square driver
+		 */
+		
+		/*for(int i = 0 ; i < 2000; i++){
+			odometer.driveSquare();
+			Button.waitForAnyPress();
+		}*/
+		
+		
+		/**
+		 * Picking up ball
+		 */
+		for(int i = 0 ; i < 2000; i++){
+			pickupTest();
+		}
 		
 		/**
 		 * Tests Localization
@@ -133,19 +153,29 @@ public class MainController {
 		/*
 		for(int i = 0; i < 2000; i++){
 			testShooter();
-		}*/
+		}
+		*/		
 		
 		/**
 		 * Tests Navigation
 		 */
 		/*
+		Delay.msDelay(5000);
 		for(int i = 0; i < 2000; i++){
 			testNavigation();
-		}
+		}*/
+		
+		/**
+		 * Arm movement test
 		 */
+		/*
+		for(int i = 0; i < 2000; i++){
+			armMovementTest();
+		}
+		*/
 		
 		// 3. Reset odometer to match the figure given in the project description
-//		resetOdo(gd);
+		resetOdo(gd);
 //		
 //		// 4. Play the game
 //		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
@@ -210,7 +240,8 @@ public class MainController {
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
-		navigation = new Navigation(odometer);
+		navigation = new Navigation(odometer, midUS, rightUS);
+		navigation.enableAvoid(false);
 		
 		// Disable side sensors and enable middle sensor
 		leftUS.disable();
@@ -247,8 +278,8 @@ public class MainController {
 		Role role = GameData.Role.Forward;
 		int startingCorner = 1;
 		int forwardLine = 1;
-		int w1 = 2, w2 = 4;
-		int bx = 5, by = 5;
+		int w1 = 4, w2 = 4;
+		int bx = -1, by = 5;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
@@ -269,10 +300,13 @@ public class MainController {
 	 * Tests localization
 	 */
 	public static void testLocalization(){
-		LCDInfo lcd = new LCDInfo(odometer);
-		odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
-		localizer.localize();
 		Button.waitForAnyPress();
+		initialize();
+
+		LCDInfo lcd = new LCDInfo(odometer);
+		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
+		localizer.localize();
+		Sound.beep();
 	}
 	
 	/**
@@ -284,20 +318,60 @@ public class MainController {
 	}
 	
 	/**
+	 * Tests arm movement
+	 */
+	public static void armMovementTest(){
+		Button.waitForAnyPress();
+		shooter.lowerArm();
+		Button.waitForAnyPress();
+		shooter.collect();
+		Button.waitForAnyPress();
+		shooter.raiseArmWithBall();
+		Button.waitForAnyPress();
+		shooter.lowerArmWithBall();
+		Button.waitForAnyPress();
+		shooter.shoot();
+		Button.waitForAnyPress();
+		shooter.raiseArm();
+	}
+	
+	/**
 	 * Tests Navigation
 	 * Drives to (0, 91.44), (60.96, 91.44), (30.48, 30.48), (0, 91.44), (0, 0)
 	 * Then rotates to 90 degrees, 270 degrees, 180 degrees and 0 degrees
 	 */
 	public static void testNavigation(){
-		navigation.travelTo(3 * BOX_SIZE, 0);
-		navigation.travelTo(3 * BOX_SIZE, 2 * BOX_SIZE);
+		navigation.enableAvoid(true);
+		
+		navigation.travelTo(0, 3 * BOX_SIZE);
+		navigation.travelTo(2 * BOX_SIZE, 3 * BOX_SIZE);
 		navigation.travelTo(1 * BOX_SIZE, 1 * BOX_SIZE);
-		navigation.travelTo(3 * BOX_SIZE, 0);
+		navigation.travelTo(0, 3 * BOX_SIZE);
 		navigation.travelTo(0, 0);
-		navigation.turnTo(90, false);
-		navigation.turnTo(270, false);
-		navigation.turnTo(180, false);
 		navigation.turnTo(0, true);
+		Button.waitForAnyPress();
+		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
+	}
+	
+	public static void pickupTest(){
+		int CLEARANCE = 45;
+		int BACK_UP_DISTANCE = 18;
+		navigation.travelTo(0 + CLEARANCE, 5 * BOX_SIZE);
+		navigation.turnTo(0, true);
+		shooter.lowerArm();
+		Delay.msDelay(500);
+		
+		navigation.goBackward(-BACK_UP_DISTANCE);
+		shooter.collect();
+
+		Sound.beep();
+		Delay.msDelay(10000);
+		
+		navigation.goForward(BACK_UP_DISTANCE);
+		shooter.raiseArmWithBall();
+		
+		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
+		
 		Button.waitForAnyPress();
 	}
 }

@@ -27,6 +27,7 @@ public class ForwardGameRole implements IGameRole {
 	private Navigation navigation;
 	private Odometer odometer;
 	private Shooter shooter;
+	private EV3UltrasonicSensor usSensor;
 	
 	private final double FORWARD_FIELD_LIMIT;
 	
@@ -40,6 +41,7 @@ public class ForwardGameRole implements IGameRole {
 	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, 
 			Shooter shooter, double BOX_SIZE){
 		this.gd = gd;
+		this.usSensor = usSensor;
 		this.navigation = navigation;
 		this.shooter = shooter;
 		this.BOX_SIZE = BOX_SIZE;
@@ -52,8 +54,8 @@ public class ForwardGameRole implements IGameRole {
 	@Override
 	public void play() {
 		// Travel to center of offense field
-		navigation.travelTo(5 * BOX_SIZE, BOX_SIZE);
-		navigation.turnTo(90, false);
+		navigation.travelTo(BOX_SIZE, 5 * BOX_SIZE);
+		navigation.turnTo(90, true);
 		
 		while(true) {
 			acquireBall();
@@ -74,9 +76,14 @@ public class ForwardGameRole implements IGameRole {
 		// the robot is to the right wall. Determine value experimentally
 		double rightWall = 10.5 * BOX_SIZE;
 		
+		// Enable the ultrasonic sensor for obstacle avoidance
+		if(!this.usSensor.isEnabled()) this.usSensor.enable();
+		
 		// Navigate through the exterior field to acquire a ball from the dispenser
 		if(dispenserX <= 5 * BOX_SIZE){
-			if(gd.getOmega().equals("N")){
+			// If the dispenser is located on the North-West wall
+			if(dispenserY == 11 * BOX_SIZE){
+				//Travel outside of the playing field
 				navigation.travelTo(0, 0);
 				navigation.travelTo(10.5 * BOX_SIZE, 0);
 				navigation.travelTo(10.5 * BOX_SIZE, dispenserX - CLEARANCE);
@@ -86,7 +93,8 @@ public class ForwardGameRole implements IGameRole {
 				navigation.travelTo(10.5 * BOX_SIZE, 0);
 				navigation.travelTo(FORWARD_FIELD_LIMIT, 0);
 			}
-			else if(gd.getOmega().equals("W")){
+			// If the dispenser is located on the West wall
+			else if(dispenserY >= 0){
 				navigation.travelTo(0, 0);
 				navigation.travelTo(dispenserY, -BOX_SIZE + CLEARANCE);
 				navigation.turnTo(90, true);
@@ -98,8 +106,9 @@ public class ForwardGameRole implements IGameRole {
 		
 		// Travel closer to the wall since the right sensor is facing 90 degrees and not 45 degrees
 		else{
-			if(gd.getOmega().equals("N")){
-				navigation.travelTo(0, rightWall * BOX_SIZE);
+			// If the dispenser is on the North-East wall
+			if(dispenserY == 11 * BOX_SIZE){
+				navigation.travelTo(0, rightWall);
 				navigation.travelTo(10.5 * BOX_SIZE, rightWall);
 				navigation.travelTo(10.5 * BOX_SIZE, dispenserX + CLEARANCE);
 				navigation.turnTo(90, true);
@@ -108,8 +117,9 @@ public class ForwardGameRole implements IGameRole {
 				navigation.travelTo(10.5 * BOX_SIZE, rightWall);
 				navigation.travelTo(FORWARD_FIELD_LIMIT, rightWall);
 			}
-			else if(gd.getOmega().equals("E")){
-				navigation.travelTo(0, rightWall * BOX_SIZE); 
+			// If the dispenser is on the East wall
+			else if(dispenserY >= 0){
+				navigation.travelTo(0, rightWall); 
 				navigation.travelTo(dispenserY, 11 * BOX_SIZE - CLEARANCE);
 				navigation.turnTo(270, true);
 				adjustPosition();
@@ -118,8 +128,8 @@ public class ForwardGameRole implements IGameRole {
 			}	
 		}
 		
-		// Roughly line up with the dispenser in the x direction
-		if(gd.getOmega().equals("S")){
+		// If the dispenser is on the South wall
+		if(dispenserY == -1 * BOX_SIZE){
 			navigation.travelTo(dispenserY + CLEARANCE, dispenserX);
 			navigation.turnTo(0, true);
 			adjustPosition();
@@ -132,7 +142,7 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	private void adjustPosition(){
 		shooter.lowerArm();
-		navigation.goForward(-BACK_UP_DISTANCE);
+		navigation.goBackward(-BACK_UP_DISTANCE);
 		shooter.collect();
 		navigation.goForward(BACK_UP_DISTANCE);
 		shooter.raiseArmWithBall();
@@ -190,7 +200,7 @@ public class ForwardGameRole implements IGameRole {
 		// Aims at the target
 		double angle = 90 - (2 * Math.PI / 360) * Math.atan2(10 * BOX_SIZE - odometer.getY(), 
 				5 * BOX_SIZE - odometer.getX());
-		navigation.turnTo(angle, false);
+		navigation.turnTo(angle, true);
 		
 		Delay.msDelay(1000);
 		shooter.shoot();
