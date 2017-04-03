@@ -58,12 +58,12 @@ public class ForwardGameRole implements IGameRole {
 		while(true) {
 			pickupBall();
 			moveToTarget();
-			shoot();
+			while (true) shoot();
 		}
 	}
 	
 	private void pickupBall() {
-		int clearance = 45;
+		int clearance = 40;
 		int backUp = 20;
 		
 		// Drive to position
@@ -74,7 +74,7 @@ public class ForwardGameRole implements IGameRole {
 			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, clearance);
 			navigation.turnTo(90, true);
 		} else {
-			navigation.travelTo(gd.getDispenserPosition().getY(), 8 - clearance);
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, (8 * BOX_SIZE) - clearance);
 			navigation.turnTo(270, true);
 		}
 		
@@ -133,8 +133,8 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	private void shoot() {
 		// Aims at the target
-		double angle = 90 - (2 * Math.PI / 360) * Math.atan2(10 * BOX_SIZE - odometer.getY(), 
-				5 * BOX_SIZE - odometer.getX());
+		double angle = (2 * Math.PI / 360) * Math.atan2(5 * BOX_SIZE - odometer.getY(), 
+				10 * BOX_SIZE - odometer.getX());
 		navigation.turnTo(angle, true);
 		
 		shooter.lowerArm();

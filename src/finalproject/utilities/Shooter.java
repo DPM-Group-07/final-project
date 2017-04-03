@@ -76,7 +76,7 @@ public class Shooter {
 	 * with the ball. Removes armRaised flag.
 	 */
 	public void lowerArm(){
-		rotateTo(10);
+		rotateTo(-5);
 	}
 	
 	/**
