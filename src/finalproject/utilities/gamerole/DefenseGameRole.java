@@ -160,14 +160,14 @@ public class DefenseGameRole implements IGameRole {
 		if(odometer.getX() > 5 * BOX_SIZE){
 			if(robotSide != Side.EAST){
 				shooter.setAdjustMode();
-				shooter.rotate(-30);
+				shooter.rotateTo(-30);
 			}
 			robotSide = Side.EAST;
 		}
 		else{
 			if(robotSide != Side.WEST){
 				shooter.setAdjustMode();
-				shooter.rotate(30);
+				shooter.rotateTo(-30);
 			}
 			robotSide = Side.WEST;
 		}

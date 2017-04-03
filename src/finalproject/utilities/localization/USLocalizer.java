@@ -135,6 +135,7 @@ public class USLocalizer implements ILocalizer {
 				if (getFilteredData() < LOWER_NOISE_BOUND) {
 					robotIsFacingWall = true;
 					Sound.twoBeeps();
+					Delay.msDelay(1000);
 				}
 			}
 			

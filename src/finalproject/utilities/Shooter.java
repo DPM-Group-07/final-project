@@ -28,16 +28,19 @@ public class Shooter {
 	//Angle to lower the arm to resting position
 	private static final int REST_ANGLE = -60;
 	
+	
+	private static final int ARM_RAISED_ANGLE = -125;
+	private static final int ARM_COLLECT_ANGLE = -30;
+	private static final int ARM_RAISED_WITH_BALL_ANGLE = -60;
+	private static final int ARM_SHOT_ANGLE = -140;
+	
 	private EV3LargeRegulatedMotor shooterMotorL, shooterMotorR;
 	
-	private boolean armRaised, hasBall;
 	/**
 	 * This is the initializer. It gets the wheel motors from the odometer. The shooter motors should be passed when the
 	 * initializer is called. The arm should be raised and the scoop should be clear of objects.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorL, EV3LargeRegulatedMotor shooterMotorR) {
-		this.armRaised = true;
-		this.hasBall = false;
 		this.shooterMotorR = shooterMotorR;
 		this.shooterMotorL = shooterMotorL;
 	}
@@ -49,8 +52,6 @@ public class Shooter {
 	 * @param armRaised True if the launch arms are raised, i.e. 90 degrees to the horizon.
 	 */
 	public Shooter(EV3LargeRegulatedMotor shooterMotorL, EV3LargeRegulatedMotor shooterMotorR, boolean armRaised){
-		this.armRaised = armRaised;
-		this.hasBall = false;
 		this.shooterMotorL = shooterMotorL;
 		this.shooterMotorR = shooterMotorR;
 	}
@@ -63,16 +64,13 @@ public class Shooter {
 		setShootMode();
 		
 		// Now shoot from resting position
-		rotate(SHOOTING_ANGLE);
+		rotateTo(ARM_SHOT_ANGLE);
 				
 		// Sets motor speeds and accelerations to adjustment mode
 		setAdjustMode();
 		
 		// Rotate the arm back to resting position
-		rotate(-SHOOTING_ANGLE);
-		
-		hasBall = false;
-		armRaised = false;
+		lowerArm();
 	}
 	
 	/**
@@ -80,11 +78,7 @@ public class Shooter {
 	 * Sets armRaised flag.
 	 */
 	public void raiseArm() {
-		if(!armRaised){
-			setAdjustMode();
-			rotate(RAISE_ANGLE);
-			armRaised = true;
-		}
+		rotateTo(ARM_RAISED_ANGLE);
 	}
 	
 	/**
@@ -92,27 +86,14 @@ public class Shooter {
 	 * with the ball. Removes armRaised flag.
 	 */
 	public void lowerArm(){
-		if(armRaised){
-			setAdjustMode();
-			rotate(-RAISE_ANGLE);
-			armRaised = false;
-		}
+		rotateTo(0);
 	}
 	
 	/**
 	 * Lowers the arm to collect the ball. Sets hasBall flag to true.
 	 */
 	public void collect(){
-		setAdjustMode();
-		if(armRaised){
-			rotate(-RAISE_ANGLE);
-			rotate(-(REST_ANGLE - DISPENSER_ANGLE));
-			armRaised = false;
-		}
-		else{
-			rotate(-(REST_ANGLE-DISPENSER_ANGLE));
-		}
-		hasBall = true;
+		rotateTo(ARM_COLLECT_ANGLE);		
 	}
 	
 	/**
@@ -120,43 +101,7 @@ public class Shooter {
 	 * This method roughly raises the launch arm parallel to the horizon.
 	 */
 	public void raiseArmWithBall(){
-		rotate(-DISPENSER_ANGLE);
-	}
-	
-	/**
-	 * Lowers the arm from the horizon with the ball. Only call after raiseArmWithBall has been
-	 * called. this method roughly lowers the arm into the launching position.
-	 */
-	public void lowerArmWithBall(){
-		rotate(REST_ANGLE);
-	}
-	
-	/**
-	 * Returns true if the robot believes it has a ball.
-	 * @return Boolean determining whether or not the robot has a ball.
-	 */
-	public boolean getBallState(){
-		return this.hasBall;
-	}
-	
-	/**
-	 * Returns true if the arm is raised.
-	 * @return Boolean determining whether or not the launching arm is raised.
-	 */
-	public boolean getArmState(){
-		return this.armRaised;
-	}
-	
-	/**
-	 * Rotate the motor by a specified angle and lock the motors to the new angle.
-	 * @param angle Rotation angle in degrees.
-	 */
-	public void rotate(int angle){
-		shooterMotorL.rotate(-angle, true);
-		shooterMotorR.rotate(-angle, false);
-		
-		shooterMotorL.stop(true);
-		shooterMotorR.stop();
+		rotateTo(ARM_RAISED_WITH_BALL_ANGLE);
 	}
 	
 	/**
@@ -195,5 +140,16 @@ public class Shooter {
 		
 		shooterMotorL.setSpeed(STRAIGHT_SHOOTING_SPEED);
 		shooterMotorR.setSpeed(STRAIGHT_SHOOTING_SPEED);
+	}
+	
+	/**
+	 * Rotate arm to an angle.
+	 */
+	public void rotateTo(int angle) {
+		shooterMotorL.rotateTo(angle, true);
+		shooterMotorR.rotateTo(angle, false);
+		
+		shooterMotorL.stop(true);
+		shooterMotorR.stop();
 	}
 }

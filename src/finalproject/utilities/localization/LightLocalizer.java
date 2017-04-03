@@ -89,9 +89,4 @@ public class LightLocalizer implements ILocalizer {
 		
 		odo.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, false});
 	}
-	
-	public void reLocalize(){
-		
-	}
-
 }

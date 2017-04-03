@@ -6,6 +6,7 @@ import finalproject.objects.GameData;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
@@ -53,15 +54,43 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	@Override
 	public void play() {
-		// Travel to center of offense field
-		navigation.travelTo(BOX_SIZE, 5 * BOX_SIZE);
-		navigation.turnTo(90, true);
-		
 		while(true) {
-			acquireBall();
-			moveToTarget();
-			shoot();
+			pickupBall();
 		}
+	}
+	
+	private void pickupBall() {
+		
+		int clearance = 45;
+		int backUp = 20;
+		
+		// Drive to position
+		if (gd.getOmega().equals("N")) {
+			navigation.travelTo(clearance, gd.getDispenserPosition().getX());
+			navigation.turnTo(0, true);
+		} else if (gd.getOmega().equals("E")){
+			navigation.travelTo(gd.getDispenserPosition().getY(), clearance);
+			navigation.turnTo(90, true);
+		} else {
+			navigation.travelTo(gd.getDispenserPosition().getY(), 8 - clearance);
+			navigation.turnTo(270, true);
+		}
+		
+		shooter.lowerArm();
+		Delay.msDelay(500);
+		
+		navigation.goBackward(-backUp);
+		shooter.collect();
+
+		Sound.beep();
+		Delay.msDelay(10000);
+		
+		navigation.goForward(backUp);
+		shooter.raiseArmWithBall();
+		Delay.msDelay(1000);
+		shooter.lowerArm();		
+		Button.waitForAnyPress();
+		Sound.twoBeeps();
 	}
 	
 	/**

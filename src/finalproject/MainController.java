@@ -75,20 +75,16 @@ public class MainController {
 			Delay.msDelay(50);
 		}
 				
-		GameData gd = noWifi();
 		initialize();
-
 
 		// 1. Get game data from Wi-Fi
 //		t.clear();
 //		t.drawString("Connecting...", 0, 0);
-		
+		GameData gd = noWifi();
 //		GameData gd;
 //		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 //		Map data;
 		
-		
-//		
 //		try {
 //			data = wc.getData();
 //			gd = new GameData(data, TEAM_NUMBER);
@@ -96,10 +92,6 @@ public class MainController {
 //			error(e.getMessage());
 //			return;
 //		}
-		
-		// Test without wifi
-	
-		
 
 //		t.drawString("Game data OK", 0, 1);
 //		Sound.beep();
@@ -109,71 +101,26 @@ public class MainController {
 //		t.drawString("Localizing...", 0, 2);
 //		Button.waitForAnyPress();
 		LCDInfo lcd = new LCDInfo(odometer);
-		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
-		localizer.localize();
-		Sound.beep();
+		
+		while (true) {
+			localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
+			localizer.localize();
+			Sound.beep();
+			int press = Button.waitForAnyPress();
+			Delay.msDelay(2000);
+			if (press == Button.ID_RIGHT) {
+				break;
+			}
+		}
+		
 		resetOdo(gd);
 		t.clear();
 //		System.out.println("Localization OK");
 		
-		/**
-		 * Square driver
-		 */
-		
-		/*for(int i = 0 ; i < 2000; i++){
-			odometer.driveSquare();
-			Button.waitForAnyPress();
-		}*/
-		
-		
-		/**
-		 * Picking up ball
-		 */
-		for(int i = 0 ; i < 2000; i++){
-			pickupTest();
-		}
-		
-		/**
-		 * Tests Localization
-		 */
-		/*
-		for(int i = 0; i < 2000; i++){
-			testLocalization();
-		}*/
-			
-		/**
-		 * Tests Shooter
-		 */
-		/*
-		for(int i = 0; i < 2000; i++){
-			testShooter();
-		}
-		*/		
-		
-		/**
-		 * Tests Navigation
-		 */
-		/*
-		Delay.msDelay(5000);
-		for(int i = 0; i < 2000; i++){
-			testNavigation();
-		}*/
-		
-		/**
-		 * Arm movement test
-		 */
-		/*
-		for(int i = 0; i < 2000; i++){
-			armMovementTest();
-		}
-		*/
-		
-		// 3. Reset odometer to match the figure given in the project description
-		resetOdo(gd);
 //		
 //		// 4. Play the game
-//		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
-//		mgr.play();
+		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
+		mgr.play();
 		
 		Button.waitForAnyPress();
 		System.exit(0);
@@ -231,6 +178,8 @@ public class MainController {
 		// Lock the arm in position
 		shooter = new Shooter(leftLaunchMotor, rightLaunchMotor);
 		shooter.stop();
+		shooter.setAdjustMode();
+		shooter.raiseArm();
 		
 		// Instantiate critical utilities
 		odometer = new Odometer(leftMotor, rightMotor, 30, true);
@@ -241,6 +190,11 @@ public class MainController {
 		leftUS.disable();
 		midUS.enable();
 		rightUS.disable();
+		
+		// Beep for ready
+		Sound.twoBeeps();
+		Button.waitForAnyPress();
+		Delay.msDelay(1000);
 	}
 	
 	/**
@@ -273,7 +227,7 @@ public class MainController {
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
-		int bx = -1, by = 5;
+		int bx = 3, by = -1;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
@@ -323,7 +277,7 @@ public class MainController {
 		Button.waitForAnyPress();
 		shooter.raiseArmWithBall();
 		Button.waitForAnyPress();
-		shooter.lowerArmWithBall();
+		shooter.lowerArm();
 		Button.waitForAnyPress();
 		shooter.shoot();
 		Button.waitForAnyPress();
@@ -348,10 +302,10 @@ public class MainController {
 		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
 	}
 	
-	public static void pickupTest(){
+	public static void pickupTest(int x, int y){
 		int CLEARANCE = 45;
-		int BACK_UP_DISTANCE = 18;
-		navigation.travelTo(0 + CLEARANCE, 5 * BOX_SIZE);
+		int BACK_UP_DISTANCE = 20;
+		navigation.travelTo(x + CLEARANCE, y * BOX_SIZE);
 		navigation.turnTo(0, true);
 		shooter.lowerArm();
 		Delay.msDelay(500);
@@ -364,6 +318,7 @@ public class MainController {
 		
 		navigation.goForward(BACK_UP_DISTANCE);
 		shooter.raiseArmWithBall();
+		shooter.lowerArm();
 		
 		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
 		
