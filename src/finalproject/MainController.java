@@ -102,21 +102,13 @@ public class MainController {
 //		Button.waitForAnyPress();
 		LCDInfo lcd = new LCDInfo(odometer);
 		
-		while (true) {
-			localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
-			localizer.localize();
-			Sound.beep();
-			int press = Button.waitForAnyPress();
-			Delay.msDelay(2000);
-			if (press == Button.ID_RIGHT) {
-				break;
-			}
-		}
+		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
+		localizer.localize();
+		Sound.beep();
+		Button.waitForAnyPress();
 		
-		resetOdo(gd);
 		t.clear();
 //		System.out.println("Localization OK");
-		
 //		
 //		// 4. Play the game
 		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
@@ -198,25 +190,6 @@ public class MainController {
 	}
 	
 	/**
-	 * Resets the odometer to correct data based on starting corner.
-	 * @param gd The GameData object that contains all game data.
-	 */
-	private static void resetOdo(GameData gd){
-		int corner = gd.getStartingCorner();
-		boolean[] update = {true, true, true};
-		switch(corner){
-			case 1: odometer.setPosition(new double[] {0.0, 0.0, 0.0}, update);
-					break;
-			case 2: odometer.setPosition(new double[] {10 * BOX_SIZE, 0.0, 270.0}, update);
-					break;
-			case 3: odometer.setPosition(new double[] {10 * BOX_SIZE, 10 * BOX_SIZE, 180.0}, update);
-					break;
-			case 4: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 90.0}, update);
-					break;
-		}
-	}
-	
-	/**
 	 * Mimics Wifi mode.
 	 * @return A configured GameData object containing all pertaining data.
 	 */
@@ -227,11 +200,11 @@ public class MainController {
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
-		int bx = -1, by = 3;
+		int bx = -1, by = 2;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
-		String omega = "N";	
+		String omega = "E";
 		
 		gd.setTeamNumber(teamNumber);
 		gd.setRole(role);
@@ -242,86 +215,5 @@ public class MainController {
 		gd.setOmega(omega);
 		
 		return gd;
-	}
-	
-	/**
-	 * Tests localization
-	 */
-	public static void testLocalization(){
-		Button.waitForAnyPress();
-		initialize();
-
-		LCDInfo lcd = new LCDInfo(odometer);
-		odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
-		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LocalizationType.RISING_EDGE);
-		localizer.localize();
-		Sound.beep();
-	}
-	
-	/**
-	 * Tests shooter
-	 */
-	public static void testShooter(){
-		Button.waitForAnyPress();
-		shooter.shoot();
-	}
-	
-	/**
-	 * Tests arm movement
-	 */
-	public static void armMovementTest(){
-		Button.waitForAnyPress();
-		shooter.lowerArm();
-		Button.waitForAnyPress();
-		shooter.collect();
-		Button.waitForAnyPress();
-		shooter.raiseArmWithBall();
-		Button.waitForAnyPress();
-		shooter.lowerArm();
-		Button.waitForAnyPress();
-		shooter.shoot();
-		Button.waitForAnyPress();
-		shooter.raiseArm();
-	}
-	
-	/**
-	 * Tests Navigation
-	 * Drives to (0, 91.44), (60.96, 91.44), (30.48, 30.48), (0, 91.44), (0, 0)
-	 * Then rotates to 90 degrees, 270 degrees, 180 degrees and 0 degrees
-	 */
-	public static void testNavigation(){
-		navigation.enableAvoid(true);
-		
-		navigation.travelTo(0, 3 * BOX_SIZE);
-		navigation.travelTo(2 * BOX_SIZE, 3 * BOX_SIZE);
-		navigation.travelTo(1 * BOX_SIZE, 1 * BOX_SIZE);
-		navigation.travelTo(0, 3 * BOX_SIZE);
-		navigation.travelTo(0, 0);
-		navigation.turnTo(0, true);
-		Button.waitForAnyPress();
-		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
-	}
-	
-	public static void pickupTest(int x, int y){
-		int CLEARANCE = 45;
-		int BACK_UP_DISTANCE = 20;
-		navigation.travelTo(x + CLEARANCE, y * BOX_SIZE);
-		navigation.turnTo(0, true);
-		shooter.lowerArm();
-		Delay.msDelay(500);
-		
-		navigation.goBackward(-BACK_UP_DISTANCE);
-		shooter.collect();
-
-		Sound.beep();
-		Delay.msDelay(10000);
-		
-		navigation.goForward(BACK_UP_DISTANCE);
-		shooter.raiseArmWithBall();
-		shooter.lowerArm();
-		
-		odometer.setPosition(new double[] {0.0, 0.0, 0.0}, new boolean[] {true, true, true});
-		
-		Button.waitForAnyPress();
 	}
 }

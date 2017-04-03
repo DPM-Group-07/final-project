@@ -36,6 +36,8 @@ public class MasterGameRole {
 	 * Starts playing as the game role specified.
 	 */
 	public void play() {
+		resetOdo(gameData);
+		
 		if (gameData.getRole() == GameData.Role.Forward) {
 			gameRole = new ForwardGameRole(gameData, navigation, odometer, midSensor, shooter, BOX_SIZE);
 		} else {
@@ -43,5 +45,24 @@ public class MasterGameRole {
 		}
 		
 		gameRole.play();
+	}
+	
+	/**
+	 * Resets the odometer to correct data based on starting corner.
+	 * @param gd The GameData object that contains all game data.
+	 */
+	private void resetOdo(GameData gd) {
+		int corner = gd.getStartingCorner();
+		boolean[] update = {true, true, true};
+		switch(corner){
+			case 1: odometer.setPosition(new double[] {0.0, 0.0, 0.0}, update);
+					break;
+			case 2: odometer.setPosition(new double[] {10 * BOX_SIZE, 0.0, 270.0}, update);
+					break;
+			case 3: odometer.setPosition(new double[] {10 * BOX_SIZE, 10 * BOX_SIZE, 180.0}, update);
+					break;
+			case 4: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 90.0}, update);
+					break;
+		}
 	}
 }

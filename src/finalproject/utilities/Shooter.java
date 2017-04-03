@@ -19,18 +19,8 @@ public class Shooter {
 	private static final int STRAIGHT_SHOOTING_SPEED = 12000;
 	private static final int STRAIGHT_ACCEL = 15000;
 	
-	//Angle shooting arm rotates through to shoot
-	private static final int SHOOTING_ANGLE = 140;
-	//Angle at which the dispenser is located from the horizon
-	private static final int DISPENSER_ANGLE = -30;
-	//Angle to raise to vertical from resting position
-	private static final int RAISE_ANGLE = 135;
-	//Angle to lower the arm to resting position
-	private static final int REST_ANGLE = -60;
-	
-	
 	private static final int ARM_RAISED_ANGLE = -125;
-	private static final int ARM_COLLECT_ANGLE = -30;
+	private static final int ARM_COLLECT_ANGLE = -25;
 	private static final int ARM_RAISED_WITH_BALL_ANGLE = -60;
 	private static final int ARM_SHOT_ANGLE = -140;
 	
@@ -86,7 +76,7 @@ public class Shooter {
 	 * with the ball. Removes armRaised flag.
 	 */
 	public void lowerArm(){
-		rotateTo(0);
+		rotateTo(10);
 	}
 	
 	/**
