@@ -66,7 +66,7 @@ public class ForwardGameRole implements IGameRole {
 		
 		// Drive to position
 		if (gd.getOmega().equals("N")) {
-			navigation.travelTo(clearance, gd.getDispenserPosition().getX());
+			navigation.travelTo(clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
 			navigation.turnTo(0, true);
 		} else if (gd.getOmega().equals("E")){
 			navigation.travelTo(gd.getDispenserPosition().getY(), clearance);

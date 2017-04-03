@@ -227,7 +227,7 @@ public class MainController {
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
-		int bx = 3, by = -1;
+		int bx = -1, by = 3;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);

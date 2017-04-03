@@ -12,6 +12,7 @@ public class LightLocalizer implements ILocalizer {
 	private static final double START_GO_FORWARD = 7.5;
 	private static final double X_CORRECTION = 0.0;
 	private static final double Y_CORRECTION = 2.0;
+	private static final double THETA_CORRECTION = 357;
 	
 	private Odometer odo;
 	private SampleProvider colorSensor;
@@ -74,8 +75,8 @@ public class LightLocalizer implements ILocalizer {
 		
 		finalY = -COLOR_SENSOR_RADIUS * Math.cos(Math.toRadians(thetaY / 2.0));
 		
-		odo.setPosition(new double[] {finalX + X_CORRECTION, finalY + Y_CORRECTION, 0.0}, 
-				new boolean[] {true, true, false});
+		odo.setPosition(new double[] {finalX + X_CORRECTION, finalY + Y_CORRECTION, THETA_CORRECTION}, 
+				new boolean[] {true, true, true});
 		// when done travel to (0,0) and turn to 0 degrees
 		navigation.travelTo(0.0, 0.0);
 		navigation.turnTo(0.0, true);
