@@ -77,9 +77,8 @@ public class MainController {
 				
 		GameData gd = noWifi();
 		initialize();
-		
-		
-		
+
+
 		// 1. Get game data from Wi-Fi
 //		t.clear();
 //		t.drawString("Connecting...", 0, 0);
@@ -89,11 +88,6 @@ public class MainController {
 //		Map data;
 		
 		
-//		
-//		GameData gd;
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
-//		
 //		
 //		try {
 //			data = wc.getData();
@@ -304,7 +298,8 @@ public class MainController {
 		initialize();
 
 		LCDInfo lcd = new LCDInfo(odometer);
-		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
+		odometer.setPosition(new double[] {0.0, 0.0, 90.0}, new boolean[] {true,true,true});
+		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LocalizationType.RISING_EDGE);
 		localizer.localize();
 		Sound.beep();
 	}
