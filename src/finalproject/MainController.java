@@ -196,7 +196,7 @@ public class MainController {
 	private static GameData noWifi(){
 		GameData gd = new GameData();
 		int teamNumber = 7;
-		Role role = GameData.Role.Forward;
+		Role role = GameData.Role.Defense;
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
