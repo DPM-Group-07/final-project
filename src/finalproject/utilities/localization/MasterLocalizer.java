@@ -1,5 +1,6 @@
 package finalproject.utilities.localization;
 
+import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.localization.USLocalizer.LocalizationType;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -21,6 +22,8 @@ public class MasterLocalizer {
 	private EV3UltrasonicSensor usSensor;
 	private EV3ColorSensor colorSensor;
 	private Odometer odometer;
+	private Navigation navigation;
+	
 	
 	/**
 	 * Public constructor for MasterLocalizer must be called with valid references to all
@@ -29,9 +32,11 @@ public class MasterLocalizer {
 	 * @param usSensor A reference to an ultrasonic sensor used for US localization.
 	 * @param colorSensor A reference to a color sensor for for light localization.
 	 */
-	public MasterLocalizer(Odometer odometer, EV3UltrasonicSensor usSensor, EV3ColorSensor colorSensor, LocalizationType localizationType) {
+	public MasterLocalizer(Odometer odometer, Navigation navigation, EV3UltrasonicSensor usSensor, 
+			EV3ColorSensor colorSensor, LocalizationType localizationType) {
 		this.odometer = odometer;
 		this.usSensor = usSensor;
+		this.navigation = navigation;
 		this.colorSensor = colorSensor;
 		this.localizationType = localizationType;
 	}
@@ -47,8 +52,8 @@ public class MasterLocalizer {
 		SampleProvider colorValue = colorSensor.getMode("Red");			// colorValue provides samples from this instance
 		float[] colorData = new float[colorValue.sampleSize()];			// colorData is the buffer in which data are returned
 		
-		usLocalizer = new USLocalizer(odometer, usValue, usData, localizationType);
-		lightLocalizer = new LightLocalizer(odometer, colorValue, colorData);
+		usLocalizer = new USLocalizer(odometer, navigation, usValue, usData, localizationType);
+		lightLocalizer = new LightLocalizer(odometer, navigation, colorValue, colorData);
 
 		usLocalizer.doLocalization();
 		lightLocalizer.doLocalization();
