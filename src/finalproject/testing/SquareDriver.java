@@ -12,14 +12,16 @@ public class SquareDriver {
 	/**
 	 * Test drives the robot in a square 4 times to see the calculate error. Obtained from lab 2. 
 	 * Modify parameters in Odometer.java to desired performance.
-	 * @param leftMotor 
-	 * @param rightMotor 
+	 * @param leftMotor Left Motor object.
+	 * @param rightMotor Right Motor object.
 	 * @param leftRadius radius of left wheel in cm
 	 * @param rightRadius radius of right wheel in cm
 	 * @param width width of chassis in cm
 	 */
 	public static void drive(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 			double leftRadius, double rightRadius, double width) {
+			leftMotor.setAcceleration(1000);
+			rightMotor.setAcceleration(1000);
 		
 		for (int i = 0; i < LAP_NUMBER * 4; i++) {
 			// drive forward two tiles

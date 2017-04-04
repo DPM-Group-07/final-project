@@ -12,53 +12,58 @@ public class MasterGameRole {
 	private IGameRole gameRole;
 	private Odometer odometer;
 	private Shooter shooter;
-	private EV3UltrasonicSensor usSensor;
+	private EV3UltrasonicSensor midSensor, rightSensor;
+	
+	private final double BOX_SIZE;
 	
 	/**
 	 * Public constructor for MasterGameRole.
 	 * @param gameData The GameData object that contains all game data.
 	 * @param navigation The Navigation object for controlling the robot.
 	 */
-	public MasterGameRole(GameData gameData, Navigation navigation, Odometer odometer, Shooter shooter, EV3UltrasonicSensor usSensor) {
+	public MasterGameRole(GameData gameData, Navigation navigation, Odometer odometer, Shooter shooter, 
+			EV3UltrasonicSensor midSensor, EV3UltrasonicSensor rightSensor, double BOX_SIZE) {
 		this.gameData = gameData;
 		this.navigation = navigation;
 		this.odometer = odometer;
 		this.shooter = shooter;
-		this.usSensor = usSensor;
+		this.midSensor = midSensor;
+		this.rightSensor = rightSensor;
+		this.BOX_SIZE = BOX_SIZE;
 	}
 	
 	/**
 	 * Starts playing as the game role specified.
 	 */
 	public void play() {
-		goToStart();
+		resetOdo(gameData);
 		
 		if (gameData.getRole() == GameData.Role.Forward) {
-			gameRole = new ForwardGameRole(gameData, navigation, odometer, shooter);
+			rightSensor.disable();
+			gameRole = new ForwardGameRole(gameData, navigation, odometer, midSensor, shooter, BOX_SIZE);
 		} else {
-			gameRole = new DefenseGameRole(gameData, navigation, odometer, usSensor, shooter);
+			midSensor.disable();
+			gameRole = new DefenseGameRole(gameData, navigation, odometer, rightSensor, shooter, BOX_SIZE);
 		}
 		
 		gameRole.play();
 	}
 	
 	/**
-	 * Travels to the starting corner.
+	 * Resets the odometer to correct data based on starting corner.
+	 * @param gd The GameData object that contains all game data.
 	 */
-	private void goToStart(){
-		int corner = gameData.getStartingCorner();
+	private void resetOdo(GameData gd) {
+		int corner = gd.getStartingCorner();
+		boolean[] update = {true, true, true};
 		switch(corner){
-			case 1: navigation.travelTo(-15.0, -15.0);
-					navigation.turnTo(0, false);
+			case 1: odometer.setPosition(new double[] {0.0, 0.0, 0.0}, update);
 					break;
-			case 2: navigation.travelTo(304.8 + 15.0, -15.0);
-					navigation.turnTo(270, false);
+			case 2: odometer.setPosition(new double[] {10 * BOX_SIZE, 0.0, 270.0}, update);
 					break;
-			case 3: navigation.travelTo(304.8 + 15.0, 304.8 + 15.0);
-					navigation.turnTo(270, false);
+			case 3: odometer.setPosition(new double[] {10 * BOX_SIZE, 10 * BOX_SIZE, 180.0}, update);
 					break;
-			case 4: navigation.travelTo(-15.0, 304.8 + 15.0);
-					navigation.turnTo(0, false);
+			case 4: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 90.0}, update);
 					break;
 		}
 	}

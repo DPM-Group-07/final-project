@@ -49,9 +49,9 @@ public class Odometer implements TimerListener {
 		this.rightMotor = rightMotor;
 		
 		// default values, modify for your robot
-		this.rightRadius = 2.1;
-		this.leftRadius = 2.1;
-		this.width = 18.54;
+		this.rightRadius = 2.00;
+		this.leftRadius = 2.00;
+		this.width = 19.40;
 		
 		this.x = 0.0;
 		this.y = 0.0;
@@ -177,6 +177,17 @@ public class Odometer implements TimerListener {
 		synchronized (this) {
 			return new double[] { x, y, theta };
 		}
+	}
+	
+	// Returns track width, left and right wheel radii
+	public double getLeftRadius(){
+		return this.leftRadius;
+	}
+	public double getRightRadius(){
+		return this.rightRadius;
+	}
+	public double getTrack(){
+		return this.width;
 	}
 	
 	// accessors to motors

@@ -6,7 +6,9 @@ import finalproject.objects.GameData;
 import finalproject.utilities.Navigation;
 import finalproject.utilities.Odometer;
 import finalproject.utilities.Shooter;
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.utility.Delay;
 
 /**
@@ -16,14 +18,20 @@ import lejos.utility.Delay;
  *
  */
 public class ForwardGameRole implements IGameRole {
-	// Clearance needed from center of rotation to the scope of the launch arm in cm
-	private int CLEARANCE = 30;
-	private double SQUARE_SIZE = 30.48;
+	// Rough clearance needed from center of rotation to the dispenser's mouth in cm
+	private final int CLEARANCE = 45;
+	// Adjustment distance from robot's scope to dispenser's mouth
+	private final int BACK_UP_DISTANCE = 10;
+	private final double BOX_SIZE;
 	
 	private GameData gd;
 	private Navigation navigation;
 	private Odometer odometer;
 	private Shooter shooter;
+	private EV3UltrasonicSensor usSensor;
+	
+	private boolean firstShot = true;	
+	private final double FORWARD_FIELD_LIMIT;
 	
 	/**
 	 * Public constructor for Forward. Must be called with valid references.
@@ -32,10 +40,15 @@ public class ForwardGameRole implements IGameRole {
 	 * @param odometer Odometer object for odometry.
 	 * @param shooter Shooter object to control launch motors.
 	 */
-	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, Shooter shooter){
+	public ForwardGameRole(GameData gd, Navigation navigation, Odometer odometer, EV3UltrasonicSensor usSensor, 
+			Shooter shooter, double BOX_SIZE){
 		this.gd = gd;
+		this.usSensor = usSensor;
 		this.navigation = navigation;
+		this.odometer = odometer;
 		this.shooter = shooter;
+		this.BOX_SIZE = BOX_SIZE;
+		this.FORWARD_FIELD_LIMIT = (10 - gd.getForwardLine()) * BOX_SIZE;
 	}
 	
 	/**
@@ -43,76 +56,96 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	@Override
 	public void play() {
-		navigation.travelTo(5*30.48, 30.48);
-		navigation.turnTo(90, false);
-		
 		while(true) {
-			acquireBall();
+			pickupBall();
 			moveToTarget();
 			shoot();
 		}
 	}
 	
-	/**
-	 * Goes to the dispenser to acquire a ball.
-	 */
-	private void acquireBall(){
-		double dispenserX = gd.getDispenserPosition().getX() * SQUARE_SIZE;
-		double dispenserY = gd.getDispenserPosition().getY() * SQUARE_SIZE;
+	private void pickupBall() {
+		int clearance = 45;
+		int backUp = 20;
 		
-		switch(gd.getOmega()){
-			case "N": navigation.travelTo(dispenserX, dispenserY + CLEARANCE);
-					  navigation.turnTo(90, false);
-					  break;
-			case "S": navigation.travelTo(dispenserX, dispenserY - CLEARANCE);
-					  navigation.turnTo(270, false);
-					  break;
-			case "W": navigation.travelTo(dispenserX - CLEARANCE, dispenserY);
-					  navigation.turnTo(0, false);
-					  break;
-			case "E": navigation.travelTo(dispenserX + CLEARANCE, dispenserY);
-					  navigation.turnTo(180, false);
-					  break;
+		// Drive to position
+		if (gd.getOmega().equals("N")) {
+			navigation.travelTo(clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
+			navigation.turnTo(0, true);
+		} else if (gd.getOmega().equals("E")){
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, clearance);
+			navigation.turnTo(90, true);
+		} else if (gd.getOmega().equals("S")){
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE - clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
+			navigation.turnTo(180, true);
+		} else {
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, 11 * BOX_SIZE - clearance);
+			navigation.turnTo(270, true);
 		}
-		// TODO implement Shooter class
-		shooter.lowerArm();
-		Sound.setVolume(100);
-		Sound.beep();
 		
-		// Wait for task to complete
-		// Needs tweaking
+		shooter.lowerArm();
+		Delay.msDelay(500);
+		
+		navigation.goBackward(-backUp);
+		shooter.collect();
+
+		Sound.beep();
 		Delay.msDelay(10000);
+		// PICK UP NOW
+		
+		navigation.goForward(backUp);
+		shooter.raiseArmWithBall();
+		Delay.msDelay(1000);
 	}
 	
 	/**
 	 * Moves into position to launch the ball;
 	 */
 	private void moveToTarget(){
-		// TODO implement Shooter class
-		shooter.raiseArmToMove();
-		
 		// Let the robot randomly select a position to fire from
-		// Generate a random number from 1 to 6
+		// Generate a random number from 1 to 4
 		Random rand = new Random();
-		int randInt = rand.nextInt(6) + 1;
+		int randInt = rand.nextInt(3) + 1;
 		
-		switch(randInt){
-			case 1: navigation.travelTo(2*SQUARE_SIZE, SQUARE_SIZE); break;
-			case 2: navigation.travelTo(3*SQUARE_SIZE, SQUARE_SIZE/2); break;
-			case 3: navigation.travelTo(4*SQUARE_SIZE, SQUARE_SIZE/3); break;
-			case 4: navigation.travelTo(6*SQUARE_SIZE, SQUARE_SIZE/3); break;
-			case 5: navigation.travelTo(7*SQUARE_SIZE, SQUARE_SIZE/2); break;
-			case 6: navigation.travelTo(8*SQUARE_SIZE, SQUARE_SIZE); break;
-		}
+		moveToLocation(randInt);
+		
+		// If the random generation is true, move to a new position to throw off the opponent
+		// If not move on to firing
+//		boolean moveAgain = rand.nextBoolean();
+//		if(moveAgain && !firstShot){
+//			randInt = rand.nextInt(3) + 1;
+//			moveToLocation(randInt);
+//		}
+	}
+	
+	/**
+	 * Moves the robot into position using a Navigation object. The launch location is roughly 8.3 feet away
+	 * target.
+	 * @param pos Integer representing the location of launch.
+	 */
+	private void moveToLocation(int pos){
+//		switch(pos){
+//			case 1: navigation.travelTo(2.5 * BOX_SIZE, 3 * BOX_SIZE); break;
+//			case 2: navigation.travelTo(2 * BOX_SIZE, 5 * BOX_SIZE); break;
+//			case 3: navigation.travelTo(2.5 * BOX_SIZE, 7 * BOX_SIZE); break;
+//		}
+		navigation.travelTo(2 * BOX_SIZE, 4 * BOX_SIZE);
 	}
 	
 	/**
 	 * Rotate toward the target and launches the ball at the target.
 	 */
 	private void shoot() {
-		double angle = 2 * Math.PI / 360 * Math.atan2(5 * SQUARE_SIZE - odometer.getX(), 
-				10 * SQUARE_SIZE - odometer.getY());
-		navigation.turnTo(angle, false);
+		// Aims at the target
+		double angle = 90 - (2 * Math.PI / 360) * Math.atan2(10 * BOX_SIZE - odometer.getY(), 
+				5 * BOX_SIZE - odometer.getX());
+		navigation.turnTo(angle, true);
+		
+		shooter.lowerArm();
+		Delay.msDelay(1000);
 		shooter.shoot();
+		
+		firstShot = false;
+		
+		Button.waitForAnyPress();
 	}
 }
