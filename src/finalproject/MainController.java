@@ -101,12 +101,12 @@ public class MainController {
 //		t.drawString("Localizing...", 0, 2);
 //		Button.waitForAnyPress();
 		LCDInfo lcd = new LCDInfo(odometer);
-		
+//		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
 		localizer.localize();
 		Sound.beep();
 		Button.waitForAnyPress();
-		
+//		
 		t.clear();
 //		System.out.println("Localization OK");
 //		
@@ -196,7 +196,7 @@ public class MainController {
 	private static GameData noWifi(){
 		GameData gd = new GameData();
 		int teamNumber = 7;
-		Role role = GameData.Role.Forward;
+		Role role = GameData.Role.Defense;
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;

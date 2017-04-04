@@ -30,6 +30,7 @@ public class ForwardGameRole implements IGameRole {
 	private Shooter shooter;
 	private EV3UltrasonicSensor usSensor;
 	
+	private boolean firstShot = true;	
 	private final double FORWARD_FIELD_LIMIT;
 	
 	/**
@@ -73,8 +74,11 @@ public class ForwardGameRole implements IGameRole {
 		} else if (gd.getOmega().equals("E")){
 			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, clearance);
 			navigation.turnTo(90, true);
+		} else if (gd.getOmega().equals("S")){
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE - clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
+			navigation.turnTo(180, true);
 		} else {
-			navigation.travelTo(gd.getDispenserPosition().getY(), 8 - clearance);
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, 11 * BOX_SIZE - clearance);
 			navigation.turnTo(270, true);
 		}
 		
@@ -100,15 +104,15 @@ public class ForwardGameRole implements IGameRole {
 		// Let the robot randomly select a position to fire from
 		// Generate a random number from 1 to 4
 		Random rand = new Random();
-		int randInt = rand.nextInt(4) + 1;
+		int randInt = rand.nextInt(3) + 1;
 		
 		moveToLocation(randInt);
 		
 		// If the random generation is true, move to a new position to throw off the opponent
 		// If not move on to firing
 //		boolean moveAgain = rand.nextBoolean();
-//		if(moveAgain){
-//			randInt = rand.nextInt(4) + 1;
+//		if(moveAgain && !firstShot){
+//			randInt = rand.nextInt(3) + 1;
 //			moveToLocation(randInt);
 //		}
 	}
@@ -120,10 +124,9 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	private void moveToLocation(int pos){
 //		switch(pos){
-//			case 1: navigation.travelTo(2 * BOX_SIZE, 3 * BOX_SIZE); break;
-//			case 2: navigation.travelTo(1.75 * BOX_SIZE, 4 * BOX_SIZE); break;
-//			case 3: navigation.travelTo(1.75 * BOX_SIZE, 6 * BOX_SIZE); break;
-//			default: navigation.travelTo(2 * BOX_SIZE, 7 * BOX_SIZE); break;
+//			case 1: navigation.travelTo(2.5 * BOX_SIZE, 3 * BOX_SIZE); break;
+//			case 2: navigation.travelTo(2 * BOX_SIZE, 5 * BOX_SIZE); break;
+//			case 3: navigation.travelTo(2.5 * BOX_SIZE, 7 * BOX_SIZE); break;
 //		}
 		navigation.travelTo(2 * BOX_SIZE, 4 * BOX_SIZE);
 	}
@@ -140,6 +143,9 @@ public class ForwardGameRole implements IGameRole {
 		shooter.lowerArm();
 		Delay.msDelay(1000);
 		shooter.shoot();
+		
+		firstShot = false;
+		
 		Button.waitForAnyPress();
 	}
 }
