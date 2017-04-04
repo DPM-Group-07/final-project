@@ -49,8 +49,10 @@ public class Navigation {
 	private double DETECTION_DISTANCE = 15.0;
 
 	/**
-	 * The public constructor for this class
-	 * @param odo The active Odometer object currently tracking the robot's position.
+	 * The public constructor for this class.
+	 * @param odometer The active Odometer object currently tracking the robot's position.
+	 * @param midUS Reference to the middle US sensor.
+	 * @param rightUS Reference to the right US sensor.
 	 */
 	public Navigation(Odometer odometer, EV3UltrasonicSensor midUS, EV3UltrasonicSensor rightUS){
 		this.enableAvoid = true;
@@ -135,8 +137,13 @@ public class Navigation {
 	}
 	
 	/**
-	 * Turns to a specified angle using the minimum angle 
+	 * 
 	 * @param theta angle from 0 to 359.999... in degrees
+	 */
+	/**
+	 * Turns to a specified angle using the minimum angle.
+	 * @param angle Angle in [0,360) in degress.
+	 * @param stop Stop motors after turning or not.
 	 */
 	public void turnTo(double angle, boolean stop){
 		double error = getDifference(angle, this.odometer.getAng());
@@ -201,12 +208,10 @@ public class Navigation {
 		leftMotor.rotate(convertDistance(LEFTWHEEL_RADIUS, distance), true);
 		rightMotor.rotate(convertDistance(RIGHTWHEEL_RADIUS, distance), false);
 	}
-		
-	/**
-	 * Avoids
-	 * @return degrees of rotation of wheels
-	 */
 	
+	/**
+	 * Avoids the wall.
+	 */
 	public void avoidWall(){
 		// Obtain data from ultrasonic sensor
 		SampleProvider provider = midUS.getDistanceMode();
@@ -294,8 +299,6 @@ public class Navigation {
 	 * @param a1 The first angle.
 	 * @param a2 The second angle.
 	 * @return The minimal angle.
-	 * Used to enable avoidance system
-	 * @param enableAvoid true to enable avoidance system
 	 */
 	private double getDifference(double a1, double a2) {
 		double rotationAngle = a1 - a2;
