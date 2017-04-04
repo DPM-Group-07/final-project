@@ -200,11 +200,11 @@ public class MainController {
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
-		int bx = -1, by = 2;
+		int bx = 2, by = -1;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
-		String omega = "E";
+		String omega = "N";
 		
 		gd.setTeamNumber(teamNumber);
 		gd.setRole(role);

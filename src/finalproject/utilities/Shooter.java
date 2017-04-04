@@ -14,8 +14,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  */
 public class Shooter {
 	//Relevant speeds; note when shooting straight ahead launch speed won't need to be as fast as the "skew speed"
-	private static final int ROTATION_SPEED = 80;
-	private static final int SMOOTH_ACCELERATION = 8000;
+	private static final int ROTATION_SPEED = 40;
+	private static final int SMOOTH_ACCELERATION = 2000;
 	private static final int STRAIGHT_SHOOTING_SPEED = 12000;
 	private static final int STRAIGHT_ACCEL = 15000;
 	
@@ -76,7 +76,7 @@ public class Shooter {
 	 * with the ball. Removes armRaised flag.
 	 */
 	public void lowerArm(){
-		rotateTo(10);
+		rotateTo(-5);
 	}
 	
 	/**

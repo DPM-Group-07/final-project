@@ -50,6 +50,7 @@ public class DefenseGameRole implements IGameRole {
 		this.odometer = odometer;
 		this.gd = gd;
 		this.navigation = navigation;
+		this.odometer = odometer;
 		this.shooter = shooter;
 		this.usSensor = usSensor;
 		this.BOX_SIZE = BOX_SIZE;
