@@ -40,6 +40,7 @@ public class MasterGameRole {
 		
 		if (gameData.getRole() == GameData.Role.Forward) {
 			rightSensor.disable();
+			midSensor.disable();
 			gameRole = new ForwardGameRole(gameData, navigation, odometer, midSensor, shooter, BOX_SIZE);
 		} else {
 			midSensor.disable();

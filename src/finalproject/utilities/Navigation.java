@@ -55,7 +55,7 @@ public class Navigation {
 	 * @param rightUS Reference to the right US sensor.
 	 */
 	public Navigation(Odometer odometer, EV3UltrasonicSensor midUS, EV3UltrasonicSensor rightUS){
-		this.enableAvoid = true;
+		this.enableAvoid = false;
 		this.avoiding = false;
 		this.odometer = odometer;
 		this.midUS = midUS;
@@ -213,12 +213,22 @@ public class Navigation {
 	 * Avoids the wall.
 	 */
 	public void avoidWall(){
+		boolean rightClear = false;
+		
 		// Obtain data from ultrasonic sensor
 		SampleProvider provider = midUS.getDistanceMode();
 		float[] sample = new float[3];
 		provider.fetchSample(sample, 0);
 		
-		// Check if collision is imminent
+		SampleProvider provider2 = rightUS.getDistanceMode();
+		float[] sample2 = new float[3];
+		provider2.fetchSample(sample2, 0);
+		
+		if(sample2[0] * 100 > 60){
+			rightClear = true;
+		}
+		
+		// Check if collision is imminent		
 		while(sample[0] * 100.0 < DETECTION_DISTANCE){
 			// Set flag to force the EV3 to recalculate the heading after the avoiding maneuvers
 			// have been completed. 

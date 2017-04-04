@@ -57,7 +57,9 @@ public class ForwardGameRole implements IGameRole {
 	@Override
 	public void play() {
 		while(true) {
+			navigation.enableAvoid(true);
 			pickupBall();
+			navigation.enableAvoid(false);
 			moveToTarget();
 			shoot();
 		}

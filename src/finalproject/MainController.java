@@ -99,7 +99,7 @@ public class MainController {
 
 		// 2. Initialize and localize
 //		t.drawString("Localizing...", 0, 2);
-//		Button.waitForAnyPress();
+		Button.waitForAnyPress();
 		LCDInfo lcd = new LCDInfo(odometer);
 //		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
@@ -110,6 +110,8 @@ public class MainController {
 		t.clear();
 //		System.out.println("Localization OK");
 //		
+		navigation.travelTo(5 * BOX_SIZE, 0);
+		
 //		// 4. Play the game
 		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
 		mgr.play();
