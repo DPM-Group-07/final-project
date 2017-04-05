@@ -30,7 +30,7 @@ import lejos.utility.Delay;
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.29";
+	private static final String SERVER_IP = "192.168.2.3";
 	private static final int TEAM_NUMBER = 7;
 	private static final double BOX_SIZE = 29.50;
 	

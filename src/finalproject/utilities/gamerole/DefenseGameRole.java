@@ -94,11 +94,11 @@ public class DefenseGameRole implements IGameRole {
 
 		// Travels to the left limit or the right limit depending on which side the dispenser is located
 		if(DISPENSER_SIDE == Side.WEST){
-			navigation.travelTo(WEST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
+			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), WEST_PLAYING_FIELD_LIMIT * BOX_SIZE);
 			navigation.turnTo(ORIENTATION, true);
 		}
 		else if(DISPENSER_SIDE == Side.EAST){
-			navigation.travelTo(EAST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
+			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), EAST_PLAYING_FIELD_LIMIT * BOX_SIZE);
 			navigation.turnTo(ORIENTATION, true);
 		}
 		else{
