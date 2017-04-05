@@ -78,25 +78,22 @@ public class MainController {
 		initialize();
 
 		// 1. Get game data from Wi-Fi
-		t.clear();
-		t.drawString("Connecting...", 0, 0);
-//		GameData gd = noWifi();
-		GameData gd;
-		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-		Map data;
-		
-		Sound.twoBeeps();
-		
-		try {
-			data = wc.getData();
-			gd = new GameData(data, TEAM_NUMBER);
-		} catch (Exception e) {
-			error(e.getMessage());
-			return;
-		}
-		Sound.beep();
-
-//		t.drawString("Game data OK", 0, 1);
+//		t.clear();
+//		t.drawString("Connecting...", 0, 0);
+		GameData gd = noWifi();
+//		GameData gd;
+//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+//		Map data;
+//		
+//		Sound.twoBeeps();
+//		
+//		try {
+//			data = wc.getData();
+//			gd = new GameData(data, TEAM_NUMBER);
+//		} catch (Exception e) {
+//			error(e.getMessage());
+//			return;
+//		}
 //		Sound.beep();
 		
 
@@ -199,15 +196,15 @@ public class MainController {
 	private static GameData noWifi(){
 		GameData gd = new GameData();
 		int teamNumber = 7;
-		Role role = GameData.Role.Forward;
+		Role role = GameData.Role.Defense;
 		int startingCorner = 1;
-		int forwardLine = 1;
+		int forwardLine = 8;
 		int w1 = 4, w2 = 4;
-		int bx = -1, by = 4;
+		int bx = 11, by = 1;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
-		String omega = "E";
+		String omega = "W";
 		
 		gd.setTeamNumber(teamNumber);
 		gd.setRole(role);

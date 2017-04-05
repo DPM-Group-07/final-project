@@ -77,8 +77,8 @@ public class DefenseGameRole implements IGameRole {
 		 *   _________    
 		 */
 		
-		WEST_PLAYING_FIELD_LIMIT = 2.5;
-		EAST_PLAYING_FIELD_LIMIT = 7.5;
+		WEST_PLAYING_FIELD_LIMIT = 3;
+		EAST_PLAYING_FIELD_LIMIT = 7;
 	}
 	
 	/**
@@ -94,15 +94,15 @@ public class DefenseGameRole implements IGameRole {
 
 		// Travels to the left limit or the right limit depending on which side the dispenser is located
 		if(DISPENSER_SIDE == Side.WEST){
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), WEST_PLAYING_FIELD_LIMIT * BOX_SIZE);
+			navigation.travelTo(WEST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
 			navigation.turnTo(ORIENTATION, true);
 		}
 		else if(DISPENSER_SIDE == Side.EAST){
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), EAST_PLAYING_FIELD_LIMIT * BOX_SIZE);
+			navigation.travelTo(EAST_PLAYING_FIELD_LIMIT * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
 			navigation.turnTo(ORIENTATION, true);
 		}
 		else{
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), gd.getDispenserPosition().getX() * BOX_SIZE);
+			navigation.travelTo(gd.getDispenserPosition().getX() * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
 			navigation.turnTo(ORIENTATION, true);
 		}
 		
