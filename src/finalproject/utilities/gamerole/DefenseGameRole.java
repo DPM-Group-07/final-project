@@ -164,8 +164,8 @@ public class DefenseGameRole implements IGameRole {
 
 		// Patrol on the imaginary line
 		else{
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), (WEST_PLAYING_FIELD_LIMIT-1) * BOX_SIZE);
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), (EAST_PLAYING_FIELD_LIMIT-1) * BOX_SIZE);
+			navigation.travelTo((WEST_PLAYING_FIELD_LIMIT-1) * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
+			navigation.travelTo((EAST_PLAYING_FIELD_LIMIT-1) * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
 		}
 		Delay.msDelay(1000);
 	}
