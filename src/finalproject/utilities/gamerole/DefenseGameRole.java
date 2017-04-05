@@ -90,25 +90,30 @@ public class DefenseGameRole implements IGameRole {
 			usSensor.enable();
 		}
 		
-		block();
-
-		// Travels to the left limit or the right limit depending on which side the dispenser is located
-		if(DISPENSER_SIDE == Side.WEST){
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), WEST_PLAYING_FIELD_LIMIT * BOX_SIZE);
-			navigation.turnTo(ORIENTATION, true);
-		}
-		else if(DISPENSER_SIDE == Side.EAST){
-			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), EAST_PLAYING_FIELD_LIMIT * BOX_SIZE);
-			navigation.turnTo(ORIENTATION, true);
-		}
-		else{
-			navigation.travelTo(gd.getDispenserPosition().getX() * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
-			navigation.turnTo(ORIENTATION, true);
+		while (true) {
+			navigation.travelTo(5 * BOX_SIZE, 6 * BOX_SIZE);
+			navigation.travelTo(5 * BOX_SIZE, 4 * BOX_SIZE);
 		}
 		
-		while(true){
-			trackOpp();
-		}
+//		block();
+//
+//		// Travels to the left limit or the right limit depending on which side the dispenser is located
+//		if(DISPENSER_SIDE == Side.WEST){
+//			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), WEST_PLAYING_FIELD_LIMIT * BOX_SIZE);
+//			navigation.turnTo(ORIENTATION, true);
+//		}
+//		else if(DISPENSER_SIDE == Side.EAST){
+//			navigation.travelTo(TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE), EAST_PLAYING_FIELD_LIMIT * BOX_SIZE);
+//			navigation.turnTo(ORIENTATION, true);
+//		}
+//		else{
+//			navigation.travelTo(gd.getDispenserPosition().getX() * BOX_SIZE, TOP_Y - (CLEARANCE_FROM_DEF_ZONE * BOX_SIZE));
+//			navigation.turnTo(ORIENTATION, true);
+//		}
+//		
+//		while(true){
+//			trackOpp();
+//		}
 	}
 	
 
