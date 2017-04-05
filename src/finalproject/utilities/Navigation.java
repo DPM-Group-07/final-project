@@ -45,7 +45,7 @@ public class Navigation {
 
 	// Modify these to change obstacle avoidance performance
 	private double FORWARD_DISTANCE_LENGTH = 40.0;
-	private double FORWARD_DISTANCE_THICKNESS = 40.0;
+	private double FORWARD_DISTANCE_THICKNESS = 65.0;
 	private double DETECTION_DISTANCE = 15.0;
 
 	/**
@@ -242,10 +242,12 @@ public class Navigation {
 			// If not, exit loop
 			// If so, repeat maneuver until there isn't an obstacle
 			while(!avoidComplete){
-				turn(-90.0);
+				if(!rightClear) turn(90.0);
+				else turn(-90.0);
 				leftMotor.rotate(convertDistance(LEFTWHEEL_RADIUS, FORWARD_DISTANCE_LENGTH), true);
 				rightMotor.rotate(convertDistance(RIGHTWHEEL_RADIUS, FORWARD_DISTANCE_LENGTH), false);
-				turn(90.0);
+				if(!rightClear) turn(-90.0);
+				else turn(90.0);
 				forwardCount++;
 				
 				provider.fetchSample(sample, 0);
@@ -263,7 +265,8 @@ public class Navigation {
 			while(!avoidComplete){
 				leftMotor.rotate(convertDistance(LEFTWHEEL_RADIUS, FORWARD_DISTANCE_THICKNESS), true);
 				rightMotor.rotate(convertDistance(RIGHTWHEEL_RADIUS,FORWARD_DISTANCE_THICKNESS), false);
-				turn(90.0);
+				if(!rightClear) turn(-90.0);
+				else turn(90.0);
 				
 				provider.fetchSample(sample, 0);
 				
@@ -273,7 +276,8 @@ public class Navigation {
 					break;
 				}
 				
-				turn(-90.0);
+				if(!rightClear) turn(90.0);
+				else turn(-90.0);
 			}
 			
 			// Undo advancements done during the first turn and reset avoidComplete flag

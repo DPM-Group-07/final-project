@@ -67,7 +67,7 @@ public class ForwardGameRole implements IGameRole {
 	
 	private void pickupBall() {
 		int clearance = 45;
-		int backUp = 20;
+		int backUp = 30;
 		
 		// Drive to position
 		if (gd.getOmega().equals("N")) {
@@ -76,12 +76,12 @@ public class ForwardGameRole implements IGameRole {
 		} else if (gd.getOmega().equals("E")){
 			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, clearance);
 			navigation.turnTo(90, true);
-		} else if (gd.getOmega().equals("S")){
-			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE - clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
-			navigation.turnTo(180, true);
-		} else {
+		} else if (gd.getOmega().equals("W")){
 			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE, 11 * BOX_SIZE - clearance);
 			navigation.turnTo(270, true);
+		} else {
+			navigation.travelTo(gd.getDispenserPosition().getY() * BOX_SIZE - clearance, gd.getDispenserPosition().getX() * BOX_SIZE);
+			navigation.turnTo(180, true);
 		}
 		
 		shooter.lowerArm();
@@ -104,7 +104,7 @@ public class ForwardGameRole implements IGameRole {
 	 */
 	private void moveToTarget(){
 		// Let the robot randomly select a position to fire from
-		// Generate a random number from 1 to 4
+		// Generate a random number from 1 to 3
 		Random rand = new Random();
 		int randInt = rand.nextInt(3) + 1;
 		
@@ -112,11 +112,11 @@ public class ForwardGameRole implements IGameRole {
 		
 		// If the random generation is true, move to a new position to throw off the opponent
 		// If not move on to firing
-//		boolean moveAgain = rand.nextBoolean();
-//		if(moveAgain && !firstShot){
-//			randInt = rand.nextInt(3) + 1;
-//			moveToLocation(randInt);
-//		}
+		boolean moveAgain = rand.nextBoolean();
+		if(moveAgain && !firstShot){
+			randInt = rand.nextInt(3) + 1;
+			moveToLocation(randInt);
+		}
 	}
 	
 	/**
@@ -125,21 +125,26 @@ public class ForwardGameRole implements IGameRole {
 	 * @param pos Integer representing the location of launch.
 	 */
 	private void moveToLocation(int pos){
-//		switch(pos){
-//			case 1: navigation.travelTo(2.5 * BOX_SIZE, 3 * BOX_SIZE); break;
-//			case 2: navigation.travelTo(2 * BOX_SIZE, 5 * BOX_SIZE); break;
-//			case 3: navigation.travelTo(2.5 * BOX_SIZE, 7 * BOX_SIZE); break;
-//		}
-		navigation.travelTo(2 * BOX_SIZE, 4 * BOX_SIZE);
+		switch(pos){
+			case 1: navigation.travelTo(2.5 * BOX_SIZE, 3 * BOX_SIZE); break;
+			case 2: navigation.travelTo(2 * BOX_SIZE, 5 * BOX_SIZE); break;
+			case 3: navigation.travelTo(2.5 * BOX_SIZE, 7 * BOX_SIZE); break;
+		}
 	}
 	
 	/**
 	 * Rotate toward the target and launches the ball at the target.
 	 */
 	private void shoot() {
+		
+		double oAng = odometer.getAng();
+		
 		// Aims at the target
-		double angle = 90 - (2 * Math.PI / 360) * Math.atan2(10 * BOX_SIZE - odometer.getY(), 
-				5 * BOX_SIZE - odometer.getX());
+		double angle = (360 / (2*Math.PI) * Math.atan2(5 * BOX_SIZE - odometer.getY(), 
+				10 * BOX_SIZE - odometer.getX()));
+		if(angle < 0){
+			angle += 360;
+		}
 		navigation.turnTo(angle, true);
 		
 		shooter.lowerArm();
@@ -147,7 +152,6 @@ public class ForwardGameRole implements IGameRole {
 		shooter.shoot();
 		
 		firstShot = false;
-		
-		Button.waitForAnyPress();
+		Delay.msDelay(3000);
 	}
 }

@@ -19,7 +19,7 @@ public class Shooter {
 	private static final int STRAIGHT_SHOOTING_SPEED = 12000;
 	private static final int STRAIGHT_ACCEL = 15000;
 	
-	private static final int ARM_RAISED_ANGLE = -125;
+	private static final int ARM_RAISED_ANGLE = -130;
 	private static final int ARM_COLLECT_ANGLE = -25;
 	private static final int ARM_RAISED_WITH_BALL_ANGLE = -60;
 	private static final int ARM_SHOT_ANGLE = -140;

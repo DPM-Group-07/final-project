@@ -110,7 +110,6 @@ public class MainController {
 		t.clear();
 //		System.out.println("Localization OK");
 //		
-		navigation.travelTo(5 * BOX_SIZE, 0);
 		
 //		// 4. Play the game
 		MasterGameRole mgr = new MasterGameRole(gd, navigation, odometer, shooter, midUS, rightUS, BOX_SIZE);
@@ -198,15 +197,15 @@ public class MainController {
 	private static GameData noWifi(){
 		GameData gd = new GameData();
 		int teamNumber = 7;
-		Role role = GameData.Role.Defense;
+		Role role = GameData.Role.Forward;
 		int startingCorner = 1;
 		int forwardLine = 1;
 		int w1 = 4, w2 = 4;
-		int bx = 2, by = -1;
+		int bx = -1, by = 4;
 		
 		Coordinate defenderZone = new Coordinate(w1, w2);
 		Coordinate dispenserPosition = new Coordinate(bx, by);
-		String omega = "N";
+		String omega = "E";
 		
 		gd.setTeamNumber(teamNumber);
 		gd.setRole(role);

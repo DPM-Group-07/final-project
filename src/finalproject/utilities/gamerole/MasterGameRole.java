@@ -60,11 +60,11 @@ public class MasterGameRole {
 		switch(corner){
 			case 1: odometer.setPosition(new double[] {0.0, 0.0, 0.0}, update);
 					break;
-			case 2: odometer.setPosition(new double[] {10 * BOX_SIZE, 0.0, 270.0}, update);
+			case 2: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 270.0}, update);
 					break;
 			case 3: odometer.setPosition(new double[] {10 * BOX_SIZE, 10 * BOX_SIZE, 180.0}, update);
 					break;
-			case 4: odometer.setPosition(new double[] {0, 10 * BOX_SIZE, 90.0}, update);
+			case 4: odometer.setPosition(new double[] {10 * BOX_SIZE, 0 * BOX_SIZE, 90.0}, update);
 					break;
 		}
 	}
