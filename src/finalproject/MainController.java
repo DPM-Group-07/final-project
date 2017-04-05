@@ -78,23 +78,23 @@ public class MainController {
 		initialize();
 
 		// 1. Get game data from Wi-Fi
-//		t.clear();
-//		t.drawString("Connecting...", 0, 0);
-		GameData gd = noWifi();
-//		GameData gd;
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
-//		
-//		Sound.twoBeeps();
-//		
-//		try {
-//			data = wc.getData();
-//			gd = new GameData(data, TEAM_NUMBER);
-//		} catch (Exception e) {
-//			error(e.getMessage());
-//			return;
-//		}
-//		Sound.beep();
+		t.clear();
+		t.drawString("Connecting...", 0, 0);
+//		GameData gd = noWifi();
+		GameData gd;
+		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		Map data;
+		
+		Sound.twoBeeps();
+		
+		try {
+			data = wc.getData();
+			gd = new GameData(data, TEAM_NUMBER);
+		} catch (Exception e) {
+			error(e.getMessage());
+			return;
+		}
+		Sound.beep();
 		
 
 		// 2. Initialize and localize
