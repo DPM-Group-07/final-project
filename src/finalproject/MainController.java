@@ -30,7 +30,7 @@ import lejos.utility.Delay;
  *
  */
 public class MainController {
-	private static final String SERVER_IP = "192.168.2.3";
+	private static final String SERVER_IP = "192.168.2.29";
 	private static final int TEAM_NUMBER = 7;
 	private static final double BOX_SIZE = 29.50;
 	
@@ -78,34 +78,36 @@ public class MainController {
 		initialize();
 
 		// 1. Get game data from Wi-Fi
-//		t.clear();
-//		t.drawString("Connecting...", 0, 0);
-		GameData gd = noWifi();
-//		GameData gd;
-//		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-//		Map data;
+		t.clear();
+		t.drawString("Connecting...", 0, 0);
+//		GameData gd = noWifi();
+		GameData gd;
+		WifiConnection wc = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		Map data;
 		
-//		try {
-//			data = wc.getData();
-//			gd = new GameData(data, TEAM_NUMBER);
-//		} catch (Exception e) {
-//			error(e.getMessage());
-//			return;
-//		}
+		Sound.twoBeeps();
+		
+		try {
+			data = wc.getData();
+			gd = new GameData(data, TEAM_NUMBER);
+		} catch (Exception e) {
+			error(e.getMessage());
+			return;
+		}
+		Sound.beep();
 
 //		t.drawString("Game data OK", 0, 1);
 //		Sound.beep();
 		
 
 		// 2. Initialize and localize
-//		t.drawString("Localizing...", 0, 2);
-		Button.waitForAnyPress();
-		LCDInfo lcd = new LCDInfo(odometer);
+//		t.drawString("Localizing...", 0, 2)
+//		LCDInfo lcd = new LCDInfo(odometer);
 //		
 		localizer = new MasterLocalizer(odometer, navigation, midUS, midColor, LOCALIZATION_TYPE);
 		localizer.localize();
 		Sound.beep();
-		Button.waitForAnyPress();
+//		Button.waitForAnyPress();
 //		
 		t.clear();
 //		System.out.println("Localization OK");
